@@ -167,6 +167,9 @@ footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:cent
   <button class="tab-btn" id="btn-kalku" onclick="switchTab('kalku',this)">
     <span class="tab-num">2</span>Kalkulator
   </button>
+  <button class="tab-btn" id="btn-preset" onclick="switchTab('preset',this);pm_loadAll();">
+    <span class="tab-num">3</span>Preset Manager
+  </button>
 </div>
 
 <!-- ═══ TAB 1: PLAN ═══ -->
@@ -183,8 +186,8 @@ footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:cent
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
           <span style="font-size:12px;font-weight:500;">Mode input:</span>
           <div class="mode-tabs">
-            <button class="mode-tab on" onclick="setMode('preset',this)">Preset chips</button>
-            <button class="mode-tab" onclick="setMode('inventory',this)">Dari inventory</button>
+            <button class="mode-tab on" id="mode-btn-preset" onclick="setMode('preset',this)">Dari preset</button>
+            <button class="mode-tab" id="mode-btn-inventory" onclick="setMode('inventory',this)">Dari inventory</button>
           </div>
           <span style="font-size:11px;color:var(--ink-muted);font-family:'DM Mono',monospace;" id="kFromModel"></span>
         </div>
@@ -192,61 +195,18 @@ footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:cent
 
       <!-- PRESET MODE -->
       <div id="k-mode-preset" class="k-mode active">
-        <div class="card" style="margin-bottom:1rem;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-            <span style="font-size:11px;font-weight:500;color:var(--ink-muted);letter-spacing:0.08em;text-transform:uppercase;font-family:'DM Mono',monospace;">1. Packaging</span>
-            <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--ink-muted);" id="sub-packaging">Rp0</span>
+        <div class="card">
+          <p class="card-title">Cari & tambah dari preset</p>
+          <p style="font-size:12px;color:var(--ink-muted);margin-bottom:1rem;">Ketik nama atau kategori — mis. "Packaging", "Box", "Botol"</p>
+          <div style="display:grid;grid-template-columns:1fr 55px auto;gap:8px;align-items:start;margin-bottom:1rem;">
+            <div class="ac-wrap">
+              <input type="text" id="pAcInput" placeholder="Cari preset..." oninput="pAcSearch()" autocomplete="off">
+              <div class="ac-dd" id="pAcDd"></div>
+            </div>
+            <input type="number" id="pAcQty" value="1" min="1" style="text-align:center;">
+            <button class="btn btn-sm" onclick="pAcAdd()">+ Tambah</button>
           </div>
-          <div class="chips" id="chips-packaging"></div>
-          <div id="lines-packaging"></div>
-          <div style="display:grid;grid-template-columns:1fr 48px 90px auto;gap:6px;margin-top:6px;">
-            <input type="text" id="ci-packaging-n" placeholder="Custom item" style="font-size:12px;">
-            <input type="number" id="ci-packaging-q" value="1" min="1" style="text-align:center;font-size:12px;">
-            <input type="number" id="ci-packaging-p" placeholder="Harga" style="text-align:right;font-size:12px;">
-            <button class="btn-sec btn-sm" onclick="addCustomLine('packaging')">+</button>
-          </div>
-        </div>
-        <div class="card" style="margin-bottom:1rem;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-            <span style="font-size:11px;font-weight:500;color:var(--ink-muted);letter-spacing:0.08em;text-transform:uppercase;font-family:'DM Mono',monospace;">2. Isi hampers</span>
-            <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--ink-muted);" id="sub-isi">Rp0</span>
-          </div>
-          <div class="chips" id="chips-isi"></div>
-          <div id="lines-isi"></div>
-          <div style="display:grid;grid-template-columns:1fr 48px 90px auto;gap:6px;margin-top:6px;">
-            <input type="text" id="ci-isi-n" placeholder="Custom item" style="font-size:12px;">
-            <input type="number" id="ci-isi-q" value="1" min="1" style="text-align:center;font-size:12px;">
-            <input type="number" id="ci-isi-p" placeholder="Harga" style="text-align:right;font-size:12px;">
-            <button class="btn-sec btn-sm" onclick="addCustomLine('isi')">+</button>
-          </div>
-        </div>
-        <div class="card" style="margin-bottom:1rem;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-            <span style="font-size:11px;font-weight:500;color:var(--ink-muted);letter-spacing:0.08em;text-transform:uppercase;font-family:'DM Mono',monospace;">3. Botol</span>
-            <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--ink-muted);" id="sub-botol">Rp0</span>
-          </div>
-          <div class="chips" id="chips-botol"></div>
-          <div id="lines-botol"></div>
-          <div style="display:grid;grid-template-columns:1fr 48px 90px auto;gap:6px;margin-top:6px;">
-            <input type="text" id="ci-botol-n" placeholder="Custom item" style="font-size:12px;">
-            <input type="number" id="ci-botol-q" value="1" min="1" style="text-align:center;font-size:12px;">
-            <input type="number" id="ci-botol-p" placeholder="Harga" style="text-align:right;font-size:12px;">
-            <button class="btn-sec btn-sm" onclick="addCustomLine('botol')">+</button>
-          </div>
-        </div>
-        <div class="card" style="margin-bottom:1rem;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-            <span style="font-size:11px;font-weight:500;color:var(--ink-muted);letter-spacing:0.08em;text-transform:uppercase;font-family:'DM Mono',monospace;">4. Add-on</span>
-            <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--ink-muted);" id="sub-addon">Rp0</span>
-          </div>
-          <div class="chips" id="chips-addon"></div>
-          <div id="lines-addon"></div>
-          <div style="display:grid;grid-template-columns:1fr 48px 90px auto;gap:6px;margin-top:6px;">
-            <input type="text" id="ci-addon-n" placeholder="Custom item" style="font-size:12px;">
-            <input type="number" id="ci-addon-q" value="1" min="1" style="text-align:center;font-size:12px;">
-            <input type="number" id="ci-addon-p" placeholder="Harga" style="text-align:right;font-size:12px;">
-            <button class="btn-sec btn-sm" onclick="addCustomLine('addon')">+</button>
-          </div>
+          <div id="pLines"></div>
         </div>
       </div>
 
@@ -310,6 +270,161 @@ footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:cent
       </div>
     </div>
   </div>
+</div>
+</div>
+
+<!-- ═══ TAB 3: PRESET MANAGER ═══ -->
+<div id="tab-preset" class="tab-page">
+<div class="container">
+<div class="container">
+
+  <!-- METRICS -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:1.5rem;" id="metrics"></div>
+
+  <!-- LIST -->
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:1rem;">
+      <p class="card-title" style="margin:0;">Daftar preset</p>
+      <button class="btn-sec btn-sm" onclick="pm_exportCSV()">Export CSV</button>
+    </div>
+
+    <!-- Search + filter -->
+    <div style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;">
+      <input type="text" id="searchInput" placeholder="Cari preset..." oninput="pm_renderList()" style="flex:1;min-width:180px;">
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;">
+      <span style="font-size:10px;color:var(--ink-muted);font-family:'DM Mono',monospace;">Urutkan:</span>
+      <button class="cf-btn on" id="sort-nama" onclick="pm_setSort('nama',this)">Nama</button>
+      <button class="cf-btn" id="sort-kategori" onclick="pm_setSort('kategori',this)">Kategori</button>
+      <button class="cf-btn" id="sort-harga" onclick="pm_setSort('harga',this)">Harga ↑</button>
+      <button class="cf-btn" id="sort-hpp" onclick="pm_setSort('hpp',this)">HPP ↑</button>
+    </div>
+    <div class="cat-filter" id="catFilter"></div>
+
+    <!-- Table -->
+    <div style="overflow-x:auto;">
+      <table class="tbl">
+        <thead><tr>
+          <th style="width:38%;">Nama preset</th>
+          <th style="width:14%;">Kategori</th>
+          <th style="width:8%;">Material</th>
+          <th style="width:13%;text-align:right;">HPP</th>
+          <th style="width:13%;text-align:right;">Harga</th>
+          <th style="width:14%;"></th>
+        </tr></thead>
+        <tbody id="presetBody"></tbody>
+      </table>
+      <div id="presetEmpty" class="empty" style="display:none;">Belum ada preset. Klik "+ Preset baru" untuk mulai.</div>
+    </div>
+    <div style="margin-top:8px;font-size:12px;color:var(--ink-muted);font-family:'DM Mono',monospace;" id="listFooter"></div>
+  </div>
+</div>
+
+<!-- ADD/EDIT MODAL -->
+<div class="modal-bg" id="formModal">
+  <div class="modal">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
+      <div class="modal-title" style="margin:0;" id="formTitle">Preset baru</div>
+      <button class="btn-sec btn-sm" onclick="pm_closeForm()">Tutup</button>
+    </div>
+
+    <div class="row2">
+      <div>
+        <span class="lbl">Kategori</span>
+        <select id="f-cat" onchange="pm_updateNamaPrefix()">
+          <option value="Packaging">Packaging</option>
+          <option value="Isi">Isi</option>
+          <option value="Botol">Botol</option>
+          <option value="Add-on">Add-on</option>
+          <option value="Lainnya">Lainnya</option>
+        </select>
+      </div>
+      <div>
+        <span class="lbl">Nama preset</span>
+        <input type="text" id="f-nama" placeholder="mis. Box Bulat Texture D25cm">
+        <div style="font-size:10px;color:var(--ink-muted);margin-top:3px;font-family:'DM Mono',monospace;">Akan tersimpan sebagai: <span id="namaPreview" style="color:var(--gold);"></span></div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:12px;">
+      <span class="lbl">Catatan (opsional)</span>
+      <input type="text" id="f-catatan" placeholder="mis. ukuran, warna, supplier">
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Material list -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+      <span style="font-size:13px;font-weight:500;">Komposisi material</span>
+    </div>
+
+    <!-- Autocomplete search -->
+    <div style="display:grid;grid-template-columns:1fr 58px auto;gap:8px;margin-bottom:10px;align-items:start;">
+      <div class="ac-wrap">
+        <input type="text" id="matInput" placeholder="Cari dari inventory..." oninput="pm_matSearch()" autocomplete="off">
+        <div class="ac-dd" id="matDd"></div>
+      </div>
+      <input type="number" id="matQty" value="1" min="1" style="text-align:center;">
+      <button class="btn btn-sm" onclick="pm_addMat()">+ Tambah</button>
+    </div>
+
+    <!-- Material rows -->
+    <div id="matRows" style="background:var(--cream);border-radius:3px;padding:8px 12px;min-height:60px;margin-bottom:12px;">
+      <div class="mat-hdr"><span>Nama material</span><span style="text-align:center;">Qty</span><span style="text-align:right;">Subtotal</span><span></span></div>
+      <div id="matList"></div>
+      <div id="matEmpty" style="font-size:12px;color:var(--ink-muted);padding:8px 0;">Belum ada material. Cari dari inventory di atas.</div>
+    </div>
+
+    <!-- HPP + harga -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+      <div style="background:var(--cream);border-radius:3px;padding:10px 14px;">
+        <div class="lbl" style="margin-bottom:3px;">HPP otomatis</div>
+        <div style="font-family:'DM Mono',monospace;font-size:18px;font-weight:500;" id="hppDisplay">Rp0</div>
+      </div>
+      <div>
+        <span class="lbl">Harga preset final (Rp)</span>
+        <input type="number" id="f-harga" placeholder="0" min="0" oninput="pm_updateMargin()">
+        <div style="font-size:10px;color:var(--ink-muted);margin-top:3px;font-family:'DM Mono',monospace;" id="marginDisplay"></div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-sec" onclick="pm_closeForm()">Batal</button>
+      <button class="btn-wine" onclick="pm_savePreset()">Simpan preset</button>
+    </div>
+    <div id="formResult" style="font-size:12px;display:none;padding:8px 12px;border-radius:3px;margin-top:8px;"></div>
+    <input type="hidden" id="f-id">
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="modal-bg" id="detailModal">
+  <div class="modal">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:8px;">
+      <div>
+        <div class="modal-title" style="margin:0;" id="dtTitle"></div>
+        <div style="font-size:11px;color:var(--ink-muted);margin-top:3px;" id="dtSub"></div>
+      </div>
+      <div style="display:flex;gap:6px;">
+        <button class="btn-sec btn-sm" onclick="pm_editFromDetail()">Edit</button>
+        <button class="btn-sec btn-sm" onclick="pm_closeDetail()">Tutup</button>
+      </div>
+    </div>
+    <div id="dtMats"></div>
+    <div style="display:flex;justify-content:space-between;padding:10px 0;border-top:0.5px solid var(--border);margin-top:4px;font-size:14px;font-weight:500;">
+      <span>Total HPP</span>
+      <span style="font-family:'DM Mono',monospace;" id="dtHpp"></span>
+    </div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-top:0.5px solid var(--border);font-size:16px;font-weight:500;">
+      <span>Harga preset</span>
+      <span style="font-family:'DM Mono',monospace;color:var(--wine);" id="dtHarga"></span>
+    </div>
+    <div style="font-size:11px;color:var(--ink-muted);text-align:right;font-family:'DM Mono',monospace;" id="dtMargin"></div>
+    <div class="modal-footer">
+      <button class="btn-danger btn-sm" onclick="pm_deletePreset(pmCurrentDetailId)">Hapus preset</button>
+    </div>
+  </div>
+</div>
 </div>
 </div>
 
@@ -786,22 +901,87 @@ function delModel(id) {
 }
 
 // ── KALKULATOR ────────────────────────────────────────────
-var kLines = {packaging:[],isi:[],botol:[],addon:[]};
+var kLines = [];  // unified line list
 var kInvLines = [];
 var kMode = 'preset';
 var voucherDiscount = 0;
 var kSearchInv = [];
+var allPresets = [];
+var pAcMatches = [];
 
-var DEFAULT_PRESETS = [
-  {id:'p1',cat:'packaging',n:'Box Wine Single',p:65000},{id:'p2',cat:'packaging',n:'Leather Bag',p:85000},
-  {id:'p3',cat:'packaging',n:'Keranjang Wire',p:120000},{id:'p4',cat:'packaging',n:'Hardbox Premium',p:150000},
-  {id:'p5',cat:'isi',n:'Bunga Mawar Set',p:150000},{id:'p6',cat:'isi',n:'Dried Flower',p:180000},
-  {id:'p7',cat:'isi',n:'Acc Decor',p:200000},
-  {id:'p8',cat:'botol',n:'Sparkling Non Alc',p:75000},{id:'p9',cat:'botol',n:'Sababay Wine',p:450000},
-  {id:'p10',cat:'botol',n:"Martinelli's",p:75000},
-  {id:'p11',cat:'addon',n:'Couple Glass Set',p:250000},{id:'p12',cat:'addon',n:'Art Bottle',p:150000},
-  {id:'p13',cat:'addon',n:'Greeting Card',p:25000},{id:'p14',cat:'addon',n:'Lilin Aromaterapi',p:80000},
-];
+// Load presets from Supabase
+async function loadPresets() {
+  try {
+    var r = await fetch(SUPA_URL+'/rest/v1/presets?order=nama.asc', {headers:H});
+    allPresets = await r.json();
+  } catch(e) { allPresets = []; }
+}
+
+// PRESET SEARCH
+function pAcSearch() {
+  var q = (document.getElementById('pAcInput').value||'').toLowerCase();
+  var dd = document.getElementById('pAcDd');
+  if(!q||q.length<1){dd.classList.remove('open');return;}
+  var matches = allPresets.filter(function(p){
+    return (p.nama||'').toLowerCase().indexOf(q)>=0 || (p.kategori||'').toLowerCase().indexOf(q)>=0;
+  }).slice(0,10);
+  pAcMatches = matches;
+  if(!matches.length){dd.classList.remove('open');return;}
+  dd.innerHTML = matches.map(function(p,idx){
+    return '<div class="ac-opt" onclick="pAcPick('+idx+')">'
+      +'<span style="font-weight:500;font-size:12px;">'+p.nama+'</span>'
+      +'<span style="font-size:10px;color:var(--ink-muted);font-family:\'DM Mono\',monospace;">'+fmtRp(p.harga)+'</span>'
+      +'</div>';
+  }).join('');
+  dd.classList.add('open');
+}
+
+function pAcPick(idx) {
+  var p = pAcMatches[idx]; if(!p) return;
+  document.getElementById('pAcInput').value = p.nama;
+  document.getElementById('pAcInput').dataset.pid = p.id;
+  document.getElementById('pAcInput').dataset.harga = p.harga||0;
+  document.getElementById('pAcDd').classList.remove('open');
+}
+
+function pAcAdd() {
+  var nama = (document.getElementById('pAcInput').value||'').trim();
+  var qty = parseInt(document.getElementById('pAcQty').value)||1;
+  var harga = parseInt(document.getElementById('pAcInput').dataset.harga||0);
+  if(!nama) return;
+  kLines.push({id:gid(), n:nama, p:harga, q:qty});
+  document.getElementById('pAcInput').value='';
+  document.getElementById('pAcInput').dataset.harga=0;
+  document.getElementById('pAcInput').dataset.pid='';
+  document.getElementById('pAcQty').value=1;
+  renderPLines(); recalc();
+}
+
+function delPLine(id) { kLines=kLines.filter(function(l){return l.id!==id;}); renderPLines(); recalc(); }
+function updPQty(id,v) { var l=kLines.find(function(x){return x.id===id;}); if(l){l.q=parseInt(v)||1; recalc();} }
+
+function renderPLines() {
+  var el = document.getElementById('pLines'); if(!el) return;
+  if(!kLines.length){
+    el.innerHTML = '<div style="padding:1.5rem;text-align:center;color:var(--ink-muted);font-size:13px;">Belum ada item. Cari preset di atas.</div>';
+    return;
+  }
+  var rows = '';
+  for(var i=0;i<kLines.length;i++){
+    var l = kLines[i];
+    rows += '<div class="line-row">';
+    rows += '<div style="font-size:12px;font-weight:500;">' + l.n + '</div>';
+    rows += '<input type="number" value="' + l.q + '" min="1" style="width:46px;text-align:center;padding:3px;font-size:11px;" data-id="' + l.id + '" onchange="updPQtyD(this)">';
+    rows += '<span style="font-size:11px;color:var(--ink-muted);">' + fmtRp(l.p) + '</span>';
+    rows += '<span style="font-size:12px;font-weight:500;">' + fmtRp(l.p*l.q) + '</span>';
+    rows += '<button class="line-del" data-id="' + l.id + '" onclick="delPLineD(this)">x</button>';
+    rows += '</div>';
+  }
+  el.innerHTML = rows;
+}
+function updPQtyD(el){var id=el.getAttribute('data-id');var l=kLines.find(function(x){return x.id===id;});if(l){l.q=parseInt(el.value)||1;recalc();}}
+function delPLineD(btn){var id=btn.getAttribute('data-id');kLines=kLines.filter(function(l){return l.id!==id;});renderPLines();recalc();}
+
 function getPresets(){var s=ls(PRESETS_KEY,null);if(!s){ss(PRESETS_KEY,DEFAULT_PRESETS);return DEFAULT_PRESETS;}return s;}
 
 function setMode(mode,btn) {
@@ -922,11 +1102,7 @@ function renderInvLines() {
 function recalc() {
   var hpp=0;
   if(kMode==='preset'){
-    ['packaging','isi','botol','addon'].forEach(function(cat){
-      var s=kLines[cat].reduce(function(a,l){return a+(l.p*l.q);},0);
-      var el=document.getElementById('sub-'+cat);if(el)el.textContent=fmtRp(s);
-      hpp+=s;
-    });
+    hpp=kLines.reduce(function(a,l){return a+(l.p*l.q);},0);
   } else {
     hpp=kInvLines.reduce(function(a,l){return a+(l.p*l.q);},0);
   }
@@ -955,7 +1131,7 @@ function applyVoucher() {
     .then(function(data){
       if(!data||!data.length){el.style.color='var(--low-text)';el.textContent='Kode tidak ditemukan.';voucherDiscount=0;recalc();return;}
       var v=data[0];
-      var hpp=kMode==='preset'?['packaging','isi','botol','addon'].reduce(function(a,cat){return a+kLines[cat].reduce(function(s,l){return s+(l.p*l.q);},0);},0):kInvLines.reduce(function(a,l){return a+(l.p*l.q);},0);
+      var hpp=kMode==='preset'?kLines.reduce(function(a,l){return a+(l.p*l.q);},0):kInvLines.reduce(function(a,l){return a+(l.p*l.q);},0);
       if(hpp<(v.minbuy||0)){el.style.color='var(--warn-text)';el.textContent='Min. pembelian '+fmtRp(v.minbuy)+' belum tercapai.';voucherDiscount=0;recalc();return;}
       voucherDiscount=v.dtype==='pct'?Math.round(hpp*v.dval/100):v.dval;
       el.style.color='var(--ok-text)';el.textContent='Voucher aktif — diskon '+fmtRp(voucherDiscount);
@@ -964,13 +1140,11 @@ function applyVoucher() {
 }
 
 function resetKalku() {
-  kLines={packaging:[],isi:[],botol:[],addon:[]};
-  kInvLines=[];voucherDiscount=0;
-  ['packaging','isi','botol','addon'].forEach(function(cat){renderLines(cat);var el=document.getElementById('sub-'+cat);if(el)el.textContent='Rp0';});
-  renderInvLines();recalc();
+  kLines=[];kInvLines=[];voucherDiscount=0;
+  renderPLines();renderInvLines();recalc();
   var vr=document.getElementById('k-voucher-res');if(vr)vr.style.display='none';
-  document.getElementById('k-voucher').value='';
-  document.getElementById('kFromModel').textContent='';
+  var kv=document.getElementById('k-voucher');if(kv)kv.value='';
+  var km=document.getElementById('kFromModel');if(km)km.textContent='';
 }
 
 function goToKalku() {
@@ -1003,9 +1177,9 @@ async function saveOrder() {
   var invNo='WG-INV-'+yr+'/'+String(ctr).padStart(2,'0');
   var date=now.getDate()+' '+MONTHS[now.getMonth()]+' '+now.getFullYear();
   var items=kMode==='preset'
-    ?Object.entries(kLines).flatMap(function(e){return e[1].map(function(l){return{desc:l.n,qty:l.q,price:l.p,detail:''};});})
+    ?kLines.map(function(l){return{desc:l.n,qty:l.q,price:l.p,detail:''};})
     :kInvLines.map(function(l){return{desc:l.n,qty:l.q,price:l.p,detail:''};});
-  var hpp=kMode==='preset'?['packaging','isi','botol','addon'].reduce(function(a,cat){return a+kLines[cat].reduce(function(s,l){return s+(l.p*l.q);},0);},0):kInvLines.reduce(function(a,l){return a+(l.p*l.q);},0);
+  var hpp=kMode==='preset'?kLines.reduce(function(a,l){return a+(l.p*l.q);},0):kInvLines.reduce(function(a,l){return a+(l.p*l.q);},0);
   var ops=parseInt(document.getElementById('k-ops').value)||0;
   var kar=parseInt(document.getElementById('k-kar').value)||0;
   var margin=parseInt(document.getElementById('k-margin').value)||0;
@@ -1036,8 +1210,345 @@ async function saveOrder() {
 
 // INIT
 renderPlan();
-buildChips();
+loadPresets();
 initKSearch();
+
+// ── PRESET MANAGER ───────────────────────────────────────
+
+
+function fmtRp(v){return 'Rp'+(parseInt(v)||0).toLocaleString('id-ID');}
+function gid(){return 'pr'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);}
+function setSync(ok){document.getElementById('syncDot').className='sync-dot'+(ok?' ok':'');document.getElementById('syncText').textContent=ok?'tersambung':'memuat...';}
+
+var pmPresets = [];
+var pmSortBy = 'nama';
+var inventory = [];
+var pmCatFilter = 'all';
+var pmMatRows = [];
+var pmMatMatches = [];
+var pmCurrentDetailId = null;
+
+var CAT_COLORS = {
+  'Packaging':'cat-packaging','Isi':'cat-isi','Botol':'cat-botol',
+  'Add-on':'cat-addon','Lainnya':'cat-lainnya'
+};
+
+// ── LOAD ──────────────────────────────────────────────────
+async function pm_loadAll(){
+  try {
+    var [pr, inv] = await Promise.all([
+      fetch(SUPA_URL+'/rest/v1/presets?order=created_at.desc', {headers:H}).then(function(r){return r.json();}),
+      fetch(SUPA_URL+'/rest/v1/inventory?order=added_at.desc', {headers:H}).then(function(r){return r.json();})
+    ]);
+    presets = pr || [];
+    inventory = inv || [];
+    setSync(true);
+    pm_renderMetrics();
+    pm_buildCatFilter();
+    pm_renderList();
+  } catch(e) {
+    setSync(false);
+    console.error(e);
+  }
+}
+
+// ── METRICS ───────────────────────────────────────────────
+function pm_renderMetrics(){
+  var cats = new Set(pmPresets.map(function(p){return p.kategori;})).size;
+  var avgMargin = pmPresets.length ? Math.round(pmPresets.reduce(function(s,p){
+    return s + (p.hpp && p.harga ? (p.harga-p.hpp)/p.harga*100 : 0);
+  }, 0) / pmPresets.length) : 0;
+  document.getElementById('metrics').innerHTML = [
+    {l:'Total preset', v:pmPresets.length},
+    {l:'Kategori', v:cats},
+    {l:'Rata-rata margin', v:avgMargin+'%'},
+  ].map(function(m){
+    return '<div style="background:#fff;border:0.5px solid var(--border);border-radius:4px;padding:1rem 1.25rem;">'
+      +'<div style="font-size:10px;color:var(--ink-muted);font-family:\'DM Mono\',monospace;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">'+m.l+'</div>'
+      +'<div style="font-family:\'Cormorant Garamond\',serif;font-size:26px;font-weight:500;">'+m.v+'</div>'
+      +'</div>';
+  }).join('');
+}
+
+// ── CAT FILTER ────────────────────────────────────────────
+function pm_buildCatFilter(){
+  var cats = ['all', ...new Set(pmPresets.map(function(p){return p.kategori;}).filter(Boolean))];
+  document.getElementById('pmCatFilter').innerHTML = cats.map(function(c){
+    return '<button class="cf-btn'+(c===pmCatFilter?' on':'')+'" onclick="pm_setCat(\''+c+'\')">'+(c==='all'?'Semua':c)+'</button>';
+  }).join('');
+}
+function pm_setCat(c){pmCatFilter=c;pm_buildCatFilter();pm_renderList();}
+function pm_setSort(by,btn){
+  pmSortBy=by;
+  document.querySelectorAll('#sort-nama,#sort-kategori,#sort-harga,#sort-hpp').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  pm_renderList();
+}
+
+// ── LIST ──────────────────────────────────────────────────
+function pm_renderList(){
+  var q = (document.getElementById('searchInput').value||'').toLowerCase();
+  var filtered = pmPresets.filter(function(p){
+    var mq = !q || (p.nama||'').toLowerCase().indexOf(q)>=0 || (p.kategori||'').toLowerCase().indexOf(q)>=0;
+    var mc = pmCatFilter==='all' || p.kategori===pmCatFilter;
+    return mq && mc;
+  });
+  filtered = filtered.slice().sort(function(a,b){
+    if(pmSortBy==='kategori') return (a.kategori||'').localeCompare(b.kategori||'');
+    if(pmSortBy==='harga') return (a.harga||0)-(b.harga||0);
+    if(pmSortBy==='hpp') return (a.hpp||0)-(b.hpp||0);
+    return (a.nama||'').localeCompare(b.nama||'');
+  });
+  var tbody = document.getElementById('presetBody');
+  var empty = document.getElementById('presetEmpty');
+  document.getElementById('listFooter').textContent = filtered.length+' dari '+pmPresets.length+' preset';
+  if(!filtered.length){tbody.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  tbody.innerHTML = filtered.map(function(p){
+    var margin = p.hpp && p.harga ? Math.round((p.harga-p.hpp)/p.harga*100) : 0;
+    var catCls = CAT_COLORS[p.kategori] || 'cat-lainnya';
+    var mats = p.items ? p.items.length : 0;
+    return '<tr>'
+      +'<td><div style="font-weight:500;font-size:12px;">'+p.nama+'</div>'
+      +(p.catatan?'<div style="font-size:10px;color:var(--ink-muted);">'+p.catatan+'</div>':'')
+      +'</td>'
+      +'<td><span class="cat-badge '+catCls+'">'+p.kategori+'</span></td>'
+      +'<td style="font-family:\'DM Mono\',monospace;font-size:12px;text-align:center;">'+mats+'</td>'
+      +'<td style="text-align:right;font-family:\'DM Mono\',monospace;font-size:12px;">'+fmtRp(p.hpp)+'</td>'
+      +'<td style="text-align:right;font-family:\'DM Mono\',monospace;font-size:12px;font-weight:500;">'+fmtRp(p.harga)
+      +(margin?'<div style="font-size:9px;color:var(--ink-muted);">+'+margin+'%</div>':'')+'</td>'
+      +'<td><div style="display:flex;gap:5px;">'
+      +'<button class="btn-sec btn-sm" onclick="pm_openDetail(\''+p.id+'\')">Detail</button>'
+      +'<button class="btn-sec btn-sm" onclick="pm_editPreset(\''+p.id+'\')">Edit</button>'
+      +'<button class="btn-danger" onclick="pm_deletePreset(\''+p.id+'\')">✕</button>'
+      +'</div></td>'
+      +'</tr>';
+  }).join('');
+}
+
+// ── FORM ──────────────────────────────────────────────────
+function pm_openForm(){
+  pmMatRows=[];
+  document.getElementById('formTitle').textContent='Preset baru';
+  document.getElementById('f-id').value='';
+  document.getElementById('f-nama').value='';
+  document.getElementById('f-catatan').value='';
+  document.getElementById('f-harga').value='';
+  document.getElementById('f-cat').value='Packaging';
+  document.getElementById('matList').innerHTML='';
+  document.getElementById('matEmpty').style.display='block';
+  document.getElementById('hppDisplay').textContent='Rp0';
+  document.getElementById('marginDisplay').textContent='';
+  pm_updateNamaPrefix();
+  document.getElementById('formResult').style.display='none';
+  document.getElementById('formModal').classList.add('open');
+}
+function pm_closeForm(){document.getElementById('formModal').classList.remove('open');}
+
+function pm_updateNamaPrefix(){
+  var cat = document.getElementById('f-cat').value;
+  var nama = document.getElementById('f-nama').value;
+  var baseName = nama.replace(/^.*?-\s*/,'');
+  document.getElementById('namaPreview').textContent = cat+' - '+(baseName||'...');
+}
+
+function pm_matSearch(){
+  var q = (document.getElementById('matInput').value||'').toLowerCase();
+  var dd = document.getElementById('matDd');
+  if(!q||q.length<2){dd.classList.remove('open');return;}
+  pmMatMatches = inventory.filter(function(i){return (i.produk||'').toLowerCase().indexOf(q)>=0;}).slice(0,8);
+  if(!pmMatMatches.length){dd.classList.remove('open');return;}
+  dd.innerHTML = pmMatMatches.map(function(i,idx){
+    return '<div class="ac-opt" onclick="pm_matPick('+idx+')">'
+      +'<span style="font-weight:500;font-size:12px;">'+i.produk+'</span>'
+      +'<span style="font-size:10px;color:var(--ink-muted);font-family:\'DM Mono\',monospace;">'+fmtRp(i.harga)+' · stok '+(i.qty||0)+'</span>'
+      +'</div>';
+  }).join('');
+  dd.classList.add('open');
+}
+
+function pm_matPick(idx){
+  var i = pmMatMatches[idx]; if(!i)return;
+  document.getElementById('matInput').value=i.produk;
+  document.getElementById('matDd').classList.remove('open');
+  document.getElementById('matInput').dataset.harga = i.harga||0;
+}
+
+function pm_addMat(){
+  var nama = (document.getElementById('matInput').value||'').trim();
+  var qty = parseInt(document.getElementById('matQty').value)||1;
+  var harga = parseInt(document.getElementById('matInput').dataset.harga||0);
+  if(!nama)return;
+  var id = 'mr'+Date.now();
+  pmMatRows.push({id:id,nama:nama,qty:qty,harga:harga});
+  document.getElementById('matInput').value='';
+  document.getElementById('matInput').dataset.harga=0;
+  document.getElementById('matQty').value=1;
+  pm_renderMatList();
+  pm_recalcHpp();
+}
+
+function pm_removeMat(id){
+  pmMatRows=pmMatRows.filter(function(r){return r.id!==id;});
+  pm_renderMatList();pm_recalcHpp();
+}
+
+function pm_updateMatQty(id,val){
+  var r=pmMatRows.find(function(x){return x.id===id;});
+  if(r){r.qty=parseInt(val)||1;pm_recalcHpp();}
+}
+
+function pm_renderMatList(){
+  var el=document.getElementById('matList');
+  var empty=document.getElementById('matEmpty');
+  if(!pmMatRows.length){el.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  el.innerHTML=pmMatRows.map(function(r){
+    return '<div class="mat-row">'
+      +'<div style="font-size:12px;">'+r.nama+'</div>'
+      +'<input type="number" value="'+r.qty+'" min="1" style="text-align:center;padding:4px;font-size:11px;font-family:\'DM Mono\',monospace;" onchange="pm_updateMatQty(\''+r.id+'\',this.value)">'
+      +'<span style="text-align:right;font-family:\'DM Mono\',monospace;font-size:11px;">'+fmtRp(r.harga*r.qty)+'</span>'
+      +'<button onclick="pm_removeMat(\''+r.id+'\')" style="background:none;border:none;cursor:pointer;color:var(--ink-muted);font-size:15px;padding:0;">×</button>'
+      +'</div>';
+  }).join('');
+}
+
+function pm_recalcHpp(){
+  var hpp=pmMatRows.reduce(function(s,r){return s+(r.harga*r.qty);},0);
+  document.getElementById('hppDisplay').textContent=fmtRp(hpp);
+  pm_updateMargin();
+}
+
+function pm_updateMargin(){
+  var hpp=pmMatRows.reduce(function(s,r){return s+(r.harga*r.qty);},0);
+  var harga=parseInt(document.getElementById('f-harga').value)||0;
+  if(harga&&hpp){
+    var margin=Math.round((harga-hpp)/harga*100);
+    document.getElementById('marginDisplay').textContent='Margin: '+fmtRp(harga-hpp)+' ('+margin+'%)';
+  } else {
+    document.getElementById('marginDisplay').textContent='';
+  }
+}
+
+async function pm_savePreset(){
+  var cat=document.getElementById('f-cat').value;
+  var namaBase=(document.getElementById('f-nama').value||'').trim();
+  if(!namaBase){alert('Nama preset wajib diisi.');return;}
+  if(!pmMatRows.length){alert('Tambahkan minimal satu material.');return;}
+  var hpp=pmMatRows.reduce(function(s,r){return s+(r.harga*r.qty);},0);
+  var harga=parseInt(document.getElementById('f-harga').value)||0;
+  var namaFull=cat+' - '+namaBase;
+  var editId=document.getElementById('f-id').value;
+  var payload={
+    id:editId||gid(),
+    nama:namaFull,
+    kategori:cat,
+    items:pmMatRows.map(function(r){return{nama:r.nama,qty:r.qty,harga:r.harga};}),
+    hpp:hpp,
+    harga:harga,
+    catatan:(document.getElementById('f-catatan').value||'').trim()
+  };
+  var res=document.getElementById('formResult');
+  res.style.display='block';res.style.background='var(--warn-bg)';res.style.color='var(--warn-text)';res.textContent='Menyimpan...';
+  try{
+    if(editId){
+      await fetch(SUPA_URL+'/rest/v1/presets?id=eq.'+editId,{method:'PATCH',headers:H,body:JSON.stringify(payload)});
+    } else {
+      await fetch(SUPA_URL+'/rest/v1/presets',{method:'POST',headers:H,body:JSON.stringify(payload)});
+    }
+    res.style.background='var(--ok-bg)';res.style.color='var(--ok-text)';res.textContent='✓ Preset berhasil disimpan.';
+    setTimeout(function(){pm_closeForm();pm_loadAll();},1000);
+  } catch(e){
+    res.style.background='var(--low-bg)';res.style.color='var(--low-text)';res.textContent='Gagal: '+e.message;
+  }
+}
+
+function pm_editPreset(id){
+  var p=pmPresets.find(function(x){return x.id===id;});if(!p)return;
+  pmMatRows=(p.items||[]).map(function(i){return{id:'mr'+Date.now()+Math.random(),nama:i.nama,qty:i.qty,harga:i.harga};});
+  document.getElementById('formTitle').textContent='Edit preset';
+  document.getElementById('f-id').value=id;
+  var parts=p.nama.split(' - ');
+  document.getElementById('f-cat').value=p.kategori||'Packaging';
+  document.getElementById('f-nama').value=parts.slice(1).join(' - ')||p.nama;
+  document.getElementById('f-catatan').value=p.catatan||'';
+  document.getElementById('f-harga').value=p.harga||'';
+  pm_renderMatList();pm_recalcHpp();pm_updateNamaPrefix();
+  document.getElementById('formResult').style.display='none';
+  document.getElementById('formModal').classList.add('open');
+}
+
+function pm_dupPreset(id){
+  var p=pmPresets.find(function(x){return x.id===id;});if(!p)return;
+  pmMatRows=JSON.parse(JSON.stringify(p.items||[])).map(function(i){return{id:'mr'+Date.now()+Math.random(),nama:i.nama,qty:i.qty,harga:i.harga};});
+  document.getElementById('formTitle').textContent='Copy preset';
+  document.getElementById('f-id').value='';
+  var parts=p.nama.split(' - ');
+  document.getElementById('f-cat').value=p.kategori||'Packaging';
+  document.getElementById('f-nama').value=(parts.slice(1).join(' - ')||p.nama)+' (copy)';
+  document.getElementById('f-catatan').value=p.catatan||'';
+  document.getElementById('f-harga').value=p.harga||'';
+  pm_renderMatList();pm_recalcHpp();pm_updateNamaPrefix();
+  document.getElementById('formResult').style.display='none';
+  document.getElementById('formModal').classList.add('open');
+}
+async function pm_deletePreset(id){
+  if(!confirm('Hapus preset ini?'))return;
+  try{
+    await fetch(SUPA_URL+'/rest/v1/presets?id=eq.'+id,{method:'DELETE',headers:H});
+    pm_closeDetail();
+    pm_loadAll();
+  }catch(e){alert('Gagal hapus: '+e.message);}
+}
+
+// ── DETAIL ────────────────────────────────────────────────
+function pm_openDetail(id){
+  var p=pmPresets.find(function(x){return x.id===id;});if(!p)return;
+  pmCurrentDetailId=id;
+  document.getElementById('dtTitle').textContent=p.nama;
+  var catCls=CAT_COLORS[p.kategori]||'cat-lainnya';
+  document.getElementById('dtSub').innerHTML='<span class="cat-badge '+catCls+'">'+p.kategori+'</span>'+(p.catatan?' · '+p.catatan:'');
+  document.getElementById('dtMats').innerHTML=(p.items||[]).map(function(i){
+    return '<div class="detail-mat-row">'
+      +'<span>'+i.nama+' <span style="color:var(--ink-muted);font-size:11px;">×'+i.qty+'</span></span>'
+      +'<span style="font-family:\'DM Mono\',monospace;font-size:12px;">'+fmtRp(i.harga*i.qty)+'</span>'
+      +'</div>';
+  }).join('');
+  document.getElementById('dtHpp').textContent=fmtRp(p.hpp);
+  document.getElementById('dtHarga').textContent=fmtRp(p.harga);
+  var margin=p.hpp&&p.harga?Math.round((p.harga-p.hpp)/p.harga*100):0;
+  document.getElementById('dtMargin').textContent=margin?'Margin '+margin+'% ('+fmtRp(p.harga-p.hpp)+')':'';
+  document.getElementById('detailModal').classList.add('open');
+}
+function pm_closeDetail(){document.getElementById('detailModal').classList.remove('open');pmCurrentDetailId=null;}
+function pm_editFromDetail(){pm_closeDetail();if(pmCurrentDetailId)pm_editPreset(pmCurrentDetailId);}
+
+// ── EXPORT ────────────────────────────────────────────────
+function pm_exportCSV(){
+  var rows=[['ID','Nama','Kategori','HPP','Harga','Material','Catatan']];
+  pmPresets.forEach(function(p){
+    rows.push([p.id,p.nama,p.kategori,p.hpp||0,p.harga||0,(p.items||[]).map(function(i){return i.nama+'×'+i.qty;}).join(' | '),p.catatan||'']);
+  });
+  var a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(rows.map(function(r){return r.map(function(v){return'"'+v+'"';}).join(',');}).join('\n'));
+  a.download='wg88-pmPresets.csv';a.click();
+}
+
+// ── REALTIME ──────────────────────────────────────────────
+function pm_initRealtime(){
+  var ws=new WebSocket('wss://cehiusuaipanuynmizdf.supabase.co/realtime/v1/websocket?apikey='+SUPA_KEY+'&vsn=1.0.0');
+  ws.onopen=function(){
+    ws.send(JSON.stringify({topic:'realtime:public:presets',event:'phx_join',payload:{config:{broadcast:{self:false},presence:{key:''},postgres_changes:[{event:'*',schema:'public',table:'presets'}]}},ref:'1'}));
+  };
+  ws.onmessage=function(e){var msg=JSON.parse(e.data);if(msg.event==='postgres_changes')pm_loadAll();};
+  ws.onclose=function(){setSync(false);setTimeout(initRealtime,3000);};
+}
+
+document.addEventListener('click',function(e){if(!e.target.closest('.ac-wrap'))document.querySelectorAll('.ac-dd').forEach(function(d){d.classList.remove('open');});});
+document.getElementById('f-nama').addEventListener('input',updateNamaPrefix);
+
+// pm init called on tab switch
+
 </script>
 </body>
 </html>
