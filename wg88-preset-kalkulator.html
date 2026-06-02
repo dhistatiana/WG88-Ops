@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wondergift88 — Preset & Kalkulator</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --cream:#F7F4EE;--ink:#1A1714;--ink-soft:#4A4540;--ink-muted:#9A948E;
+  --gold:#B8975A;--gold-light:#E8D9BA;--gold-pale:#F5EED8;
+  --wine:#72243E;--wine-light:#FBEAF0;
+  --border:rgba(26,23,20,0.1);--border-soft:rgba(26,23,20,0.06);
+  --ok-bg:#EAF3E0;--ok-text:#27500A;
+  --warn-bg:#FAEEDA;--warn-text:#633806;
+  --low-bg:#FCEBEB;--low-text:#791F1F;
+}
+body{background:var(--cream);color:var(--ink);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;}
+
+/* HEADER */
+header{border-bottom:0.5px solid var(--border);padding:1.1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:var(--cream);position:sticky;top:0;z-index:100;}
+.logo{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:500;letter-spacing:0.04em;}
+.logo sup{font-size:10px;color:var(--gold);font-family:'DM Mono',monospace;}
+.nav-tabs{display:flex;gap:2px;}
+.nav-tab{padding:7px 14px;font-size:12px;cursor:pointer;border:none;background:transparent;color:var(--ink-muted);border-radius:3px;font-family:'DM Sans',sans-serif;transition:all 0.15s;letter-spacing:0.02em;}
+.nav-tab:hover{color:var(--ink);background:rgba(26,23,20,0.05);}
+.nav-tab.active{color:var(--ink);background:var(--ink);color:var(--cream);}
+
+.container{max-width:1000px;margin:0 auto;padding:2rem;}
+.page{display:none;}.page.active{display:block;}
+
+/* CARDS */
+.card{background:#fff;border:0.5px solid var(--border);border-radius:4px;padding:1.5rem;margin-bottom:1rem;}
+.card-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;margin-bottom:1.25rem;letter-spacing:0.02em;}
+.lbl{font-size:10px;color:var(--ink-muted);display:block;margin-bottom:5px;letter-spacing:0.1em;text-transform:uppercase;font-family:'DM Mono',monospace;}
+input[type=text],input[type=number],select,textarea{width:100%;background:var(--cream);border:0.5px solid var(--border);border-radius:3px;padding:8px 10px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--ink);outline:none;transition:border-color 0.2s;}
+input:focus,select:focus,textarea:focus{border-color:var(--gold);}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239A948E' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;-webkit-appearance:none;appearance:none;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;}
+.row4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:12px;}
+.divider{border:none;border-top:0.5px solid var(--border-soft);margin:1.25rem 0;}
+
+/* BUTTONS */
+.btn{background:var(--ink);color:var(--cream);border:none;border-radius:3px;padding:9px 18px;font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:background 0.2s;letter-spacing:0.02em;}
+.btn:hover{background:#2d2926;}
+.btn-sec{background:transparent;color:var(--ink-soft);border:0.5px solid var(--border);border-radius:3px;padding:7px 13px;font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:background 0.15s;}
+.btn-sec:hover{background:var(--cream);}
+.btn-gold{background:var(--gold);color:#fff;border:none;border-radius:3px;padding:9px 18px;font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:opacity 0.2s;}
+.btn-gold:hover{opacity:0.85;}
+.btn-danger{background:transparent;color:var(--low-text);border:0.5px solid rgba(121,31,31,0.25);border-radius:3px;padding:5px 10px;font-size:11px;cursor:pointer;}
+.btn-danger:hover{background:var(--low-bg);}
+.btn-sm{padding:5px 10px;font-size:11px;}
+.btn-wine{background:var(--wine);color:#fff;border:none;border-radius:3px;padding:9px 18px;font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:opacity 0.2s;}
+.btn-wine:hover{opacity:0.85;}
+
+/* BADGE */
+.badge{display:inline-block;font-size:10px;padding:2px 9px;border-radius:2px;font-family:'DM Mono',monospace;font-weight:500;}
+.b-pkg{background:#E6F1FB;color:#0C447C;}
+.b-isi{background:#EAF3DE;color:#27500A;}
+.b-btl{background:#EEEDFE;color:#3C3489;}
+.b-adn{background:#FAEEDA;color:#633806;}
+.b-ops{background:#F1EFE8;color:#444441;}
+
+/* PRESET PAGE */
+.cat-tabs{display:flex;gap:6px;margin-bottom:1.25rem;flex-wrap:wrap;}
+.cat-tab{padding:6px 14px;font-size:12px;border:0.5px solid var(--border);border-radius:2px;background:transparent;color:var(--ink-muted);cursor:pointer;font-family:'DM Mono',monospace;transition:all 0.15s;}
+.cat-tab.on{background:var(--ink);color:var(--cream);border-color:var(--ink);}
+.preset-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;}
+.preset-card{background:var(--cream);border:0.5px solid var(--border);border-radius:4px;padding:1rem;position:relative;}
+.preset-card-name{font-size:13px;font-weight:500;margin-bottom:4px;}
+.preset-card-desc{font-size:11px;color:var(--ink-muted);line-height:1.5;margin-bottom:8px;}
+.preset-card-price{font-family:'DM Mono',monospace;font-size:14px;font-weight:500;color:var(--ink);}
+.preset-card-actions{display:flex;gap:6px;margin-top:8px;}
+.add-form{background:var(--cream);border:0.5px solid var(--border);border-radius:4px;padding:1.25rem;margin-bottom:1rem;display:none;}
+.add-form.open{display:block;}
+
+/* KALKULATOR PAGE */
+.kalku-layout{display:grid;grid-template-columns:1fr 380px;gap:1.25rem;align-items:start;}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.section-label{font-size:11px;font-weight:500;color:var(--ink-muted);letter-spacing:0.1em;text-transform:uppercase;font-family:'DM Mono',monospace;}
+.line-item{display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:center;padding:7px 0;border-bottom:0.5px solid var(--border-soft);}
+.line-item:last-child{border-bottom:none;}
+.line-name{font-size:13px;color:var(--ink);}
+.line-qty input{width:60px;text-align:center;padding:5px 6px;font-family:'DM Mono',monospace;font-size:12px;}
+.line-price{font-family:'DM Mono',monospace;font-size:12px;color:var(--ink-muted);min-width:90px;text-align:right;}
+.line-total{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;min-width:100px;text-align:right;}
+.line-del{color:var(--ink-muted);cursor:pointer;font-size:16px;padding:0 4px;background:none;border:none;}
+.line-del:hover{color:var(--low-text);}
+.preset-picker{background:var(--cream);border:0.5px solid var(--border);border-radius:3px;padding:0.75rem;margin-bottom:8px;}
+.preset-picker-title{font-size:11px;color:var(--ink-muted);font-family:'DM Mono',monospace;margin-bottom:8px;letter-spacing:0.06em;}
+.preset-chips{display:flex;gap:6px;flex-wrap:wrap;}
+.chip{font-size:11px;padding:4px 10px;border:0.5px solid var(--border);border-radius:2px;background:#fff;cursor:pointer;font-family:'DM Mono',monospace;transition:all 0.15s;}
+.chip:hover{background:var(--gold-pale);border-color:var(--gold);}
+.custom-line-form{display:grid;grid-template-columns:1fr auto auto auto;gap:6px;align-items:end;margin-top:8px;}
+.custom-line-form input{padding:6px 8px;font-size:12px;}
+
+/* SUMMARY CARD */
+.summary-card{background:#fff;border:0.5px solid var(--border);border-radius:4px;padding:1.25rem;position:sticky;top:80px;}
+.summary-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:0.5px solid var(--border-soft);font-size:13px;}
+.summary-row:last-of-type{border-bottom:none;}
+.summary-row.total{padding-top:12px;margin-top:4px;border-top:0.5px solid var(--border);}
+.summary-label{color:var(--ink-muted);}
+.summary-val{font-family:'DM Mono',monospace;font-weight:500;}
+.margin-control{display:flex;align-items:center;gap:8px;}
+.margin-control input[type=range]{flex:1;height:4px;}
+.margin-val{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;min-width:36px;text-align:right;}
+.final-price{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;color:var(--wine);letter-spacing:0.02em;}
+.voucher-row{margin-top:10px;display:flex;gap:6px;}
+.voucher-row input{flex:1;font-family:'DM Mono',monospace;text-transform:uppercase;}
+.wa-templates{margin-top:12px;}
+.wa-template-btn{width:100%;text-align:left;padding:8px 10px;margin-bottom:6px;background:var(--ok-bg);color:var(--ok-text);border:0.5px solid rgba(39,80,10,0.2);border-radius:3px;font-size:12px;cursor:pointer;transition:opacity 0.15s;}
+.wa-template-btn:hover{opacity:0.8;}
+.fix-order-btn{width:100%;padding:12px;font-size:14px;margin-top:10px;letter-spacing:0.04em;}
+
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(26,23,20,0.45);z-index:300;align-items:center;justify-content:center;}
+.modal-bg.open{display:flex;}
+.modal{background:#fff;border-radius:6px;padding:1.5rem;width:500px;max-width:92vw;border:0.5px solid var(--border);max-height:90vh;overflow-y:auto;}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;margin-bottom:1.25rem;}
+.modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:1.25rem;}
+
+/* WA MODAL */
+.wa-text{background:var(--cream);border:0.5px solid var(--border);border-radius:3px;padding:1rem;font-size:13px;line-height:1.8;white-space:pre-wrap;font-family:'DM Sans',sans-serif;min-height:200px;}
+
+.rbox{border-radius:3px;padding:10px 14px;font-size:13px;display:none;margin-top:10px;}
+.rv{background:var(--ok-bg);color:var(--ok-text);}
+.re{background:var(--low-bg);color:var(--low-text);}
+.empty{text-align:center;padding:2rem;color:var(--ink-muted);font-size:13px;font-family:'DM Mono',monospace;}
+
+/* OPS SETTINGS */
+.ops-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.ops-item{background:var(--cream);border:0.5px solid var(--border);border-radius:3px;padding:1rem;}
+.ops-name{font-size:12px;font-weight:500;margin-bottom:8px;}
+
+footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:center;font-size:11px;color:var(--ink-muted);font-family:'DM Mono',monospace;margin-top:2rem;}
+
+@media(max-width:700px){
+  header{padding:1rem 1.25rem;}
+  .container{padding:1.25rem;}
+  .kalku-layout{grid-template-columns:1fr;}
+  .row2,.row3,.row4{grid-template-columns:1fr;}
+  .nav-tabs{display:none;}
+  .custom-line-form{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Wondergift<sup>88</sup>&nbsp;<span style="font-size:11px;color:var(--ink-muted);font-family:'DM Mono',monospace;font-weight:400;">ops hub</span></div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('kalkulator')">Kalkulator</button>
+    <button class="nav-tab" onclick="showPage('preset')">Preset & pricing</button>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- ===== KALKULATOR ===== -->
+  <div id="page-kalkulator" class="page active">
+    <div class="kalku-layout">
+
+      <!-- LEFT: LINE ITEMS -->
+      <div>
+        <!-- Customer info -->
+        <div class="card" style="margin-bottom:1rem;">
+          <div class="row3" style="margin-bottom:0;">
+            <div><span class="lbl">Nama customer</span><input type="text" id="kCust" placeholder="Nama pemesan" /></div>
+            <div><span class="lbl">Tanggal order</span><input type="text" id="kDate" /></div>
+            <div><span class="lbl">Catatan</span><input type="text" id="kNote" placeholder="Custom request, deadline, dll" /></div>
+          </div>
+        </div>
+
+        <!-- PACKAGING -->
+        <div class="card">
+          <div class="section-header">
+            <span class="section-label">1. Packaging</span>
+            <span class="badge b-pkg" id="pkg-subtotal">Rp0</span>
+          </div>
+          <div class="preset-picker">
+            <div class="preset-picker-title">Pilih preset</div>
+            <div class="preset-chips" id="chips-packaging"></div>
+          </div>
+          <div id="lines-packaging"></div>
+          <div class="custom-line-form">
+            <div><input type="text" id="ci-pkg-name" placeholder="Nama item custom" /></div>
+            <div><input type="number" id="ci-pkg-qty" placeholder="Qty" min="1" value="1" style="width:60px;" /></div>
+            <div><input type="number" id="ci-pkg-price" placeholder="Harga" min="0" /></div>
+            <button class="btn-sec btn-sm" onclick="addCustomLine('packaging')">+ Tambah</button>
+          </div>
+        </div>
+
+        <!-- ISI HAMPERS -->
+        <div class="card">
+          <div class="section-header">
+            <span class="section-label">2. Isi hampers</span>
+            <span class="badge b-isi" id="isi-subtotal">Rp0</span>
+          </div>
+          <div class="preset-picker">
+            <div class="preset-picker-title">Pilih preset</div>
+            <div class="preset-chips" id="chips-isi"></div>
+          </div>
+          <div id="lines-isi"></div>
+          <div class="custom-line-form">
+            <div><input type="text" id="ci-isi-name" placeholder="Nama item custom" /></div>
+            <div><input type="number" id="ci-isi-qty" placeholder="Qty" min="1" value="1" style="width:60px;" /></div>
+            <div><input type="number" id="ci-isi-price" placeholder="Harga" min="0" /></div>
+            <button class="btn-sec btn-sm" onclick="addCustomLine('isi')">+ Tambah</button>
+          </div>
+        </div>
+
+        <!-- BOTOL -->
+        <div class="card">
+          <div class="section-header">
+            <span class="section-label">3. Botol</span>
+            <span class="badge b-btl" id="btl-subtotal">Rp0</span>
+          </div>
+          <div class="preset-picker">
+            <div class="preset-picker-title">Pilih preset</div>
+            <div class="preset-chips" id="chips-botol"></div>
+          </div>
+          <div id="lines-botol"></div>
+          <div class="custom-line-form">
+            <div><input type="text" id="ci-btl-name" placeholder="Nama item custom" /></div>
+            <div><input type="number" id="ci-btl-qty" placeholder="Qty" min="1" value="1" style="width:60px;" /></div>
+            <div><input type="number" id="ci-btl-price" placeholder="Harga" min="0" /></div>
+            <button class="btn-sec btn-sm" onclick="addCustomLine('botol')">+ Tambah</button>
+          </div>
+        </div>
+
+        <!-- ADD ON -->
+        <div class="card">
+          <div class="section-header">
+            <span class="section-label">4. Add-on</span>
+            <span class="badge b-adn" id="adn-subtotal">Rp0</span>
+          </div>
+          <div class="preset-picker">
+            <div class="preset-picker-title">Pilih preset</div>
+            <div class="preset-chips" id="chips-addon"></div>
+          </div>
+          <div id="lines-addon"></div>
+          <div class="custom-line-form">
+            <div><input type="text" id="ci-adn-name" placeholder="Nama item custom" /></div>
+            <div><input type="number" id="ci-adn-qty" placeholder="Qty" min="1" value="1" style="width:60px;" /></div>
+            <div><input type="number" id="ci-adn-price" placeholder="Harga" min="0" /></div>
+            <button class="btn-sec btn-sm" onclick="addCustomLine('addon')">+ Tambah</button>
+          </div>
+        </div>
+
+        <button class="btn-sec" onclick="resetKalkulator()" style="margin-top:4px;">Reset semua</button>
+      </div>
+
+      <!-- RIGHT: SUMMARY -->
+      <div class="summary-card">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:500;margin-bottom:1rem;">Ringkasan harga</div>
+
+        <div class="summary-row"><span class="summary-label">HPP Material</span><span class="summary-val" id="s-hpp">Rp0</span></div>
+        <div class="summary-row"><span class="summary-label">Operational kios</span>
+          <span class="summary-val" style="display:flex;align-items:center;gap:6px;">
+            <input type="number" id="s-ops" value="300000" style="width:100px;text-align:right;padding:4px 6px;font-size:12px;font-family:'DM Mono',monospace;" oninput="recalc()" />
+          </span>
+        </div>
+        <div class="summary-row"><span class="summary-label">Karyawan</span>
+          <span class="summary-val" style="display:flex;align-items:center;gap:6px;">
+            <input type="number" id="s-kar" value="200000" style="width:100px;text-align:right;padding:4px 6px;font-size:12px;font-family:'DM Mono',monospace;" oninput="recalc()" />
+          </span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Margin</span>
+          <div class="margin-control" style="flex:1;margin-left:12px;">
+            <input type="range" id="s-margin" min="0" max="100" value="30" step="1" oninput="recalc();document.getElementById('s-margin-val').textContent=this.value+'%'" />
+            <span class="margin-val" id="s-margin-val">30%</span>
+          </div>
+        </div>
+        <div class="summary-row"><span class="summary-label">HPP + Operational</span><span class="summary-val" id="s-total-hpp">Rp0</span></div>
+        <div class="summary-row">
+          <span class="summary-label">Ongkir</span>
+          <input type="number" id="s-ongkir" value="0" placeholder="0" style="width:100px;text-align:right;padding:4px 6px;font-size:12px;font-family:'DM Mono',monospace;" oninput="recalc()" />
+        </div>
+
+        <!-- Voucher -->
+        <div class="voucher-row">
+          <input type="text" id="voucherCode" placeholder="Kode voucher (opsional)" oninput="this.value=this.value.toUpperCase()" />
+          <button class="btn-sec btn-sm" onclick="applyVoucher()">Pakai</button>
+        </div>
+        <div id="voucherResult" style="font-size:12px;color:var(--ok-text);margin-top:4px;display:none;font-family:'DM Mono',monospace;"></div>
+
+        <div class="divider"></div>
+        <div style="text-align:center;margin-bottom:4px;">
+          <div style="font-size:11px;color:var(--ink-muted);font-family:'DM Mono',monospace;margin-bottom:4px;">FINAL PRICE</div>
+          <div class="final-price" id="s-final">Rp0</div>
+          <div style="font-size:11px;color:var(--ink-muted);margin-top:4px;" id="s-margin-amount"></div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- WA Templates -->
+        <div style="font-size:11px;color:var(--ink-muted);font-family:'DM Mono',monospace;margin-bottom:8px;letter-spacing:0.06em;">TEMPLATE WA</div>
+        <button class="wa-template-btn" onclick="openWA('greeting')">Greeting & assessment awal</button>
+        <button class="wa-template-btn" onclick="openWA('quotation')">Kirim quotation ke customer</button>
+        <button class="wa-template-btn" onclick="openWA('confirm')">Konfirmasi & info transfer</button>
+        <button class="wa-template-btn" onclick="openWA('proses')">Order sedang diproses</button>
+        <button class="wa-template-btn" onclick="openWA('siap')">Order siap / pickup</button>
+
+        <button class="btn-wine fix-order-btn" onclick="fixOrder()">Fix Order →</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== PRESET & PRICING ===== -->
+  <div id="page-preset" class="page">
+
+    <!-- OPERATIONAL SETTINGS -->
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
+        <p class="card-title" style="margin:0;">Biaya operasional & default</p>
+        <button class="btn-sec" onclick="saveOpsSettings()">Simpan</button>
+      </div>
+      <div class="ops-grid">
+        <div class="ops-item">
+          <div class="ops-name">Biaya operasional kios (Rp)</div>
+          <input type="number" id="ops-kios" placeholder="300000" />
+          <div style="font-size:11px;color:var(--ink-muted);margin-top:4px;">Listrik, air, IPL, dll per order</div>
+        </div>
+        <div class="ops-item">
+          <div class="ops-name">Biaya karyawan (Rp)</div>
+          <input type="number" id="ops-kar" placeholder="200000" />
+          <div style="font-size:11px;color:var(--ink-muted);margin-top:4px;">Alokasi per order</div>
+        </div>
+        <div class="ops-item">
+          <div class="ops-name">Default margin (%)</div>
+          <input type="number" id="ops-margin" placeholder="30" min="0" max="100" />
+          <div style="font-size:11px;color:var(--ink-muted);margin-top:4px;">Bisa diubah per kalkulasi</div>
+        </div>
+        <div class="ops-item">
+          <div class="ops-name">Default ongkir (Rp)</div>
+          <input type="number" id="ops-ongkir" placeholder="20000" />
+          <div style="font-size:11px;color:var(--ink-muted);margin-top:4px;">Bisa diubah per kalkulasi</div>
+        </div>
+      </div>
+      <div id="opsResult" class="rbox"></div>
+    </div>
+
+    <!-- PRESET ITEMS -->
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:1.25rem;">
+        <p class="card-title" style="margin:0;">Daftar preset item</p>
+        <button class="btn" onclick="toggleAddPreset()">+ Tambah preset</button>
+      </div>
+
+      <!-- ADD FORM -->
+      <div class="add-form" id="presetAddForm">
+        <p style="font-size:13px;font-weight:500;margin-bottom:1rem;" id="presetFormTitle">Preset baru</p>
+        <div class="row2">
+          <div><span class="lbl">Nama preset</span><input type="text" id="pf-name" placeholder="mis. Acc Decor Set Basic" /></div>
+          <div><span class="lbl">Kategori</span>
+            <select id="pf-cat">
+              <option value="packaging">Packaging</option>
+              <option value="isi">Isi hampers</option>
+              <option value="botol">Botol</option>
+              <option value="addon">Add-on</option>
+            </select>
+          </div>
+        </div>
+        <div class="row2">
+          <div><span class="lbl">Harga (Rp)</span><input type="number" id="pf-price" placeholder="0" min="0" /></div>
+          <div><span class="lbl">Default qty</span><input type="number" id="pf-qty" placeholder="1" min="1" value="1" /></div>
+        </div>
+        <div style="margin-bottom:12px;"><span class="lbl">Deskripsi (isi komponen)</span><textarea id="pf-desc" rows="3" placeholder="mis. Acc decal + rhinestone + lem + pita + logo + topper akrilik" style="resize:vertical;"></textarea></div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;">
+          <button class="btn-sec" onclick="cancelAddPreset()">Batal</button>
+          <button class="btn" id="pf-save-btn" onclick="savePreset()">Simpan preset</button>
+        </div>
+        <input type="hidden" id="pf-edit-id" value="" />
+      </div>
+
+      <!-- CAT FILTER -->
+      <div class="cat-tabs" id="presetCatTabs"></div>
+
+      <!-- PRESET LIST -->
+      <div class="preset-grid" id="presetList"></div>
+      <div class="empty" id="presetEmpty" style="display:none;">Belum ada preset di kategori ini.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- WA MODAL -->
+<div class="modal-bg" id="waModal">
+  <div class="modal">
+    <div class="modal-title" id="waModalTitle">Template WA</div>
+    <div class="wa-text" id="waText" contenteditable="true"></div>
+    <div class="modal-footer">
+      <button class="btn-sec" onclick="closeWAModal()">Tutup</button>
+      <button class="btn" onclick="copyWA()">Salin teks</button>
+    </div>
+  </div>
+</div>
+
+<!-- FIX ORDER MODAL -->
+<div class="modal-bg" id="fixModal">
+  <div class="modal">
+    <div class="modal-title">Konfirmasi Fix Order</div>
+    <p style="font-size:13px;color:var(--ink-soft);margin-bottom:1rem;line-height:1.6;">Pastikan semua detail sudah benar. Order akan disimpan dan nomor invoice akan digenerate otomatis.</p>
+    <div id="fixSummary" style="background:var(--cream);border-radius:3px;padding:1rem;font-size:13px;line-height:2;border:0.5px solid var(--border);"></div>
+    <div class="modal-footer">
+      <button class="btn-sec" onclick="closeFixModal()">Kembali</button>
+      <button class="btn-wine" onclick="confirmFixOrder()">Konfirmasi Fix Order</button>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS MODAL -->
+<div class="modal-bg" id="successModal">
+  <div class="modal" style="text-align:center;">
+    <div style="font-size:32px;margin-bottom:0.75rem;">✓</div>
+    <div class="modal-title" style="text-align:center;">Order berhasil dibuat!</div>
+    <div id="successInvoiceNo" style="font-family:'DM Mono',monospace;font-size:16px;color:var(--wine);margin-bottom:1rem;"></div>
+    <p style="font-size:13px;color:var(--ink-soft);margin-bottom:1.25rem;line-height:1.6;">Order tercatat. Selanjutnya kamu bisa generate invoice PDF dari menu Order.</p>
+    <div class="modal-footer" style="justify-content:center;">
+      <button class="btn-sec" onclick="closeSuccessModal()">Tutup</button>
+      <button class="btn-wine" onclick="openWA('confirm');closeSuccessModal();">Kirim WA konfirmasi</button>
+    </div>
+  </div>
+</div>
+
+<footer>wondergift88.com &nbsp;·&nbsp; preset & kalkulator — modul 1 & 2</footer>
+
+<script>
+const PRESET_KEY = 'wg88_presets';
+const OPS_KEY = 'wg88_ops';
+const ORDERS_KEY = 'wg88_orders';
+const INVOICE_KEY = 'wg88_invoice_counter';
+
+function ls(k,d){try{return JSON.parse(localStorage.getItem(k)||'null')||d;}catch(e){return d;}}
+function ss(k,v){localStorage.setItem(k,JSON.stringify(v));}
+function genId(){return 'p_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,5);}
+
+// DEFAULT PRESETS
+const DEFAULT_PRESETS = [
+  // PACKAGING
+  {id:'dp1',cat:'packaging',name:'Preset 1 — Box Wine Single',desc:'Box wine single • Tissue paper • Pita satin hitam',price:65000,qty:1},
+  {id:'dp2',cat:'packaging',name:'Preset 2 — Leather Bag',desc:'Leather bag medium • Kain jute • Pita satin gold',price:85000,qty:1},
+  {id:'dp3',cat:'packaging',name:'Preset 3 — Keranjang Wire',desc:'Keranjang wire gold • Tissue paper • Pita organza',price:120000,qty:1},
+  {id:'dp4',cat:'packaging',name:'Preset 4 — Hardbox Premium',desc:'Hardbox flat magnet • Tissue paper • Pita satin + tag',price:150000,qty:1},
+  // ISI
+  {id:'dp5',cat:'isi',name:'Preset 1 — Acc Decor Basic',desc:'Acc decal + rhinestone + lem + pita + logo + topper akrilik',price:200000,qty:1},
+  {id:'dp6',cat:'isi',name:'Preset 2 — Bunga Mawar Set',desc:'Bunga mawar beludru x10 + baby\'s breath + daun',price:150000,qty:1},
+  {id:'dp7',cat:'isi',name:'Preset 3 — Magazine Cover',desc:'Magazine cover printing + edit + akrilik frame',price:200000,qty:1},
+  {id:'dp8',cat:'isi',name:'Preset 4 — Dried Flower Arrangement',desc:'Dried flower mix + eucalyptus + ranting dekorasi',price:180000,qty:1},
+  // BOTOL
+  {id:'dp9',cat:'botol',name:'Preset 1 — Sparkling Non Alcohol',desc:'Sparkling non alcohol 750ml',price:75000,qty:1},
+  {id:'dp10',cat:'botol',name:'Preset 2 — Sababay Wine',desc:'Sababay wine 750ml (pilihan: Moscato / Reserve / Ludisia)',price:450000,qty:1},
+  {id:'dp11',cat:'botol',name:'Preset 3 — Charles Du Lac',desc:'Charles Du Lac Sparkling 750ml',price:61450,qty:1},
+  {id:'dp12',cat:'botol',name:'Preset 4 — Martinelli\'s Sparkling',desc:'Martinelli\'s Sparkling Apple/Cider 750ml',price:75000,qty:1},
+  // ADD ON
+  {id:'dp13',cat:'addon',name:'Preset 1 — Couple Glass Set',desc:'Couple glass set 2 pcs (Glencairn / wine glass)',price:250000,qty:1},
+  {id:'dp14',cat:'addon',name:'Preset 2 — Art Bottle Glitter',desc:'Bottle art glitter decoration',price:150000,qty:1},
+  {id:'dp15',cat:'addon',name:'Preset 3 — Greeting Card',desc:'Kartu ucapan custom + amplop',price:25000,qty:1},
+  {id:'dp16',cat:'addon',name:'Preset 4 — Nastar + Kastengel',desc:'Nastar Wijsman 500gr + Kastengel 500gr',price:145000,qty:1},
+];
+
+function getPresets(){
+  const stored = ls(PRESET_KEY, null);
+  if(!stored){ ss(PRESET_KEY, DEFAULT_PRESETS); return DEFAULT_PRESETS; }
+  return stored;
+}
+function savePresets(p){ ss(PRESET_KEY, p); }
+
+function getOps(){
+  return ls(OPS_KEY, {kios:300000, kar:200000, margin:30, ongkir:20000});
+}
+
+// -------- LINES STATE --------
+let lines = {packaging:[], isi:[], botol:[], addon:[]};
+let voucherDiscount = 0;
+let editPresetId = null;
+let activePresetCat = 'all';
+
+const CAT_LABELS = {packaging:'Packaging', isi:'Isi hampers', botol:'Botol', addon:'Add-on'};
+const CAT_BADGE = {packaging:'b-pkg', isi:'b-isi', botol:'b-btl', addon:'b-adn'};
+
+// -------- INIT --------
+function init(){
+  setDate();
+  loadOpsToForm();
+  buildChips();
+  renderAllLines();
+  recalc();
+  renderPresetPage();
+  buildPresetCatTabs();
+}
+
+function setDate(){
+  const now = new Date();
+  const d = `${now.getDate()} ${['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agt','Sep','Okt','Nov','Des'][now.getMonth()]} ${now.getFullYear()}`;
+  document.getElementById('kDate').value = d;
+}
+
+function loadOpsToForm(){
+  const ops = getOps();
+  document.getElementById('ops-kios').value = ops.kios;
+  document.getElementById('ops-kar').value = ops.kar;
+  document.getElementById('ops-margin').value = ops.margin;
+  document.getElementById('ops-ongkir').value = ops.ongkir;
+  document.getElementById('s-ops').value = ops.kios;
+  document.getElementById('s-kar').value = ops.kar;
+  document.getElementById('s-margin').value = ops.margin;
+  document.getElementById('s-margin-val').textContent = ops.margin + '%';
+  document.getElementById('s-ongkir').value = ops.ongkir;
+}
+
+// -------- PAGE NAV --------
+function showPage(p){
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(el=>el.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  const tabs = ['kalkulator','preset'];
+  document.querySelectorAll('.nav-tab')[tabs.indexOf(p)].classList.add('active');
+  if(p==='preset') renderPresetPage();
+}
+
+// -------- CHIPS --------
+function buildChips(){
+  const presets = getPresets();
+  const cats = ['packaging','isi','botol','addon'];
+  cats.forEach(cat => {
+    const el = document.getElementById('chips-'+cat);
+    const catPresets = presets.filter(p=>p.cat===cat);
+    el.innerHTML = catPresets.map(p =>
+      `<span class="chip" onclick="addPresetLine('${cat}','${p.id}')" title="${p.desc}">${p.name.split('—')[1]?.trim()||p.name}</span>`
+    ).join('');
+  });
+}
+
+function addPresetLine(cat, presetId){
+  const presets = getPresets();
+  const p = presets.find(x=>x.id===presetId);
+  if(!p) return;
+  lines[cat].push({id:'l_'+Date.now(), name:p.name, desc:p.desc, price:p.price, qty:p.qty||1});
+  renderLines(cat);
+  recalc();
+}
+
+function addCustomLine(cat){
+  const n = document.getElementById(`ci-${cat==='isi'?'isi':cat==='botol'?'btl':cat==='addon'?'adn':'pkg'}-name`).value.trim();
+  const q = parseInt(document.getElementById(`ci-${cat==='isi'?'isi':cat==='botol'?'btl':cat==='addon'?'adn':'pkg'}-qty`).value)||1;
+  const pr = parseInt(document.getElementById(`ci-${cat==='isi'?'isi':cat==='botol'?'btl':cat==='addon'?'adn':'pkg'}-price`).value)||0;
+  if(!n) return;
+  lines[cat].push({id:'l_'+Date.now(), name:n, desc:'', price:pr, qty:q});
+  document.getElementById(`ci-${cat==='isi'?'isi':cat==='botol'?'btl':cat==='addon'?'adn':'pkg'}-name`).value='';
+  document.getElementById(`ci-${cat==='isi'?'isi':cat==='botol'?'btl':cat==='addon'?'adn':'pkg'}-qty`).value=1;
+  document.getElementById(`ci-${cat==='isi'?'isi':cat==='botol'?'btl':cat==='addon'?'adn':'pkg'}-price`).value='';
+  renderLines(cat);
+  recalc();
+}
+
+function removeLine(cat, id){
+  lines[cat] = lines[cat].filter(l=>l.id!==id);
+  renderLines(cat);
+  recalc();
+}
+
+function updateQty(cat, id, val){
+  const l = lines[cat].find(x=>x.id===id);
+  if(l){ l.qty = parseInt(val)||1; recalc(); }
+}
+
+function renderLines(cat){
+  const el = document.getElementById('lines-'+cat);
+  if(!lines[cat].length){ el.innerHTML=''; return; }
+  el.innerHTML = lines[cat].map(l => `
+    <div class="line-item">
+      <div class="line-name">${l.name}${l.desc?`<div style="font-size:11px;color:var(--ink-muted);">${l.desc}</div>`:''}</div>
+      <div class="line-qty"><input type="number" value="${l.qty}" min="1" onchange="updateQty('${cat}','${l.id}',this.value)" /></div>
+      <div class="line-price">Rp${Number(l.price).toLocaleString('id-ID')}</div>
+      <div class="line-total">Rp${(l.price*l.qty).toLocaleString('id-ID')}</div>
+      <button class="line-del" onclick="removeLine('${cat}','${l.id}')">×</button>
+    </div>
+  `).join('');
+}
+
+function renderAllLines(){
+  ['packaging','isi','botol','addon'].forEach(renderLines);
+}
+
+// -------- RECALC --------
+function recalc(){
+  const cats = ['packaging','isi','botol','addon'];
+  let hpp = 0;
+  cats.forEach(cat => {
+    const sub = lines[cat].reduce((s,l)=>s+(l.price*l.qty),0);
+    document.getElementById(cat.replace('addon','adn').replace('packaging','pkg').replace('isi','isi').replace('botol','btl')+'-subtotal').textContent = 'Rp'+sub.toLocaleString('id-ID');
+    hpp += sub;
+  });
+  document.getElementById('s-hpp').textContent = 'Rp'+hpp.toLocaleString('id-ID');
+  const ops = parseInt(document.getElementById('s-ops').value)||0;
+  const kar = parseInt(document.getElementById('s-kar').value)||0;
+  const margin = parseInt(document.getElementById('s-margin').value)||0;
+  const ongkir = parseInt(document.getElementById('s-ongkir').value)||0;
+  const base = hpp + ops + kar;
+  const marginAmt = Math.round(base * margin / (100 - margin));
+  const totalHpp = base + marginAmt;
+  document.getElementById('s-total-hpp').textContent = 'Rp'+totalHpp.toLocaleString('id-ID');
+  document.getElementById('s-margin-amount').textContent = 'Margin: Rp'+marginAmt.toLocaleString('id-ID');
+  const final = totalHpp + ongkir - voucherDiscount;
+  document.getElementById('s-final').textContent = 'Rp'+Math.max(0,final).toLocaleString('id-ID');
+}
+
+// -------- VOUCHER --------
+const VOUCHERS_KEY = 'wg88_db';
+function applyVoucher(){
+  const code = document.getElementById('voucherCode').value.trim().toUpperCase();
+  const res = document.getElementById('voucherResult');
+  if(!code){ res.style.display='none'; voucherDiscount=0; recalc(); return; }
+  try {
+    const db = JSON.parse(localStorage.getItem(VOUCHERS_KEY)||'{}');
+    const v = db[code];
+    if(!v){ res.style.display='block'; res.style.color='var(--low-text)'; res.textContent='Kode voucher tidak ditemukan.'; voucherDiscount=0; recalc(); return; }
+    if(v.status==='klaim'){ res.style.display='block'; res.style.color='var(--warn-text)'; res.textContent='Voucher sudah pernah diklaim.'; voucherDiscount=0; recalc(); return; }
+    const hpp = ['packaging','isi','botol','addon'].reduce((s,cat)=>s+lines[cat].reduce((ss,l)=>ss+(l.price*l.qty),0),0);
+    if(hpp < v.minbuy){ res.style.display='block'; res.style.color='var(--warn-text)'; res.textContent=`Min. pembelian Rp${v.minbuy.toLocaleString('id-ID')} belum tercapai.`; voucherDiscount=0; recalc(); return; }
+    voucherDiscount = v.dtype==='pct' ? Math.round(hpp*v.dval/100) : v.dval;
+    res.style.display='block'; res.style.color='var(--ok-text)';
+    res.textContent=`Voucher ${code} aktif — diskon Rp${voucherDiscount.toLocaleString('id-ID')}`;
+    recalc();
+  } catch(e){ voucherDiscount=0; recalc(); }
+}
+
+// -------- WA TEMPLATES --------
+function getKalcData(){
+  const cust = document.getElementById('kCust').value||'Customer';
+  const date = document.getElementById('kDate').value;
+  const final = document.getElementById('s-final').textContent;
+  const hpp = document.getElementById('s-hpp').textContent;
+  return {cust, date, final, hpp};
+}
+
+const WA_TEMPLATES = {
+  greeting: (d) => `Halo Kak ${d.cust} 👋
+
+Terima kasih sudah menghubungi *Wondergift88* ✨
+
+Kami spesialis dalam wine & spirit gift yang dikombinasikan dengan floral arrangement dan custom bottle art.
+
+Boleh kami tahu untuk keperluan apa ya Kak? 🎁
+• Hadiah ulang tahun
+• Anniversary / pernikahan
+• Corporate gift
+• Event khusus lainnya
+
+Dan apakah ada preferensi untuk:
+• Budget kisaran berapa?
+• Jumlah pesanan?
+• Ada tema atau warna tertentu?
+• Tanggal dibutuhkan?
+
+Kami siap bantu kurasikan hampers terbaik untuk Kakak 🍷🌸`,
+
+  quotation: (d) => `Halo Kak ${d.cust} 😊
+
+Berikut *quotation* dari Wondergift88 untuk pesanan Kakak:
+
+📦 *Detail order:*
+${getLinesSummary()}
+
+💰 *Estimasi harga: ${d.final}*
+_(Harga final dapat disesuaikan dengan kebutuhan Kakak)_
+
+Harga sudah termasuk packaging, dekorasi, dan bottle art ya Kak 🎨
+
+Apakah ada yang ingin diubah atau ditambahkan? Kami senang membantu menyesuaikan sesuai keinginan Kakak 🌸
+
+Wondergift88 ✨`,
+
+  confirm: (d) => `Halo Kak ${d.cust} 🎉
+
+Order Kakak sudah kami *konfirmasi*! Terima kasih ya 🙏
+
+💳 *Info pembayaran:*
+Bank BCA
+No. Rek: *248-070-1391*
+A/N: Wonder Tech Nusantara
+
+💰 *Total: ${d.final}*
+
+Mohon transfer sesuai nominal di atas ya Kak.
+Setelah transfer, tolong kirimkan bukti pembayaran ke sini agar kami segera proses ya 📸
+
+Ada pertanyaan? Jangan ragu untuk tanya Kak! 😊
+
+Wondergift88 ✨`,
+
+  proses: (d) => `Halo Kak ${d.cust} 👋
+
+Kabar baik! Pesanan Kakak sedang dalam proses pengerjaan ya 🎨
+
+Tim kami sedang mempersiapkan setiap detail dengan penuh perhatian untuk Kakak 🌸🍷
+
+Kami akan segera mengabari lagi ketika pesanan sudah siap ya Kak!
+
+Terima kasih sudah mempercayakan kepada Wondergift88 ✨`,
+
+  siap: (d) => `Halo Kak ${d.cust} 🎉
+
+*Pesanan Kakak sudah siap!* 🥳🎁
+
+Silakan diambil di:
+📍 Pakubuwono Business Center, Jakarta Selatan
+
+Jam operasional: 10.00 - 20.00 WIB
+
+Atau hubungi kami untuk arrange pengiriman ya Kak 🚚
+
+Kami tidak sabar Kakak melihat hasilnya! ✨🍷🌸
+
+Wondergift88`
+};
+
+function getLinesSummary(){
+  const cats = {packaging:'Packaging', isi:'Isi Hampers', botol:'Botol', addon:'Add-on'};
+  let s = '';
+  Object.entries(cats).forEach(([cat,label]) => {
+    if(lines[cat].length){
+      s += `*${label}:*\n`;
+      lines[cat].forEach(l => { s += `  • ${l.name} (x${l.qty}) — Rp${(l.price*l.qty).toLocaleString('id-ID')}\n`; });
+    }
+  });
+  return s || '_(belum ada item)_';
+}
+
+function openWA(type){
+  const d = getKalcData();
+  const text = WA_TEMPLATES[type](d);
+  const titles = {greeting:'Greeting & assessment',quotation:'Kirim quotation',confirm:'Konfirmasi & info transfer',proses:'Order sedang diproses',siap:'Order siap'};
+  document.getElementById('waModalTitle').textContent = titles[type];
+  document.getElementById('waText').textContent = text;
+  document.getElementById('waModal').classList.add('open');
+}
+
+function closeWAModal(){ document.getElementById('waModal').classList.remove('open'); }
+function copyWA(){
+  const text = document.getElementById('waText').textContent;
+  navigator.clipboard.writeText(text).then(()=>alert('Teks disalin!')).catch(()=>{});
+}
+
+// -------- FIX ORDER --------
+function fixOrder(){
+  const cust = document.getElementById('kCust').value.trim();
+  if(!cust){ alert('Isi nama customer dulu ya.'); return; }
+  const total = document.getElementById('s-final').textContent;
+  const hpp = document.getElementById('s-hpp').textContent;
+  const date = document.getElementById('kDate').value;
+  const note = document.getElementById('kNote').value;
+  document.getElementById('fixSummary').innerHTML = `
+    <div style="display:grid;grid-template-columns:auto 1fr;gap:4px 16px;">
+      <span style="color:var(--ink-muted);">Customer</span><span style="font-weight:500;">${cust}</span>
+      <span style="color:var(--ink-muted);">Tanggal</span><span>${date}</span>
+      <span style="color:var(--ink-muted);">HPP Material</span><span style="font-family:'DM Mono',monospace;">${hpp}</span>
+      <span style="color:var(--ink-muted);">Final Price</span><span style="font-family:'DM Mono',monospace;font-weight:500;color:var(--wine);">${total}</span>
+      ${note?`<span style="color:var(--ink-muted);">Catatan</span><span>${note}</span>`:''}
+      ${voucherDiscount>0?`<span style="color:var(--ink-muted);">Voucher</span><span>${document.getElementById('voucherCode').value}</span>`:''}
+    </div>
+  `;
+  document.getElementById('fixModal').classList.add('open');
+}
+
+function closeFixModal(){ document.getElementById('fixModal').classList.remove('open'); }
+
+function confirmFixOrder(){
+  const year = new Date().getFullYear().toString().slice(-2);
+  let counter = ls(INVOICE_KEY, 0) + 1;
+  ss(INVOICE_KEY, counter);
+  const invNo = `WG-INV-${year}/${String(counter).padStart(2,'0')}`;
+  const cust = document.getElementById('kCust').value.trim();
+  const date = document.getElementById('kDate').value;
+  const note = document.getElementById('kNote').value;
+  const ops = parseInt(document.getElementById('s-ops').value)||0;
+  const kar = parseInt(document.getElementById('s-kar').value)||0;
+  const margin = parseInt(document.getElementById('s-margin').value)||0;
+  const ongkir = parseInt(document.getElementById('s-ongkir').value)||0;
+  const hpp = ['packaging','isi','botol','addon'].reduce((s,cat)=>s+lines[cat].reduce((ss,l)=>ss+(l.price*l.qty),0),0);
+  const base = hpp + ops + kar;
+  const marginAmt = Math.round(base * margin / (100-margin));
+  const final = base + marginAmt + ongkir - voucherDiscount;
+  const order = {
+    id:'ord_'+Date.now(), invNo, cust, date, note,
+    lines: JSON.parse(JSON.stringify(lines)),
+    hpp, ops, kar, margin, marginAmt, ongkir,
+    voucher: voucherDiscount > 0 ? document.getElementById('voucherCode').value : '',
+    voucherDiscount, final,
+    status:'Confirmed', createdAt: Date.now()
+  };
+  const orders = ls(ORDERS_KEY, []);
+  orders.unshift(order);
+  ss(ORDERS_KEY, orders);
+  closeFixModal();
+  document.getElementById('successInvoiceNo').textContent = invNo;
+  document.getElementById('successModal').classList.add('open');
+}
+
+function closeSuccessModal(){
+  document.getElementById('successModal').classList.remove('open');
+  resetKalkulator();
+}
+
+function resetKalkulator(){
+  lines = {packaging:[], isi:[], botol:[], addon:[]};
+  voucherDiscount = 0;
+  renderAllLines();
+  recalc();
+  document.getElementById('kCust').value='';
+  document.getElementById('kNote').value='';
+  document.getElementById('voucherCode').value='';
+  document.getElementById('voucherResult').style.display='none';
+  setDate();
+}
+
+// -------- PRESET PAGE --------
+let presetCatFilter = 'all';
+
+function buildPresetCatTabs(){
+  const el = document.getElementById('presetCatTabs');
+  const tabs = [['all','Semua'],['packaging','Packaging'],['isi','Isi hampers'],['botol','Botol'],['addon','Add-on']];
+  el.innerHTML = tabs.map(([v,l]) => `<button class="cat-tab${v===presetCatFilter?' on':''}" onclick="setPresetCat('${v}')">${l}</button>`).join('');
+}
+
+function setPresetCat(v){
+  presetCatFilter = v;
+  buildPresetCatTabs();
+  renderPresetPage();
+}
+
+function renderPresetPage(){
+  const presets = getPresets();
+  const filtered = presetCatFilter==='all' ? presets : presets.filter(p=>p.cat===presetCatFilter);
+  const el = document.getElementById('presetList');
+  const empty = document.getElementById('presetEmpty');
+  if(!filtered.length){ el.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display='none';
+  el.innerHTML = filtered.map(p => `
+    <div class="preset-card">
+      <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:6px;">
+        <div class="preset-card-name">${p.name}</div>
+        <span class="badge ${CAT_BADGE[p.cat]}">${CAT_LABELS[p.cat]}</span>
+      </div>
+      <div class="preset-card-desc">${p.desc||'—'}</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div class="preset-card-price">Rp${Number(p.price).toLocaleString('id-ID')}</div>
+        <span style="font-size:11px;color:var(--ink-muted);font-family:'DM Mono',monospace;">default qty: ${p.qty||1}</span>
+      </div>
+      <div class="preset-card-actions">
+        <button class="btn-sec btn-sm" onclick="editPreset('${p.id}')">Edit</button>
+        <button class="btn-danger" onclick="deletePreset('${p.id}')">Hapus</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleAddPreset(){
+  const f = document.getElementById('presetAddForm');
+  if(f.classList.contains('open')){ cancelAddPreset(); return; }
+  f.classList.add('open');
+  document.getElementById('presetFormTitle').textContent = 'Preset baru';
+  document.getElementById('pf-save-btn').textContent = 'Simpan preset';
+  document.getElementById('pf-edit-id').value = '';
+  clearPresetForm();
+}
+
+function cancelAddPreset(){
+  document.getElementById('presetAddForm').classList.remove('open');
+  clearPresetForm();
+  editPresetId = null;
+}
+
+function clearPresetForm(){
+  ['pf-name','pf-price','pf-desc'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  document.getElementById('pf-cat').value='packaging';
+  document.getElementById('pf-qty').value=1;
+}
+
+function savePreset(){
+  const name = document.getElementById('pf-name').value.trim();
+  const cat = document.getElementById('pf-cat').value;
+  const price = parseInt(document.getElementById('pf-price').value)||0;
+  const qty = parseInt(document.getElementById('pf-qty').value)||1;
+  const desc = document.getElementById('pf-desc').value.trim();
+  const editId = document.getElementById('pf-edit-id').value;
+  if(!name){ alert('Nama preset wajib diisi.'); return; }
+  let presets = getPresets();
+  if(editId){
+    const idx = presets.findIndex(p=>p.id===editId);
+    if(idx>-1) presets[idx] = {...presets[idx], name, cat, price, qty, desc};
+  } else {
+    presets.push({id:genId(), name, cat, price, qty, desc});
+  }
+  savePresets(presets);
+  cancelAddPreset();
+  renderPresetPage();
+  buildPresetCatTabs();
+  buildChips();
+}
+
+function editPreset(id){
+  const p = getPresets().find(x=>x.id===id);
+  if(!p) return;
+  const f = document.getElementById('presetAddForm');
+  f.classList.add('open');
+  document.getElementById('presetFormTitle').textContent = 'Edit preset';
+  document.getElementById('pf-save-btn').textContent = 'Simpan perubahan';
+  document.getElementById('pf-name').value = p.name;
+  document.getElementById('pf-cat').value = p.cat;
+  document.getElementById('pf-price').value = p.price;
+  document.getElementById('pf-qty').value = p.qty||1;
+  document.getElementById('pf-desc').value = p.desc||'';
+  document.getElementById('pf-edit-id').value = p.id;
+  f.scrollIntoView({behavior:'smooth'});
+}
+
+function deletePreset(id){
+  if(!confirm('Hapus preset ini?')) return;
+  const presets = getPresets().filter(p=>p.id!==id);
+  savePresets(presets);
+  renderPresetPage();
+  buildChips();
+}
+
+// OPERATIONAL SETTINGS
+function saveOpsSettings(){
+  const ops = {
+    kios: parseInt(document.getElementById('ops-kios').value)||300000,
+    kar: parseInt(document.getElementById('ops-kar').value)||200000,
+    margin: parseInt(document.getElementById('ops-margin').value)||30,
+    ongkir: parseInt(document.getElementById('ops-ongkir').value)||20000,
+  };
+  ss(OPS_KEY, ops);
+  document.getElementById('s-ops').value = ops.kios;
+  document.getElementById('s-kar').value = ops.kar;
+  document.getElementById('s-margin').value = ops.margin;
+  document.getElementById('s-margin-val').textContent = ops.margin+'%';
+  document.getElementById('s-ongkir').value = ops.ongkir;
+  recalc();
+  const r = document.getElementById('opsResult');
+  r.className='rbox rv'; r.style.display='block'; r.textContent='Pengaturan operasional tersimpan.';
+  setTimeout(()=>r.style.display='none', 2500);
+}
+
+// INIT
+init();
+</script>
+</body>
+</html>

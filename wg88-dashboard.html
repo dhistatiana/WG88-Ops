@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wondergift88 — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--cream:#F7F4EE;--ink:#1A1714;--ink-soft:#4A4540;--ink-muted:#9A948E;--gold:#B8975A;--wine:#72243E;--wine-light:#FBEAF0;--border:rgba(26,23,20,0.1);--border-soft:rgba(26,23,20,0.06);--ok-bg:#EAF3E0;--ok-text:#27500A;--warn-bg:#FAEEDA;--warn-text:#633806;--low-bg:#FCEBEB;--low-text:#791F1F;--info-bg:#E6F1FB;--info-text:#0C447C;}
+body{background:var(--cream);color:var(--ink);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;}
+header{border-bottom:0.5px solid var(--border);padding:1.1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:var(--cream);position:sticky;top:0;z-index:100;}
+.logo{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:500;letter-spacing:0.04em;}
+.logo sup{font-size:10px;color:var(--gold);font-family:'DM Mono',monospace;}
+.sync-pill{display:flex;align-items:center;gap:6px;font-size:11px;font-family:'DM Mono',monospace;color:var(--ink-muted);background:#fff;border:0.5px solid var(--border);border-radius:20px;padding:4px 10px;}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:#B4B2A9;flex-shrink:0;}
+.sync-dot.ok{background:#63B543;}.sync-dot.loading{background:#E8A020;}
+.nav-tabs{display:flex;gap:2px;}
+.nav-tab{padding:7px 14px;font-size:12px;cursor:pointer;border:none;background:transparent;color:var(--ink-muted);border-radius:3px;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
+.nav-tab.active{background:var(--ink);color:var(--cream);}
+.container{max-width:1100px;margin:0 auto;padding:2rem;}
+.page{display:none;}.page.active{display:block;}
+.card{background:#fff;border:0.5px solid var(--border);border-radius:4px;padding:1.5rem;margin-bottom:1rem;}
+.card-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;margin-bottom:1.25rem;letter-spacing:0.02em;}
+.lbl{font-size:10px;color:var(--ink-muted);display:block;margin-bottom:5px;letter-spacing:0.1em;text-transform:uppercase;font-family:'DM Mono',monospace;}
+select{background:var(--cream);border:0.5px solid var(--border);border-radius:3px;padding:7px 10px;font-size:12px;font-family:'DM Sans',sans-serif;color:var(--ink);outline:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239A948E' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;-webkit-appearance:none;appearance:none;}
+.btn-sec{background:transparent;color:var(--ink-soft);border:0.5px solid var(--border);border-radius:3px;padding:7px 13px;font-size:12px;cursor:pointer;}
+.btn-wine{background:var(--wine);color:#fff;border:none;border-radius:3px;padding:8px 16px;font-size:12px;cursor:pointer;}
+.btn-sm{padding:5px 10px;font-size:11px;}
+.divider{border:none;border-top:0.5px solid var(--border-soft);margin:1.25rem 0;}
+.metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:1.25rem;}
+.metric{background:#fff;border:0.5px solid var(--border);border-radius:4px;padding:1.1rem 1.25rem;}
+.metric-lbl{font-size:10px;color:var(--ink-muted);font-family:'DM Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;}
+.metric-val{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:500;line-height:1;}
+.metric-sub{font-size:11px;color:var(--ink-muted);margin-top:4px;font-family:'DM Mono',monospace;}
+.metric-up{color:#27500A;}.metric-down{color:#791F1F;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+.grid-asym{display:grid;grid-template-columns:2fr 1fr;gap:1rem;margin-bottom:1rem;}
+.chart-wrap{position:relative;height:200px;}
+.chart-wrap-tall{position:relative;height:260px;}
+.pipeline{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem;}
+.pipe-item{flex:1;min-width:80px;background:var(--cream);border:0.5px solid var(--border);border-radius:3px;padding:10px;text-align:center;}
+.pipe-num{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:500;}
+.pipe-lbl{font-size:10px;color:var(--ink-muted);font-family:'DM Mono',monospace;margin-top:3px;}
+.order-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:0.5px solid var(--border-soft);}
+.order-row:last-child{border-bottom:none;}
+.badge{display:inline-block;font-size:10px;padding:2px 9px;border-radius:2px;font-family:'DM Mono',monospace;font-weight:500;}
+.s-quotation{background:#F1EFE8;color:#444441;}.s-confirmed{background:#E6F1FB;color:#0C447C;}.s-proses{background:#FAEEDA;color:#633806;}.s-siap{background:#EEEDFE;color:#3C3489;}.s-selesai{background:#EAF3DE;color:#27500A;}.s-batal{background:#FCEBEB;color:#791F1F;}
+.alert-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--border-soft);}
+.alert-item:last-child{border-bottom:none;}
+.alert-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.bar-wrap{margin-bottom:10px;}
+.bar-label{display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;}
+.bar-track{background:var(--cream);border-radius:2px;height:6px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:2px;}
+table.rek{width:100%;border-collapse:collapse;font-size:13px;}
+table.rek th{text-align:left;font-size:10px;color:var(--ink-muted);padding:6px 10px;border-bottom:0.5px solid var(--border);font-weight:400;font-family:'DM Mono',monospace;letter-spacing:0.06em;}
+table.rek td{padding:9px 10px;border-bottom:0.5px solid var(--border-soft);}
+table.rek tr:last-child td{border-bottom:none;}
+.empty{text-align:center;padding:2rem;color:var(--ink-muted);font-size:13px;font-family:'DM Mono',monospace;}
+.spinner{display:inline-block;width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--wine);border-radius:50%;animation:spin 0.7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:center;font-size:11px;color:var(--ink-muted);font-family:'DM Mono',monospace;margin-top:2rem;}
+@media(max-width:700px){.grid2,.grid-asym{grid-template-columns:1fr;}.container{padding:1.25rem;}header{padding:1rem 1.25rem;}.pipeline{gap:4px;}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">Wondergift<sup>88</sup>&nbsp;<span style="font-size:11px;color:var(--ink-muted);font-family:'DM Mono',monospace;font-weight:400;">ops hub</span></div>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div class="sync-pill"><span class="sync-dot" id="syncDot"></span><span id="syncText">memuat...</span></div>
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="showPage('dashboard')">Dashboard</button>
+      <button class="nav-tab" onclick="showPage('rekap')">Rekap & laporan</button>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+  <!-- DASHBOARD -->
+  <div id="page-dashboard" class="page active">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:8px;">
+      <div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;" id="greeting"></div>
+        <div style="font-size:12px;color:var(--ink-muted);font-family:'DM Mono',monospace;" id="dateLabel"></div>
+      </div>
+      <select id="periodFilter" onchange="renderDashboard()" style="width:auto;">
+        <option value="bulan">Bulan ini</option>
+        <option value="minggu">7 hari terakhir</option>
+        <option value="semua">Semua waktu</option>
+      </select>
+    </div>
+    <div class="metric-grid" id="dashMetrics"></div>
+    <div class="card"><p class="card-title">Pipeline order</p><div class="pipeline" id="pipeline"></div></div>
+    <div class="grid-asym">
+      <div class="card"><p class="card-title">Revenue bulanan</p><div class="chart-wrap-tall"><canvas id="revenueChart"></canvas></div></div>
+      <div class="card"><p class="card-title">Perlu perhatian</p><div id="alertList"></div></div>
+    </div>
+    <div class="grid2">
+      <div class="card"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;"><p class="card-title" style="margin:0;">Order aktif</p><span style="font-size:11px;color:var(--ink-muted);font-family:'DM Mono',monospace;" id="activeOrderCount"></span></div><div id="recentOrders"></div></div>
+      <div>
+        <div class="card" style="margin-bottom:1rem;"><p class="card-title">Top customer</p><div id="topCustomers"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REKAP -->
+  <div id="page-rekap" class="page">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:10px;">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;">Rekap & laporan</div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <select id="rekPeriod" onchange="renderRekap()" style="width:auto;">
+          <option value="bulan-ini">Bulan ini</option>
+          <option value="bulan-lalu">Bulan lalu</option>
+          <option value="3bulan">3 bulan terakhir</option>
+          <option value="semua">Semua waktu</option>
+        </select>
+        <button class="btn-sec btn-sm" onclick="exportRekapCSV()">Export CSV</button>
+        <button class="btn-wine btn-sm" onclick="window.print()">Print PDF</button>
+      </div>
+    </div>
+    <div class="metric-grid" id="rekMetrics"></div>
+    <div class="grid2">
+      <div class="card"><p class="card-title">Revenue trend</p><div class="chart-wrap-tall"><canvas id="rvpChart"></canvas></div></div>
+      <div class="card"><p class="card-title">Status order</p><div class="chart-wrap" style="height:160px;"><canvas id="statusChart"></canvas></div><div id="statusLegend" style="margin-top:1rem;display:grid;grid-template-columns:1fr 1fr;gap:6px;"></div></div>
+    </div>
+    <div class="card">
+      <p class="card-title">Semua order periode ini</p>
+      <div style="overflow-x:auto;"><table class="rek"><thead><tr><th style="width:16%;">Invoice</th><th style="width:20%;">Customer</th><th style="width:12%;">Tanggal</th><th style="width:14%;text-align:right;">Total</th><th style="width:12%;">Status</th><th style="width:26%;">Catatan</th></tr></thead><tbody id="rekBody"></tbody></table><div id="rekEmpty" class="empty" style="display:none;">Belum ada order.</div></div>
+    </div>
+    <div class="card">
+      <p class="card-title">Top customer periode ini</p>
+      <div style="overflow-x:auto;"><table class="rek"><thead><tr><th style="width:30%;">Customer</th><th style="width:15%;text-align:right;">Order</th><th style="width:20%;text-align:right;">Spending</th><th style="width:20%;text-align:right;">Rata-rata</th><th style="width:15%;">Tipe</th></tr></thead><tbody id="custRekBody"></tbody></table></div>
+    </div>
+  </div>
+</div>
+<footer>wondergift88.com &nbsp;·&nbsp; dashboard & rekap — realtime sync</footer>
+
+<script>
+const SUPA_URL='https://cehiusuaipanuynmizdf.supabase.co';
+const SUPA_KEY='sb_publishable_eCQxemaN5Wm70442OsUV6Q_wxaReN_f';
+const H={'Content-Type':'application/json','apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}`,'Prefer':'return=representation'};
+const MONTHS=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agt','Sep','Okt','Nov','Des'];
+const STATUS_CLASS={'Quotation':'s-quotation','Confirmed':'s-confirmed','Dalam proses':'s-proses','Siap kirim':'s-siap','Selesai':'s-selesai','Batal':'s-batal'};
+
+let allOrders=[];let allCustomers=[];let allInventory=[];
+let revChart=null;let rvpChart=null;let statusChart=null;
+
+function fmtRp(v){return 'Rp'+(v||0).toLocaleString('id-ID');}
+function setSync(ok){document.getElementById('syncDot').className='sync-dot'+(ok?' ok':' loading');document.getElementById('syncText').textContent=ok?'tersambung':'memuat...';}
+
+async function loadAll(){
+  try{
+    const [or,cr,ir]=await Promise.all([
+      fetch(`${SUPA_URL}/rest/v1/orders?order=created_at.desc`,{headers:H}).then(r=>r.json()),
+      fetch(`${SUPA_URL}/rest/v1/customers?order=created_at.desc`,{headers:H}).then(r=>r.json()),
+      fetch(`${SUPA_URL}/rest/v1/inventory?order=added_at.desc`,{headers:H}).then(r=>r.json()),
+    ]);
+    allOrders=or.map(o=>({id:o.id,invNo:o.inv_no,cust:o.cust,wa:o.wa,date:o.date,final:o.final||0,status:o.status,note:o.note,createdAt:new Date(o.created_at).getTime()}));
+    allCustomers=cr.map(c=>({id:c.id,nama:c.nama,wa:c.wa||'',tipe:c.tipe||'new'}));
+    allInventory=ir.map(i=>({id:i.id,produk:i.produk,kategori:i.kategori,kondisi:i.kondisi||'Baik',harga:i.harga||0,qty:i.qty||1}));
+    setSync(true);
+    renderDashboard();
+  }catch(e){setSync(false);console.error(e);}
+}
+
+function filterByPeriod(orders,period){
+  const now=new Date();
+  return orders.filter(o=>{
+    if(!o.date)return period==='semua';
+    const p=o.date.split(' ');if(p.length<3)return true;
+    const mo=MONTHS.indexOf(p[1]);const yr=parseInt(p[2]);const d=new Date(yr,mo,parseInt(p[0]));
+    if(period==='bulan')return mo===now.getMonth()&&yr===now.getFullYear();
+    if(period==='minggu')return(now-d)<=7*86400000;
+    return true;
+  });
+}
+
+function showPage(p){
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach((el,i)=>el.classList.toggle('active',['dashboard','rekap'][i]===p));
+  document.getElementById('page-'+p).classList.add('active');
+  if(p==='dashboard')renderDashboard();
+  if(p==='rekap')renderRekap();
+}
+
+function renderDashboard(){
+  const now=new Date();const hr=now.getHours();
+  const gmap={0:'Selamat pagi',1:'Selamat siang',2:'Selamat sore',3:'Selamat malam'};
+  document.getElementById('greeting').textContent=gmap[hr<12?0:hr<15?1:hr<18?2:3]+' — Wondergift88';
+  document.getElementById('dateLabel').textContent=`${now.getDate()} ${MONTHS[now.getMonth()]} ${now.getFullYear()}`;
+  const period=document.getElementById('periodFilter')?.value||'bulan';
+  const orders=filterByPeriod(allOrders,period);
+  const done=orders.filter(o=>o.status==='Selesai');
+  const revenue=done.reduce((s,o)=>s+(o.final||0),0);
+  const aktif=allOrders.filter(o=>!['Selesai','Batal'].includes(o.status));
+  document.getElementById('dashMetrics').innerHTML=`
+    <div class="metric"><div class="metric-lbl">Revenue</div><div class="metric-val" style="font-size:20px;">${fmtRp(revenue)}</div></div>
+    <div class="metric"><div class="metric-lbl">Order selesai</div><div class="metric-val">${done.length}</div></div>
+    <div class="metric"><div class="metric-lbl">Order aktif</div><div class="metric-val">${aktif.length}</div></div>
+    <div class="metric"><div class="metric-lbl">Rata-rata/order</div><div class="metric-val" style="font-size:18px;">${fmtRp(done.length?Math.round(revenue/done.length):0)}</div></div>
+    <div class="metric"><div class="metric-lbl">Customer</div><div class="metric-val">${allCustomers.length}</div></div>`;
+
+  const pp=document.getElementById('pipeline');
+  pp.innerHTML=['Quotation','Confirmed','Dalam proses','Siap kirim','Selesai'].map((s,i)=>`
+    ${i>0?'<div style="display:flex;align-items:center;color:var(--ink-muted);font-size:18px;padding-top:8px;">›</div>':''}
+    <div class="pipe-item"><div class="pipe-num">${allOrders.filter(o=>o.status===s).length}</div><div class="pipe-lbl">${s}</div></div>`).join('');
+
+  // Revenue chart
+  const last6=[...Array(6)].map((_,i)=>{const d=new Date(now.getFullYear(),now.getMonth()-5+i,1);return{label:MONTHS[d.getMonth()]+' '+d.getFullYear().toString().slice(-2),month:d.getMonth(),year:d.getFullYear()};});
+  const revData=last6.map(m=>allOrders.filter(o=>{if(!o.date||o.status!=='Selesai')return false;const p=o.date.split(' ');if(p.length<3)return false;return MONTHS.indexOf(p[1])===m.month&&parseInt(p[2])===m.year;}).reduce((s,o)=>s+(o.final||0),0));
+  const rctx=document.getElementById('revenueChart')?.getContext('2d');
+  if(rctx){if(revChart)revChart.destroy();revChart=new Chart(rctx,{type:'bar',data:{labels:last6.map(m=>m.label),datasets:[{data:revData,backgroundColor:'rgba(114,36,62,0.15)',borderColor:'#72243E',borderWidth:1.5,borderRadius:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'Rp'+c.parsed.y.toLocaleString('id-ID')}}},scales:{x:{grid:{display:false},ticks:{font:{size:10,family:'DM Mono'},color:'#9A948E'}},y:{grid:{color:'rgba(26,23,20,0.05)'},ticks:{font:{size:10,family:'DM Mono'},color:'#9A948E',callback:v=>'Rp'+v.toLocaleString('id-ID')}}}}});}
+
+  // Alerts
+  const alerts=[];
+  const siap=allOrders.filter(o=>o.status==='Siap kirim');if(siap.length)alerts.push({c:'#3C3489',t:`${siap.length} order siap kirim`,s:siap.map(o=>o.cust).join(', ')});
+  const proses=allOrders.filter(o=>o.status==='Dalam proses');if(proses.length)alerts.push({c:'#633806',t:`${proses.length} order dalam proses`,s:proses.map(o=>o.invNo||o.cust).join(', ')});
+  const rusak=allInventory.filter(i=>i.kondisi==='Rusak');if(rusak.length)alerts.push({c:'#791F1F',t:`${rusak.length} item inventory rusak`,s:rusak.slice(0,3).map(i=>i.produk).join(', ')});
+  if(!alerts.length)alerts.push({c:'#27500A',t:'Semua berjalan baik',s:'Tidak ada item yang perlu perhatian'});
+  document.getElementById('alertList').innerHTML=alerts.map(a=>`<div class="alert-item"><div class="alert-dot" style="background:${a.c};"></div><div><div style="font-size:13px;font-weight:500;color:${a.c};">${a.t}</div><div style="font-size:11px;color:${a.c};opacity:0.7;font-family:'DM Mono',monospace;">${a.s}</div></div></div>`).join('');
+
+  // Recent active orders
+  const recent=aktif.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)).slice(0,6);
+  document.getElementById('activeOrderCount').textContent=`${recent.length} aktif`;
+  document.getElementById('recentOrders').innerHTML=recent.length?recent.map(o=>`<div class="order-row"><div><div style="font-size:13px;font-weight:500;">${o.cust}</div><div style="font-size:11px;color:var(--ink-muted);font-family:'DM Mono',monospace;">${o.invNo||'—'} · ${o.date||'—'}</div></div><div style="text-align:right;"><div style="font-family:'DM Mono',monospace;font-size:13px;">${fmtRp(o.final)}</div><span class="badge ${STATUS_CLASS[o.status]||'s-quotation'}">${o.status}</span></div></div>`).join(''):'<div class="empty" style="padding:1rem;">Tidak ada order aktif.</div>';
+
+  // Top customers
+  const custSpend=allCustomers.map(c=>{const co=allOrders.filter(o=>o.status==='Selesai'&&((o.wa&&o.wa===c.wa)||(o.cust===c.nama)));return{...c,spend:co.reduce((s,o)=>s+(o.final||0),0),count:co.length};}).filter(c=>c.spend>0).sort((a,b)=>b.spend-a.spend).slice(0,5);
+  const maxSpend=custSpend[0]?.spend||1;
+  document.getElementById('topCustomers').innerHTML=custSpend.length?custSpend.map(c=>`<div class="bar-wrap"><div class="bar-label"><span style="font-size:12px;">${c.nama}</span><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--ink-muted);">${fmtRp(c.spend)}</span></div><div class="bar-track"><div class="bar-fill" style="width:${Math.round(c.spend/maxSpend*100)}%;background:var(--wine);"></div></div></div>`).join(''):'<div class="empty" style="padding:1rem;">Belum ada data.</div>';
+}
+
+function filterRekap(orders,period){
+  const now=new Date();
+  return orders.filter(o=>{
+    if(!o.date)return period==='semua';
+    const p=o.date.split(' ');if(p.length<3)return true;
+    const mo=MONTHS.indexOf(p[1]);const yr=parseInt(p[2]);const d=new Date(yr,mo,parseInt(p[0]));
+    if(period==='bulan-ini')return mo===now.getMonth()&&yr===now.getFullYear();
+    if(period==='bulan-lalu'){const pm=new Date(now.getFullYear(),now.getMonth()-1,1);return mo===pm.getMonth()&&yr===pm.getFullYear();}
+    if(period==='3bulan')return(now-d)<=90*86400000;
+    return true;
+  });
+}
+
+function renderRekap(){
+  const period=document.getElementById('rekPeriod')?.value||'bulan-ini';
+  const orders=filterRekap(allOrders,period);
+  const done=orders.filter(o=>o.status==='Selesai');
+  const revenue=done.reduce((s,o)=>s+(o.final||0),0);
+  const totalPengeluaran=allInventory.reduce((s,i)=>s+(i.harga||0)*(i.qty||1),0);
+  const profit=revenue-totalPengeluaran;
+  document.getElementById('rekMetrics').innerHTML=`
+    <div class="metric"><div class="metric-lbl">Revenue</div><div class="metric-val" style="font-size:18px;">${fmtRp(revenue)}</div></div>
+    <div class="metric"><div class="metric-lbl">Order selesai</div><div class="metric-val">${done.length}</div></div>
+    <div class="metric"><div class="metric-lbl">Total order</div><div class="metric-val">${orders.length}</div></div>
+    <div class="metric"><div class="metric-lbl">Rata-rata/order</div><div class="metric-val" style="font-size:16px;">${fmtRp(done.length?Math.round(revenue/done.length):0)}</div></div>
+    <div class="metric"><div class="metric-lbl">Est. pengeluaran</div><div class="metric-val" style="font-size:16px;">${fmtRp(totalPengeluaran)}</div></div>
+    <div class="metric"><div class="metric-lbl">Est. profit</div><div class="metric-val" style="font-size:16px;color:${profit>=0?'inherit':'#D94040'};">${fmtRp(profit)}</div></div>`;
+
+  const now=new Date();
+  const last6=[...Array(6)].map((_,i)=>{const d=new Date(now.getFullYear(),now.getMonth()-5+i,1);return{label:MONTHS[d.getMonth()]+' '+d.getFullYear().toString().slice(-2),month:d.getMonth(),year:d.getFullYear()};});
+  const revData=last6.map(m=>allOrders.filter(o=>{if(!o.date||o.status!=='Selesai')return false;const p=o.date.split(' ');if(p.length<3)return false;return MONTHS.indexOf(p[1])===m.month&&parseInt(p[2])===m.year;}).reduce((s,o)=>s+(o.final||0),0));
+  const rctx=document.getElementById('rvpChart')?.getContext('2d');
+  if(rctx){if(rvpChart)rvpChart.destroy();rvpChart=new Chart(rctx,{type:'line',data:{labels:last6.map(m=>m.label),datasets:[{label:'Revenue',data:revData,borderColor:'#72243E',borderWidth:2,pointBackgroundColor:'#72243E',pointRadius:3,tension:0.3,fill:true,backgroundColor:'rgba(114,36,62,0.06)'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'Rp'+c.parsed.y.toLocaleString('id-ID')}}},scales:{x:{grid:{display:false},ticks:{font:{size:10,family:'DM Mono'},color:'#9A948E'}},y:{grid:{color:'rgba(26,23,20,0.05)'},ticks:{font:{size:10,family:'DM Mono'},color:'#9A948E',callback:v=>'Rp'+v.toLocaleString('id-ID')}}}}});}
+
+  const sc={Quotation:0,Confirmed:0,'Dalam proses':0,'Siap kirim':0,Selesai:0,Batal:0};
+  orders.forEach(o=>{if(sc[o.status]!==undefined)sc[o.status]++;});
+  const scColors={Quotation:'#B4B2A9',Confirmed:'#85B7EB','Dalam proses':'#EF9F27','Siap kirim':'#AFA9EC',Selesai:'#63B543',Batal:'#F09595'};
+  const sctx=document.getElementById('statusChart')?.getContext('2d');
+  if(sctx){if(statusChart)statusChart.destroy();statusChart=new Chart(sctx,{type:'doughnut',data:{labels:Object.keys(sc),datasets:[{data:Object.values(sc),backgroundColor:Object.values(scColors),borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout:'65%'}});}
+  const sl=document.getElementById('statusLegend');if(sl)sl.innerHTML=Object.entries(sc).map(([s,n])=>`<div style="display:flex;align-items:center;gap:5px;font-size:10px;"><div style="width:7px;height:7px;border-radius:50%;background:${scColors[s]};flex-shrink:0;"></div>${s}: <strong>${n}</strong></div>`).join('');
+
+  const tbody=document.getElementById('rekBody');const empty=document.getElementById('rekEmpty');
+  if(!orders.length){tbody.innerHTML='';empty.style.display='block';}
+  else{empty.style.display='none';tbody.innerHTML=orders.map(o=>`<tr><td style="font-family:'DM Mono',monospace;font-size:10px;">${o.invNo||'—'}</td><td style="font-size:12px;font-weight:500;">${o.cust}</td><td style="font-size:11px;color:var(--ink-muted);">${o.date||'—'}</td><td style="text-align:right;font-family:'DM Mono',monospace;font-size:11px;">${fmtRp(o.final)}</td><td><span class="badge ${STATUS_CLASS[o.status]||'s-quotation'}">${o.status}</span></td><td style="font-size:11px;color:var(--ink-muted);">${o.note||'—'}</td></tr>`).join('');}
+
+  const TIPE_BADGE={vip:'background:#FAEEDA;color:#633806;',regular:'background:#EAF3DE;color:#27500A;',new:'background:#E6F1FB;color:#0C447C;',corp:'background:#EEEDFE;color:#3C3489;'};
+  const custData=allCustomers.map(c=>{const co=done.filter(o=>(o.wa&&o.wa===c.wa)||(o.cust===c.nama));return{...c,count:co.length,spending:co.reduce((s,o)=>s+(o.final||0),0)};}).filter(c=>c.count>0).sort((a,b)=>b.spending-a.spending).slice(0,10);
+  const cb=document.getElementById('custRekBody');if(cb)cb.innerHTML=custData.length?custData.map(c=>`<tr><td style="font-size:12px;font-weight:500;">${c.nama}</td><td style="text-align:right;font-family:'DM Mono',monospace;">${c.count}</td><td style="text-align:right;font-family:'DM Mono',monospace;font-size:11px;">${fmtRp(c.spending)}</td><td style="text-align:right;font-family:'DM Mono',monospace;font-size:11px;">${fmtRp(Math.round(c.spending/c.count))}</td><td><span style="display:inline-block;font-size:10px;padding:2px 7px;border-radius:2px;font-family:'DM Mono',monospace;font-weight:500;${TIPE_BADGE[c.tipe]||TIPE_BADGE.new}">${c.tipe}</span></td></tr>`).join(''):'<tr><td colspan="5" class="empty">Belum ada data.</td></tr>';
+}
+
+function exportRekapCSV(){
+  const period=document.getElementById('rekPeriod')?.value||'bulan-ini';
+  const orders=filterRekap(allOrders,period);
+  const rows=[['Invoice','Customer','WA','Tanggal','Total','Status','Catatan']];
+  orders.forEach(o=>rows.push([o.invNo,o.cust,o.wa||'',o.date||'',o.final||0,o.status,o.note||'']));
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(rows.map(r=>r.map(v=>`"${v}"`).join(',')).join('\n'));
+  a.download='wg88-rekap.csv';a.click();
+}
+
+function initRealtime(){
+  const ws=new WebSocket(`wss://cehiusuaipanuynmizdf.supabase.co/realtime/v1/websocket?apikey=${SUPA_KEY}&vsn=1.0.0`);
+  ws.onopen=()=>{
+    ['orders','customers','inventory'].forEach((t,i)=>ws.send(JSON.stringify({topic:`realtime:public:${t}`,event:'phx_join',payload:{config:{broadcast:{self:false},presence:{key:''},postgres_changes:[{event:'*',schema:'public',table:t}]}},ref:String(i+1)})));
+  };
+  ws.onmessage=(e)=>{const msg=JSON.parse(e.data);if(msg.event==='postgres_changes'){loadAll();}};
+  ws.onclose=()=>{setSync(false);setTimeout(initRealtime,3000);};
+}
+
+loadAll();initRealtime();
+</script>
+</body>
+</html>

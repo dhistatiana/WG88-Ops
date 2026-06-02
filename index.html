@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wondergift88 — Operations Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --cream:#F7F4EE;--ink:#1A1714;--ink-soft:#4A4540;--ink-muted:#9A948E;
+  --gold:#B8975A;--wine:#72243E;--wine-light:#FBEAF0;
+  --border:rgba(26,23,20,0.1);--border-soft:rgba(26,23,20,0.06);
+  --ok-bg:#EAF3E0;--ok-text:#27500A;
+  --warn-bg:#FAEEDA;--warn-text:#633806;
+  --low-bg:#FCEBEB;--low-text:#791F1F;
+  --info-bg:#E6F1FB;--info-text:#0C447C;
+}
+body{background:var(--cream);color:var(--ink);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;}
+
+/* SIDEBAR NAV */
+.layout{display:flex;min-height:100vh;}
+.sidebar{width:220px;background:#fff;border-right:0.5px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:200;transition:transform 0.25s;}
+.sidebar-head{padding:1.25rem 1.5rem;border-bottom:0.5px solid var(--border);}
+.sidebar-logo{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;letter-spacing:0.04em;}
+.sidebar-logo sup{font-size:9px;color:var(--gold);font-family:'DM Mono',monospace;}
+.sidebar-tag{font-size:10px;color:var(--ink-muted);font-family:'DM Mono',monospace;letter-spacing:0.08em;margin-top:2px;}
+.nav{flex:1;padding:1rem 0;overflow-y:auto;}
+.nav-section{padding:0 1rem;margin-bottom:1rem;}
+.nav-section-label{font-size:9px;color:var(--ink-muted);font-family:'DM Mono',monospace;letter-spacing:0.12em;text-transform:uppercase;padding:0 0.5rem;margin-bottom:4px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:3px;cursor:pointer;font-size:13px;color:var(--ink-soft);transition:all 0.15s;border:none;background:transparent;width:100%;text-align:left;}
+.nav-item:hover{background:var(--cream);color:var(--ink);}
+.nav-item.active{background:var(--ink);color:var(--cream);}
+.nav-item .icon{font-size:14px;width:16px;text-align:center;flex-shrink:0;}
+.nav-badge{margin-left:auto;background:var(--wine);color:#fff;font-size:9px;padding:2px 6px;border-radius:10px;font-family:'DM Mono',monospace;}
+.sidebar-footer{padding:1rem 1.5rem;border-top:0.5px solid var(--border);font-size:11px;color:var(--ink-muted);font-family:'DM Mono',monospace;}
+.sync-dot{width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:4px;}
+
+/* MAIN */
+.main{margin-left:220px;min-height:100vh;flex:1;}
+.topbar{background:var(--cream);border-bottom:0.5px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.topbar-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.hamburger{display:none;background:none;border:none;cursor:pointer;font-size:20px;color:var(--ink);}
+.content{padding:2rem;max-width:1000px;}
+.page{display:none;}.page.active{display:block;}
+
+/* CARDS */
+.card{background:#fff;border:0.5px solid var(--border);border-radius:4px;padding:1.5rem;margin-bottom:1rem;}
+.card-title{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:500;margin-bottom:1.25rem;letter-spacing:0.02em;}
+.lbl{font-size:10px;color:var(--ink-muted);display:block;margin-bottom:5px;letter-spacing:0.1em;text-transform:uppercase;font-family:'DM Mono',monospace;}
+input[type=text],input[type=number],select,textarea{width:100%;background:var(--cream);border:0.5px solid var(--border);border-radius:3px;padding:8px 10px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--ink);outline:none;transition:border-color 0.2s;}
+input:focus,select:focus,textarea:focus{border-color:var(--gold);}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239A948E' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;-webkit-appearance:none;appearance:none;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;}
+.divider{border:none;border-top:0.5px solid var(--border-soft);margin:1.25rem 0;}
+.btn{background:var(--ink);color:var(--cream);border:none;border-radius:3px;padding:9px 18px;font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:background 0.2s;}
+.btn:hover{background:#2d2926;}
+.btn-sec{background:transparent;color:var(--ink-soft);border:0.5px solid var(--border);border-radius:3px;padding:7px 13px;font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:background 0.15s;}
+.btn-sec:hover{background:var(--cream);}
+.btn-wine{background:var(--wine);color:#fff;border:none;border-radius:3px;padding:9px 18px;font-size:13px;cursor:pointer;transition:opacity 0.2s;}
+.btn-wine:hover{opacity:0.85;}
+.btn-gold{background:var(--gold);color:#fff;border:none;border-radius:3px;padding:7px 14px;font-size:12px;cursor:pointer;}
+.btn-danger{background:transparent;color:var(--low-text);border:0.5px solid rgba(121,31,31,0.25);border-radius:3px;padding:5px 10px;font-size:11px;cursor:pointer;}
+.btn-danger:hover{background:var(--low-bg);}
+.btn-sm{padding:5px 10px;font-size:11px;}
+.badge{display:inline-block;font-size:10px;padding:2px 9px;border-radius:2px;font-family:'DM Mono',monospace;font-weight:500;white-space:nowrap;}
+
+/* MODULE CARDS ON HOME */
+.module-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:1.5rem;}
+.module-card{background:#fff;border:0.5px solid var(--border);border-radius:4px;padding:1.25rem;cursor:pointer;transition:all 0.15s;}
+.module-card:hover{border-color:var(--gold);background:var(--gold-pale, #F5EED8);}
+.module-card-icon{font-size:22px;margin-bottom:8px;}
+.module-card-name{font-size:13px;font-weight:500;margin-bottom:4px;}
+.module-card-desc{font-size:11px;color:var(--ink-muted);line-height:1.5;}
+.module-status{display:inline-block;font-size:10px;padding:2px 8px;border-radius:2px;font-family:'DM Mono',monospace;margin-top:6px;}
+.ms-live{background:var(--ok-bg);color:var(--ok-text);}
+.ms-sync{background:var(--info-bg);color:var(--info-text);}
+
+/* SETUP STEPS */
+.setup-step{display:grid;grid-template-columns:32px 1fr;gap:12px;align-items:start;margin-bottom:1.25rem;}
+.step-num{width:32px;height:32px;border-radius:50%;background:var(--ink);color:var(--cream);display:flex;align-items:center;justify-content:center;font-size:12px;font-family:'DM Mono',monospace;flex-shrink:0;}
+.step-body{padding-top:6px;}
+.step-title{font-size:13px;font-weight:500;margin-bottom:4px;}
+.step-desc{font-size:12px;color:var(--ink-soft);line-height:1.6;}
+.code-block{background:var(--ink);color:#E8DFD0;padding:1rem;border-radius:3px;font-family:'DM Mono',monospace;font-size:11px;line-height:1.7;margin-top:8px;overflow-x:auto;white-space:pre;}
+
+.rbox{border-radius:3px;padding:10px 14px;font-size:13px;display:none;margin-top:10px;}
+.rv{background:var(--ok-bg);color:var(--ok-text);}
+.re{background:var(--low-bg);color:var(--low-text);}
+.empty{text-align:center;padding:3rem;color:var(--ink-muted);font-size:13px;font-family:'DM Mono',monospace;}
+
+/* OVERLAY */
+.overlay{display:none;position:fixed;inset:0;background:rgba(26,23,20,0.4);z-index:150;}
+.overlay.open{display:block;}
+
+footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:center;font-size:11px;color:var(--ink-muted);font-family:'DM Mono',monospace;margin-top:2rem;}
+
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;}
+  .hamburger{display:block;}
+  .content{padding:1.25rem;}
+  .row2,.row3{grid-template-columns:1fr;}
+  .module-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <div class="sidebar-logo">Wondergift<sup>88</sup></div>
+      <div class="sidebar-tag">operations hub</div>
+    </div>
+    <div class="nav">
+      <div class="nav-section">
+        <div class="nav-section-label">Utama</div>
+        <button class="nav-item active" onclick="goTo('home')"><span class="icon">⌂</span> Home</button>
+        <button class="nav-item" onclick="window.open('wg88-production-hub.html','_blank')"><span class="icon">◉</span> Production Hub</button>
+        <button class="nav-item" onclick="window.open('wondergift_qc_checklist.html','_blank')"><span class="icon">✓</span> QC Checklist</button>
+        <button class="nav-item" onclick="window.open('wg88-preset-manager.html','_blank')"><span class="icon">◈</span> Preset Manager</button>
+        <button class="nav-item" onclick="goTo('kalkulator')"><span class="icon">◈</span> Kalkulator</button>
+        <button class="nav-item" onclick="goTo('order')"><span class="icon">◻</span> Order <span class="nav-badge" id="badge-order">0</span></button>
+        <button class="nav-item" onclick="goTo('templatewa')"><span class="icon">◁</span> Template WA</button>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Data</div>
+        <button class="nav-item" onclick="goTo('customer')"><span class="icon">◎</span> Customer</button>
+        <button class="nav-item" onclick="goTo('inventory')"><span class="icon">◑</span> Inventory</button>
+        <button class="nav-item" onclick="goTo('stock')"><span class="icon">◐</span> Stock opname</button>
+        <button class="nav-item" onclick="goTo('supplier')"><span class="icon">◉</span> Supplier</button>
+        <button class="nav-item" onclick="goTo('voucher')"><span class="icon">◇</span> Voucher</button>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Insight</div>
+        <button class="nav-item" onclick="goTo('dashboard')"><span class="icon">▦</span> Dashboard</button>
+        <button class="nav-item" onclick="goTo('rekap')"><span class="icon">▤</span> Rekap & laporan</button>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Pengaturan</div>
+        <button class="nav-item" onclick="goTo('preset')"><span class="icon">◈</span> Preset & pricing</button>
+        <button class="nav-item" onclick="goTo('sync')"><span class="icon">↻</span> Sheets & sync</button>
+        <button class="nav-item" onclick="window.open('wg88-manual.html','_blank')"><span class="icon">📖</span> Panduan</button>
+      </div>
+    </div>
+    <div class="sidebar-footer">
+      <div id="syncIndicator"><span class="sync-dot" style="background:#B4B2A9;"></span>belum tersambung</div>
+      <div style="margin-top:4px;" id="lastSyncTime"></div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="hamburger" onclick="toggleSidebar()">☰</button>
+        <div class="topbar-title" id="topbarTitle">Home</div>
+      </div>
+      <div class="topbar-right">
+        <span style="font-size:11px;font-family:'DM Mono',monospace;color:var(--ink-muted);" id="topbarDate"></span>
+        <button class="btn-sm btn-wine" onclick="goTo('kalkulator')">+ Kalkulator</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- HOME -->
+      <div id="page-home" class="page active">
+        <div style="margin-bottom:1.5rem;">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:500;margin-bottom:4px;" id="homeGreeting"></div>
+          <div style="font-size:12px;color:var(--ink-muted);font-family:'DM Mono',monospace;">Wondergift88 Operations Hub — semua tools dalam satu tempat</div>
+        </div>
+
+        <!-- QUICK STATS -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:1.5rem;" id="homeStats"></div>
+
+        <!-- ACTIVE ORDERS ALERT -->
+        <div id="homeAlerts" style="margin-bottom:1.5rem;"></div>
+
+        <!-- MODULES -->
+        <div style="font-size:11px;font-weight:500;color:var(--ink-muted);letter-spacing:0.1em;text-transform:uppercase;font-family:'DM Mono',monospace;margin-bottom:10px;">Semua modul</div>
+        <div class="module-grid">
+          <div class="module-card" onclick="window.open('wg88-preset-manager.html','_blank')"><div class="module-card-icon">◈</div><div class="module-card-name">Preset Manager</div><div class="module-card-desc">Bundling item inventory jadi preset harga</div><span class="module-status ms-live">live</span></div>
+          <div class="module-card" onclick="window.open('wg88-production-hub.html','_blank')"><div class="module-card-icon">◉</div><div class="module-card-name">Production Hub</div><div class="module-card-desc">Plan model, kalkulator harga, fix order</div><span class="module-status ms-live">live</span></div>
+          <div class="module-card" onclick="window.open('wondergift_qc_checklist.html','_blank')"><div class="module-card-icon">✓</div><div class="module-card-name">QC Checklist</div><div class="module-card-desc">Quality control standar produksi</div><span class="module-status ms-live">live</span></div>
+          <div class="module-card" onclick="goTo('kalkulator')"><div class="module-card-icon">◈</div><div class="module-card-name">Kalkulator</div><div class="module-card-desc">Hitung harga order, preset item, template WA</div><span class="module-status ms-live">live</span></div>
+          <div class="module-card" onclick="goTo('order')"><div class="module-card-icon">◻</div><div class="module-card-name">Order</div><div class="module-card-desc">Daftar order, status, invoice PDF</div><span class="module-status ms-live">live</span></div>
+          <div class="module-card" onclick="goTo('customer')"><div class="module-card-icon">◎</div><div class="module-card-name">Customer</div><div class="module-card-desc">Database pelanggan, riwayat, preferensi</div><span class="module-status ms-live">live</span></div>
+          <div class="module-card" onclick="goTo('inventory')"><div class="module-card-icon">◑</div><div class="module-card-name">Inventory & belanja</div><div class="module-card-desc">Input belanja baru, daftar aset & bahan</div><span class="module-status ms-live">live</span></div>
+          <div class="module-card" onclick="goTo('stock')"><div class="module-card-icon">◐</div><div class="module-card-name">Stock opname</div><div class="module-card-desc">Cek stok mingguan, heatmap, burn rate</div><span class="module-status ms-live">live</span></div>
+          <div class="module-card" onclick="goTo('voucher')"><div class="module-card-icon">◇</div><div class="module-card-name">Voucher</div><div class="module-card-desc">Generate, cek, klaim voucher</div><span class="module-status ms-live">live</span></div>
+          <div class="module-card" onclick="goTo('dashboard')"><div class="module-card-icon">▦</div><div class="module-card-name">Dashboard</div><div class="module-card-desc">Revenue, pipeline order, alert kondisi</div><span class="module-status ms-live">live</span></div>
+          <div class="module-card" onclick="goTo('rekap')"><div class="module-card-icon">▤</div><div class="module-card-name">Rekap & laporan</div><div class="module-card-desc">Revenue, profit, export CSV/PDF</div><span class="module-status ms-live">live</span></div>
+          <div class="module-card" onclick="goTo('preset')"><div class="module-card-icon">◈</div><div class="module-card-name">Preset & pricing</div><div class="module-card-desc">Kelola item preset, biaya operasional</div><span class="module-status ms-live">live</span></div>
+          <div class="module-card" onclick="goTo('supplier')"><div class="module-card-icon">◉</div><div class="module-card-name">Supplier</div><div class="module-card-desc">Contact list supplier, item, lokasi, pickup</div><span class="module-status ms-live">live</span></div>
+          <div class="module-card" onclick="goTo('templatewa')"><div class="module-card-icon">◁</div><div class="module-card-name">Template WA</div><div class="module-card-desc">7 step — greeting sampai delivery ke penerima</div><span class="module-status ms-live">live</span></div>
+          <div class="module-card" onclick="goTo('sync')"><div class="module-card-icon">↻</div><div class="module-card-name">Sheets & sync</div><div class="module-card-desc">Sambungkan Google Sheets & Calendar</div><span class="module-status ms-sync">setup</span></div>
+          <div class="module-card" onclick="window.open('wg88-manual.html','_blank')"><div class="module-card-icon">📖</div><div class="module-card-name">Panduan</div><div class="module-card-desc">Manual book lengkap untuk tim</div><span class="module-status ms-live">live</span></div>
+        </div>
+      </div>
+
+      <!-- KALKULATOR -->
+      <div id="page-kalkulator" class="page">
+        <div style="text-align:center;padding:3rem;color:var(--ink-muted);">
+          <div style="font-size:32px;margin-bottom:1rem;">◈</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:20px;margin-bottom:8px;">Modul Kalkulator</div>
+          <div style="font-size:13px;margin-bottom:1.5rem;">Kalkulator ada di file terpisah supaya lebih ringan. Klik tombol di bawah untuk membukanya.</div>
+          <a href="wg88-preset-kalkulator.html" target="_blank"><button class="btn-wine">Buka Kalkulator →</button></a>
+        </div>
+      </div>
+
+      <!-- ORDER -->
+      <div id="page-order" class="page">
+        <div style="text-align:center;padding:3rem;color:var(--ink-muted);">
+          <div style="font-size:32px;margin-bottom:1rem;">◻</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:20px;margin-bottom:8px;">Modul Order & Invoice</div>
+          <div style="font-size:13px;margin-bottom:1.5rem;">Kelola semua order, ubah status, generate invoice PDF.</div>
+          <a href="wg88-order-invoice.html" target="_blank"><button class="btn-wine">Buka Order & Invoice →</button></a>
+        </div>
+      </div>
+
+      <!-- CUSTOMER -->
+      <div id="page-customer" class="page">
+        <div style="text-align:center;padding:3rem;color:var(--ink-muted);">
+          <div style="font-size:32px;margin-bottom:1rem;">◎</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:20px;margin-bottom:8px;">Modul Customer</div>
+          <div style="font-size:13px;margin-bottom:1.5rem;">Database pelanggan, riwayat order, preferensi, catatan tim.</div>
+          <a href="wg88-customer.html" target="_blank"><button class="btn-wine">Buka Customer →</button></a>
+        </div>
+      </div>
+
+      <!-- INVENTORY -->
+      <div id="page-inventory" class="page">
+        <div style="text-align:center;padding:3rem;color:var(--ink-muted);">
+          <div style="font-size:32px;margin-bottom:1rem;">◑</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:20px;margin-bottom:8px;">Modul Inventory & Belanja</div>
+          <div style="font-size:13px;margin-bottom:1.5rem;">Input belanja baru (Shopee/offline), daftar lengkap 449 item, kondisi aset.</div>
+          <a href="wondergift-inventory.html" target="_blank"><button class="btn-wine">Buka Inventory →</button></a>
+        </div>
+      </div>
+
+      <!-- STOCK -->
+      <div id="page-stock" class="page">
+        <div style="text-align:center;padding:3rem;color:var(--ink-muted);">
+          <div style="font-size:32px;margin-bottom:1rem;">◐</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:20px;margin-bottom:8px;">Modul Stock Opname</div>
+          <div style="font-size:13px;margin-bottom:1.5rem;">Input stok mingguan, heatmap, burn rate, rekap bulanan, sync Google Sheets.</div>
+          <a href="wondergift-stock.html" target="_blank"><button class="btn-wine">Buka Stock Opname →</button></a>
+        </div>
+      </div>
+
+      <!-- VOUCHER -->
+      <div id="page-voucher" class="page">
+        <div style="text-align:center;padding:3rem;color:var(--ink-muted);">
+          <div style="font-size:32px;margin-bottom:1rem;">◇</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:20px;margin-bottom:8px;">Modul Voucher</div>
+          <div style="font-size:13px;margin-bottom:1.5rem;">Generate kode voucher, cek status, proses klaim, rekap penggunaan.</div>
+          <a href="wondergift-voucher.html" target="_blank"><button class="btn-wine">Buka Voucher →</button></a>
+        </div>
+      </div>
+
+      <!-- DASHBOARD -->
+      <div id="page-dashboard" class="page">
+        <div style="text-align:center;padding:3rem;color:var(--ink-muted);">
+          <div style="font-size:32px;margin-bottom:1rem;">▦</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:20px;margin-bottom:8px;">Dashboard & Rekap</div>
+          <div style="font-size:13px;margin-bottom:1.5rem;">Revenue chart, pipeline order, alert kondisi, rekap bulanan, laporan CSV/PDF.</div>
+          <a href="wg88-dashboard.html" target="_blank"><button class="btn-wine">Buka Dashboard →</button></a>
+        </div>
+      </div>
+
+      <!-- REKAP -->
+      <div id="page-rekap" class="page">
+        <div style="text-align:center;padding:3rem;color:var(--ink-muted);">
+          <div style="font-size:32px;margin-bottom:1rem;">▤</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:20px;margin-bottom:8px;">Rekap & Laporan</div>
+          <div style="font-size:13px;margin-bottom:1.5rem;">Ada di halaman Dashboard — tab Rekap & laporan.</div>
+          <a href="wg88-dashboard.html" target="_blank"><button class="btn-wine">Buka Rekap →</button></a>
+        </div>
+      </div>
+
+      <!-- SUPPLIER -->
+      <div id="page-supplier" class="page">
+        <div style="text-align:center;padding:3rem;color:var(--ink-muted);">
+          <div style="font-size:32px;margin-bottom:1rem;">◉</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:20px;margin-bottom:8px;">Supplier</div>
+          <div style="font-size:13px;margin-bottom:1.5rem;">Contact list supplier — nama, WA, jenis, lokasi, bisa pickup atau tidak, item yang dijual.</div>
+          <a href="wg88-supplier.html" target="_blank"><button class="btn-wine">Buka Supplier →</button></a>
+        </div>
+      </div>
+
+      <!-- TEMPLATE WA -->
+      <div id="page-templatewa" class="page">
+        <div style="text-align:center;padding:3rem;color:var(--ink-muted);">
+          <div style="font-size:32px;margin-bottom:1rem;">◁</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:20px;margin-bottom:8px;">Template WA</div>
+          <div style="font-size:13px;margin-bottom:1.5rem;">7 step lengkap — greeting, order form, rincian, konfirmasi, foto & video, tracking, pesan ke penerima. Auto-fill dari data order terakhir.</div>
+          <a href="wg88-template-wa.html" target="_blank"><button class="btn-wine">Buka Template WA →</button></a>
+        </div>
+      </div>
+
+      <!-- PRESET -->
+      <div id="page-preset" class="page">
+        <div style="text-align:center;padding:3rem;color:var(--ink-muted);">
+          <div style="font-size:32px;margin-bottom:1rem;">◈</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:20px;margin-bottom:8px;">Preset & Pricing</div>
+          <div style="font-size:13px;margin-bottom:1.5rem;">Ada di halaman Kalkulator — tab Preset & pricing.</div>
+          <a href="wg88-preset-kalkulator.html" target="_blank"><button class="btn-wine">Buka Preset →</button></a>
+        </div>
+      </div>
+
+      <!-- SHEETS SYNC -->
+      <div id="page-sync" class="page">
+        <div class="card">
+          <p class="card-title">Sheets & Calendar sync</p>
+          <p style="font-size:13px;color:var(--ink-soft);margin-bottom:1.5rem;line-height:1.7;">Sambungkan semua modul ke Google Sheets supaya data tersimpan permanen dan bisa diakses dari mana saja. Setup satu kali, berlaku untuk semua modul.</p>
+
+          <div class="setup-step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <div class="step-title">Buat Google Sheets master</div>
+              <div class="step-desc">Buka <a href="https://sheets.google.com" target="_blank" style="color:var(--gold);">sheets.google.com</a> → buat spreadsheet baru → beri nama <span style="font-family:'DM Mono',monospace;">WG88 Operations Hub</span>. Buat sheet tab: <span style="font-family:'DM Mono',monospace;">Orders, Customers, StokSekarang, History, RekapBulanan, Vouchers, VoucherKlaim</span>.</div>
+            </div>
+          </div>
+
+          <div class="setup-step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <div class="step-title">Paste Apps Script</div>
+              <div class="step-desc">Di Sheets → <span style="font-family:'DM Mono',monospace;">Extensions → Apps Script</span> → hapus kode lama → paste kode ini → Save.</div>
+              <div class="code-block" id="masterScript"></div>
+              <button class="btn-sec btn-sm" style="margin-top:8px;" onclick="copyScript()">Salin kode</button>
+            </div>
+          </div>
+
+          <div class="setup-step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <div class="step-title">Deploy sebagai Web App</div>
+              <div class="step-desc"><span style="font-family:'DM Mono',monospace;">Deploy → New deployment → Web app → Execute as: Me → Who has access: Anyone → Deploy</span> → copy URL.</div>
+            </div>
+          </div>
+
+          <div class="setup-step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <div class="step-title">Masukkan URL Web App</div>
+              <div style="display:flex;gap:8px;margin-top:8px;">
+                <input type="text" id="sheetsUrl" placeholder="https://script.google.com/macros/s/.../exec" style="flex:1;" />
+                <button class="btn" onclick="saveUrl()">Simpan</button>
+              </div>
+              <div id="urlResult" class="rbox"></div>
+            </div>
+          </div>
+
+          <div class="setup-step">
+            <div class="step-num">5</div>
+            <div class="step-body">
+              <div class="step-title">Test koneksi</div>
+              <button class="btn-sec" style="margin-top:8px;" onclick="testConn()">Test koneksi</button>
+              <div id="testResult" class="rbox"></div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="setup-step">
+            <div class="step-num">☆</div>
+            <div class="step-body">
+              <div class="step-title">Google Calendar (target pengiriman)</div>
+              <div class="step-desc">Setelah Sheets tersambung, setiap Fix Order dengan tanggal kirim akan otomatis ditambahkan ke Google Calendar kamu. Pastikan scope calendar sudah diizinkan saat authorize Apps Script.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <p class="card-title">Sync manual sekarang</p>
+          <p style="font-size:13px;color:var(--ink-soft);margin-bottom:1.25rem;">Kirim semua data yang tersimpan di browser ke Google Sheets sekaligus.</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <button class="btn-sec" onclick="syncData('orders')">Sync orders</button>
+            <button class="btn-sec" onclick="syncData('customers')">Sync customers</button>
+            <button class="btn-sec" onclick="syncData('stock')">Sync stock opname</button>
+            <button class="btn-sec" onclick="syncData('vouchers')">Sync vouchers</button>
+          </div>
+          <div id="syncResult" class="rbox"></div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+    <footer>wondergift88.com &nbsp;·&nbsp; operations hub v1.0 &nbsp;·&nbsp; 12 modul aktif</footer>
+  </div><!-- /main -->
+</div><!-- /layout -->
+
+<script>
+const SHEETS_URL_KEY = 'wg88_sheets_url';
+const PAGES = {
+  'home':'Home','kalkulator':'Kalkulator','order':'Order & Invoice',
+  'customer':'Customer','inventory':'Inventory & Belanja','stock':'Stock Opname',
+  'voucher':'Voucher','dashboard':'Dashboard','rekap':'Rekap & Laporan',
+  'preset':'Preset & Pricing','supplier':'Supplier','templatewa':'Template WA','sync':'Sheets & Sync'
+};
+const MONTHS = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agt','Sep','Okt','Nov','Des'];
+
+function ls(k,d){try{return JSON.parse(localStorage.getItem(k)||'null')||d;}catch(e){return d;}}
+function ss(k,v){localStorage.setItem(k,JSON.stringify(v));}
+function showRes(id,ok,msg){const el=document.getElementById(id);el.className='rbox '+(ok?'rv':'re');el.style.display='block';el.textContent=msg;}
+
+function goTo(page){
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(el=>{
+    if(el.textContent.toLowerCase().includes(page.toLowerCase().split('-')[0])||
+       (page==='home'&&el.textContent.includes('Home'))||
+       (page==='sync'&&el.textContent.includes('Sheets'))||
+       (page==='preset'&&el.textContent.includes('Preset'))||
+       (page==='rekap'&&el.textContent.includes('Rekap'))||
+       (page==='dashboard'&&el.textContent.includes('Dashboard'))||
+       (page==='inventory'&&el.textContent.includes('Inventory'))||
+       (page==='stock'&&el.textContent.includes('Stock'))||
+       (page==='voucher'&&el.textContent.includes('Voucher'))||
+       (page==='customer'&&el.textContent.includes('Customer'))||
+       (page==='order'&&el.textContent.includes('Order'))||
+       (page==='kalkulator'&&el.textContent.includes('Kalkulator'))
+    ) el.classList.add('active');
+  });
+  document.getElementById('topbarTitle').textContent = PAGES[page]||page;
+  closeSidebar();
+  if(page==='home') renderHome();
+  if(page==='sync') buildScript();
+}
+
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('open');
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
+
+// HOME
+function renderHome(){
+  const now=new Date();
+  const hr=now.getHours();
+  const g=hr<12?'Selamat pagi':hr<15?'Selamat siang':hr<18?'Selamat sore':'Selamat malam';
+  document.getElementById('homeGreeting').textContent=g+' — Wondergift88';
+
+  const orders=ls('wg88_orders',[]);
+  const custs=ls('wg88_customers',[]);
+  const invItems=ls('wg88_inventory',[]);
+  const aktif=orders.filter(o=>!['Selesai','Batal'].includes(o.status));
+  const revenue=orders.filter(o=>o.status==='Selesai').reduce((s,o)=>s+(o.final||0),0);
+
+  document.getElementById('homeStats').innerHTML=`
+    <div style="background:#fff;border:0.5px solid var(--border);border-radius:4px;padding:1rem 1.25rem;"><div style="font-size:10px;color:var(--ink-muted);font-family:'DM Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">Order aktif</div><div style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;">${aktif.length}</div></div>
+    <div style="background:#fff;border:0.5px solid var(--border);border-radius:4px;padding:1rem 1.25rem;"><div style="font-size:10px;color:var(--ink-muted);font-family:'DM Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">Total revenue</div><div style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;">Rp${revenue.toLocaleString('id-ID')}</div></div>
+    <div style="background:#fff;border:0.5px solid var(--border);border-radius:4px;padding:1rem 1.25rem;"><div style="font-size:10px;color:var(--ink-muted);font-family:'DM Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">Customer</div><div style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;">${custs.length}</div></div>
+    <div style="background:#fff;border:0.5px solid var(--border);border-radius:4px;padding:1rem 1.25rem;"><div style="font-size:10px;color:var(--ink-muted);font-family:'DM Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">Item inventory</div><div style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;">${invItems.length}</div></div>
+  `;
+
+  document.getElementById('badge-order').textContent = aktif.length;
+
+  // Alerts
+  const alerts=[];
+  const siap=orders.filter(o=>o.status==='Siap kirim');
+  if(siap.length) alerts.push({color:'#3C3489',bg:'#EEEDFE',text:`${siap.length} order siap kirim`,sub:siap.map(o=>o.cust).join(', ')});
+  const proses=orders.filter(o=>o.status==='Dalam proses');
+  if(proses.length) alerts.push({color:'#633806',bg:'#FAEEDA',text:`${proses.length} order dalam proses`,sub:proses.map(o=>o.invNo||o.cust).join(', ')});
+  const rusak=invItems.filter(i=>i.kondisi==='Rusak');
+  if(rusak.length) alerts.push({color:'#791F1F',bg:'#FCEBEB',text:`${rusak.length} item inventory perlu dicek`,sub:rusak.slice(0,3).map(i=>i.produk).join(', ')});
+  const url=localStorage.getItem(SHEETS_URL_KEY);
+  if(!url) alerts.push({color:'#0C447C',bg:'#E6F1FB',text:'Google Sheets belum tersambung',sub:'Klik Sheets & sync di menu untuk setup'});
+
+  document.getElementById('homeAlerts').innerHTML=alerts.map(a=>`
+    <div style="background:${a.bg};border-radius:3px;padding:10px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;">
+      <div style="width:6px;height:6px;border-radius:50%;background:${a.color};flex-shrink:0;"></div>
+      <div><div style="font-size:13px;font-weight:500;color:${a.color};">${a.text}</div><div style="font-size:11px;color:${a.color};opacity:0.7;font-family:'DM Mono',monospace;">${a.sub}</div></div>
+    </div>`).join('');
+}
+
+// SHEETS SYNC
+const APPS_SCRIPT_CODE = `function doPost(e) {
+  const data = JSON.parse(e.postData.contents);
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const action = data.action;
+
+  if (action === 'saveOrder') {
+    const sh = ss.getSheetByName('Orders') || ss.insertSheet('Orders');
+    if (sh.getLastRow() === 0)
+      sh.appendRow(['ID','No.Invoice','Customer','WA','Tanggal','Target Kirim','Total','Status','Catatan','Dibuat']);
+    const o = data.order;
+    const existing = sh.getDataRange().getValues();
+    let found = false;
+    for (let i = 1; i < existing.length; i++) {
+      if (existing[i][0] === o.id) {
+        sh.getRange(i+1,1,1,10).setValues([[o.id,o.invNo,o.cust,o.wa||'',o.date||'',o.deliver||'',o.final||0,o.status,o.note||'',o.createdAt||'']]);
+        found = true; break;
+      }
+    }
+    if (!found) sh.appendRow([o.id,o.invNo,o.cust,o.wa||'',o.date||'',o.deliver||'',o.final||0,o.status,o.note||'',o.createdAt||'']);
+
+    // Google Calendar — target pengiriman
+    if (o.deliver && o.status !== 'Batal') {
+      try {
+        const cal = CalendarApp.getDefaultCalendar();
+        const parts = o.deliver.split(' ');
+        if (parts.length >= 3) {
+          const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agt','Sep','Okt','Nov','Des'];
+          const mo = months.indexOf(parts[1]);
+          if (mo >= 0) {
+            const d = new Date(parseInt(parts[2]), mo, parseInt(parts[0]));
+            cal.createAllDayEvent('WG88: Kirim order '+o.invNo+' ('+o.cust+')', d);
+          }
+        }
+      } catch(err) {}
+    }
+    return ContentService.createTextOutput(JSON.stringify({ok:true})).setMimeType(ContentService.MimeType.JSON);
+  }
+
+  if (action === 'saveCustomer') {
+    const sh = ss.getSheetByName('Customers') || ss.insertSheet('Customers');
+    if (sh.getLastRow() === 0)
+      sh.appendRow(['ID','Nama','WA','Email','Tipe','Alamat','Tgl Lahir','Preferensi']);
+    const c = data.customer;
+    const existing = sh.getDataRange().getValues();
+    let found = false;
+    for (let i = 1; i < existing.length; i++) {
+      if (existing[i][0] === c.id) {
+        sh.getRange(i+1,1,1,8).setValues([[c.id,c.nama,c.wa||'',c.email||'',c.tipe,c.alamat||'',c.tgl||'',c.pref||'']]);
+        found = true; break;
+      }
+    }
+    if (!found) sh.appendRow([c.id,c.nama,c.wa||'',c.email||'',c.tipe,c.alamat||'',c.tgl||'',c.pref||'']);
+    return ContentService.createTextOutput(JSON.stringify({ok:true})).setMimeType(ContentService.MimeType.JSON);
+  }
+
+  if (action === 'saveStok') {
+    const shNow = ss.getSheetByName('StokSekarang') || ss.insertSheet('StokSekarang');
+    const shHist = ss.getSheetByName('History') || ss.insertSheet('History');
+    if (shNow.getLastRow() === 0) shNow.appendRow(['Item','Kategori','Stok','Satuan','Min','Status','Tanggal']);
+    if (shHist.getLastRow() === 0) shHist.appendRow(['Tanggal','Item','Kategori','Stok','Satuan','Min','Status']);
+    data.data.forEach(row => {
+      const existing = shNow.getDataRange().getValues();
+      let found = false;
+      for (let i = 1; i < existing.length; i++) {
+        if (existing[i][0] === row.name) {
+          shNow.getRange(i+1,3,1,5).setValues([[row.stok,row.satuan,row.min,row.status,row.tanggal]]);
+          found = true; break;
+        }
+      }
+      if (!found) shNow.appendRow([row.name,row.cat,row.stok,row.satuan,row.min,row.status,row.tanggal]);
+      shHist.appendRow([row.tanggal,row.name,row.cat,row.stok,row.satuan,row.min,row.status]);
+    });
+    return ContentService.createTextOutput(JSON.stringify({ok:true})).setMimeType(ContentService.MimeType.JSON);
+  }
+
+  if (action === 'saveVoucher') {
+    const sh = ss.getSheetByName('Vouchers') || ss.insertSheet('Vouchers');
+    if (sh.getLastRow() === 0) sh.appendRow(['Kode','Kategori','Tipe Diskon','Nilai','Min Beli','Berlaku','Status']);
+    const v = data.voucher;
+    sh.appendRow([v.kode,v.cat,v.dtype,v.dval,v.minbuy,v.validity,v.status]);
+    return ContentService.createTextOutput(JSON.stringify({ok:true})).setMimeType(ContentService.MimeType.JSON);
+  }
+
+  if (action === 'saveKlaim') {
+    const sh = ss.getSheetByName('VoucherKlaim') || ss.insertSheet('VoucherKlaim');
+    if (sh.getLastRow() === 0) sh.appendRow(['Kode','Nama','WA','Total Beli','Diskon','Catatan','Tanggal']);
+    const k = data.klaim;
+    sh.appendRow([k.kode,k.nama,k.wa,k.total,k.diskonNominal,k.catatan||'',k.tanggal]);
+    return ContentService.createTextOutput(JSON.stringify({ok:true})).setMimeType(ContentService.MimeType.JSON);
+  }
+
+  return ContentService.createTextOutput(JSON.stringify({ok:false,msg:'Unknown action'})).setMimeType(ContentService.MimeType.JSON);
+}
+
+function doGet(e) {
+  return ContentService.createTextOutput(JSON.stringify({ok:true,msg:'WG88 Hub API aktif'})).setMimeType(ContentService.MimeType.JSON);
+}`;
+
+function buildScript(){
+  document.getElementById('masterScript').textContent = APPS_SCRIPT_CODE;
+  const saved = localStorage.getItem(SHEETS_URL_KEY);
+  if(saved) document.getElementById('sheetsUrl').value = saved;
+}
+
+function copyScript(){
+  navigator.clipboard.writeText(APPS_SCRIPT_CODE).then(()=>alert('Apps Script disalin!')).catch(()=>{});
+}
+
+function saveUrl(){
+  const url = document.getElementById('sheetsUrl').value.trim();
+  if(!url){ showRes('urlResult',false,'URL tidak boleh kosong.'); return; }
+  localStorage.setItem(SHEETS_URL_KEY, url);
+  showRes('urlResult',true,'URL tersimpan. Lanjut ke step 5 untuk test koneksi.');
+  updateSyncStatus(false);
+}
+
+async function testConn(){
+  const url = localStorage.getItem(SHEETS_URL_KEY);
+  if(!url){ showRes('testResult',false,'Simpan URL dulu.'); return; }
+  try{
+    const res = await fetch(url);
+    const json = await res.json();
+    if(json.ok){ showRes('testResult',true,'Koneksi berhasil! Semua modul siap sync ke Sheets.'); updateSyncStatus(true); }
+    else showRes('testResult',false,'Terhubung tapi ada error. Cek Apps Script.');
+  }catch(e){ showRes('testResult',false,'Gagal terhubung. Pastikan URL benar dan sudah di-deploy.'); }
+}
+
+async function syncData(type){
+  const url = localStorage.getItem(SHEETS_URL_KEY);
+  if(!url){ showRes('syncResult',false,'URL Sheets belum disimpan. Setup di langkah 4 dulu.'); return; }
+  try{
+    let data={};
+    if(type==='orders') data={action:'bulkOrders',orders:ls('wg88_orders',[])};
+    else if(type==='customers') data={action:'bulkCustomers',customers:ls('wg88_customers',[])};
+    else if(type==='stock') data={action:'saveStok',data:[]};
+    else if(type==='vouchers') data={action:'bulkVouchers',vouchers:ls('wg88_db',{})};
+    await fetch(url,{method:'POST',body:JSON.stringify(data),headers:{'Content-Type':'application/json'}});
+    showRes('syncResult',true,type+' berhasil disync ke Google Sheets.');
+  }catch(e){ showRes('syncResult',false,'Gagal sync. Cek koneksi.'); }
+}
+
+function updateSyncStatus(connected){
+  const dot = document.querySelector('.sync-dot');
+  const ind = document.getElementById('syncIndicator');
+  if(connected){
+    dot.style.background='#63B543';
+    ind.innerHTML='<span class="sync-dot" style="background:#63B543;display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:4px;"></span>tersambung';
+  }
+}
+
+// TOPBAR DATE
+function setDate(){
+  const now=new Date();
+  document.getElementById('topbarDate').textContent=`${now.getDate()} ${MONTHS[now.getMonth()]} ${now.getFullYear()}`;
+}
+
+// INIT
+setDate();
+renderHome();
+const savedUrl = localStorage.getItem(SHEETS_URL_KEY);
+if(savedUrl) updateSyncStatus(false);
+</script>
+</body>
+</html>

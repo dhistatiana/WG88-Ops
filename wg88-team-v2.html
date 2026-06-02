@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WG88 Team</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0F0609;--surface:#1A0C10;--surface2:#251218;--surface3:#301820;
+  --accent:#B8293A;--gold:#C8A96E;--gold2:#A88A52;
+  --cream:#F0E6D3;--cream2:#C8B99A;--muted:#7A5A62;--muted2:#3A2028;
+  --border:rgba(200,169,110,0.15);--border2:rgba(200,169,110,0.08);
+  --green:#4A7C59;--green2:#7FC99A;--red2:#E07070;--blue2:#4A7AAA;
+  --r:10px;--r2:14px
+}
+*{-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);color:var(--cream);font-family:'DM Sans',sans-serif;font-size:14px;overflow:hidden}
+.app{display:flex;height:100vh}
+
+/* SIDEBAR */
+.sidebar{width:200px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;z-index:20}
+@media(max-width:640px){.sidebar{display:none}}
+.sb-top{padding:1rem;border-bottom:1px solid var(--border2)}
+.sb-brand{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--gold);font-weight:600}
+.sb-sub{font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:1px}
+.sb-user{padding:.6rem 1rem;border-bottom:1px solid var(--border2);display:flex;align-items:center;gap:.5rem}
+.sb-av{width:30px;height:30px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:#fff;flex-shrink:0}
+.sb-nm{font-size:12px;color:var(--cream)}
+.sb-rl{font-size:9px;color:var(--muted)}
+.nav{flex:1;padding:.5rem 0;overflow-y:auto}
+.nav-s{font-size:8px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;padding:.5rem 1rem .2rem}
+.ni{display:flex;align-items:center;gap:.5rem;padding:.55rem 1rem;cursor:pointer;color:var(--muted);font-size:12px;transition:.15s;border-left:2px solid transparent}
+.ni:hover{color:var(--cream2);background:var(--surface2)}
+.ni.active{color:var(--gold);background:var(--surface2);border-left-color:var(--gold)}
+.ni-ic{font-size:14px;width:16px;text-align:center;flex-shrink:0}
+.sb-clock{padding:.75rem 1rem 1rem;border-top:1px solid var(--border2)}
+.sb-time{font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--gold);letter-spacing:2px;line-height:1}
+.sb-date{font-size:10px;color:var(--cream2);margin-top:.25rem}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border2);padding:.6rem 1.25rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.tb-title{font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--cream)}
+.tb-sub{font-size:9px;color:var(--muted)}
+.pill{padding:2px 9px;border-radius:10px;font-size:10px;font-weight:500;border:1px solid}
+.pill-in{background:rgba(74,124,89,.2);color:var(--green2);border-color:rgba(74,124,89,.3)}
+.pill-out{background:rgba(184,41,58,.15);color:var(--red2);border-color:rgba(184,41,58,.25)}
+.pill-none{background:rgba(122,90,98,.1);color:var(--muted);border-color:var(--border2)}
+
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);z-index:50;padding:.4rem 0 .6rem}
+@media(max-width:640px){.bottom-nav{display:flex}}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;color:var(--muted);font-size:9px;letter-spacing:.3px;text-transform:uppercase;padding:.3rem 0;transition:.15s}
+.bn-item.active{color:var(--gold)}
+.bn-ic{font-size:18px;line-height:1}
+
+.content{flex:1;overflow-y:auto;padding:1.25rem;padding-bottom:80px}
+@media(min-width:641px){.content{padding-bottom:1.25rem}}
+.page{display:none}.page.active{display:block}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:1rem 1.1rem;margin-bottom:.75rem}
+.card-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem}
+.card-title{font-family:'Cormorant Garamond',serif;font-size:14px;color:var(--gold)}
+.sec-label{font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:.5rem;margin-top:1rem}
+.sec-label:first-child{margin-top:0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem}
+.row-between{display:flex;align-items:center;justify-content:space-between;gap:.5rem}
+
+/* BUTTONS */
+.btn{border:none;border-radius:6px;padding:7px 16px;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;transition:.15s;font-weight:500;display:inline-flex;align-items:center;gap:.3rem}
+.btn-p{background:var(--accent);color:#fff}.btn-p:hover{background:#9A2030}
+.btn-p:disabled{background:var(--muted2);color:var(--muted);cursor:not-allowed}
+.btn-g{background:var(--gold2);color:var(--bg)}.btn-g:hover{background:var(--gold)}
+.btn-g:disabled{background:var(--muted2);color:var(--muted);cursor:not-allowed}
+.btn-s{background:transparent;border:1px solid var(--border);color:var(--cream2)}.btn-s:hover{background:var(--surface2)}
+.btn-xs{padding:3px 9px;font-size:10px}
+.btn-sm{padding:5px 12px;font-size:11px}
+.btn-icon{background:none;border:none;cursor:pointer;color:var(--muted);font-size:13px;padding:2px 5px;border-radius:4px;transition:.15s;line-height:1}
+.btn-icon:hover{color:var(--cream);background:var(--surface3)}
+.btn-icon.del:hover{color:var(--red2)}
+
+/* INPUTS */
+input[type=text],input[type=date],input[type=time],textarea,select{
+  background:var(--surface2);border:1px solid var(--border2);border-radius:6px;
+  color:var(--cream);font-family:'DM Sans',sans-serif;font-size:12px;
+  padding:7px 10px;outline:none;width:100%;transition:.15s
+}
+input:focus,textarea:focus,select:focus{border-color:rgba(200,169,110,.4)}
+select option{background:var(--surface2)}
+textarea{resize:vertical;min-height:60px;line-height:1.5}
+
+/* ABSENSI */
+.ab-hero{text-align:center;padding:1.5rem 1rem 1.25rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);margin-bottom:.75rem;position:relative;overflow:hidden}
+.ab-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--gold))}
+.ab-time{font-family:'Cormorant Garamond',serif;font-size:64px;font-weight:300;color:var(--gold);letter-spacing:4px;line-height:1;margin-bottom:.3rem}
+.ab-date{font-size:12px;color:var(--cream2);margin-bottom:.5rem}
+.ab-btn-row{display:flex;gap:.6rem;justify-content:center;margin-top:.75rem}
+.rw-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:.3rem}
+.rw-box{text-align:center}
+.rw-lbl{font-size:8px;color:var(--muted);margin-bottom:.2rem;text-transform:uppercase}
+.rw-b{height:28px;border-radius:4px;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:9px}
+.rw-h{background:rgba(74,124,89,.15);color:var(--green2);border-color:rgba(74,124,89,.2)}
+.rw-a{background:rgba(184,41,58,.1);color:var(--red2);border-color:rgba(184,41,58,.15)}
+.rw-off{background:rgba(200,169,110,.05);color:var(--muted);border-color:var(--border2)}
+
+/* SOP */
+.sop-prog{height:2px;background:var(--surface3);border-radius:2px;margin-bottom:.65rem;overflow:hidden}
+.sop-prog-f{height:100%;background:linear-gradient(90deg,var(--accent),var(--gold));border-radius:2px;transition:.4s}
+.sop-item{display:flex;align-items:center;gap:.5rem;padding:.35rem 0;border-bottom:1px solid var(--border2)}
+.sop-item:last-child{border-bottom:none}
+.sop-chk{width:15px;height:15px;border-radius:3px;border:1px solid var(--border);background:transparent;cursor:pointer;flex-shrink:0;appearance:none;-webkit-appearance:none;transition:.15s;position:relative}
+.sop-chk:checked{background:var(--accent);border-color:var(--accent)}
+.sop-chk:checked::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px}
+.sop-lbl{font-size:12px;color:var(--cream2);flex:1;cursor:pointer;line-height:1.4}
+.sop-lbl.done{color:var(--muted);text-decoration:line-through}
+.sop-actions{display:flex;gap:2px;flex-shrink:0}
+
+/* TASKS */
+.task-add-row{display:flex;gap:.5rem;margin-bottom:.6rem;flex-wrap:wrap}
+.task-add-row input[type=text]{flex:1;min-width:120px}
+.task-add-row select{width:90px;flex-shrink:0}
+.task-add-row input[type=time]{width:80px;flex-shrink:0}
+.task-item{display:flex;align-items:flex-start;gap:.5rem;padding:.4rem 0;border-bottom:1px solid var(--border2)}
+.task-item:last-child{border-bottom:none}
+.task-body{flex:1;min-width:0}
+.task-title{font-size:12px;color:var(--cream2);line-height:1.4}
+.task-title.done{color:var(--muted);text-decoration:line-through}
+.task-meta{font-size:10px;color:var(--muted);margin-top:2px}
+.task-actions{display:flex;gap:2px;flex-shrink:0}
+
+/* INSIGHT */
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-bottom:.75rem}
+.stat-card{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);padding:.75rem .9rem;text-align:center}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--gold);line-height:1}
+.stat-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:3px}
+.stat-sub{font-size:10px;color:var(--cream2);margin-top:4px}
+.bar-wrap{margin-bottom:.5rem}
+.bar-lbl{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:.25rem}
+.bar-track{height:6px;background:var(--surface3);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--gold));border-radius:3px;transition:.5s}
+
+/* CALENDAR */
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem}
+.cal-month{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold)}
+.cal-nav{background:none;border:1px solid var(--border2);color:var(--muted);border-radius:5px;width:28px;height:28px;cursor:pointer;font-size:13px;transition:.15s;display:flex;align-items:center;justify-content:center}
+.cal-nav:hover{border-color:var(--border);color:var(--cream)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:.75rem}
+.cal-day-hdr{text-align:center;font-size:8px;color:var(--muted);padding:.3rem 0;text-transform:uppercase}
+.cal-day{min-height:32px;border-radius:6px;border:1px solid transparent;display:flex;flex-direction:column;align-items:center;padding:.3rem .2rem;cursor:pointer;transition:.15s}
+.cal-day:hover{background:var(--surface2);border-color:var(--border2)}
+.cal-day.today{border-color:rgba(200,169,110,.4);background:rgba(200,169,110,.05)}
+.cal-day.other-month .cal-dn{color:var(--muted2)}
+.cal-dn{font-size:11px;color:var(--cream2);line-height:1}
+.cal-dot{width:4px;height:4px;border-radius:50%;background:var(--gold);margin-top:2px}
+.ev-item{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);padding:.65rem .85rem;display:flex;align-items:flex-start;gap:.6rem;margin-bottom:.5rem;transition:.15s}
+.ev-item:hover{border-color:var(--border)}
+.ev-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:3px}
+.ev-dot-work{background:var(--gold)}.ev-dot-personal{background:var(--accent)}.ev-dot-reminder{background:var(--green2)}
+.ev-title{font-size:12px;color:var(--cream);font-weight:500}
+.ev-meta{font-size:10px;color:var(--muted);margin-top:2px}
+.ev-empty{text-align:center;padding:2rem;color:var(--muted);font-size:12px;font-style:italic}
+.gcal-btn{display:inline-flex;align-items:center;font-size:10px;color:var(--blue2);background:none;border:1px solid rgba(106,156,200,.2);border-radius:5px;padding:3px 8px;cursor:pointer;transition:.15s;text-decoration:none;flex-shrink:0}
+.gcal-btn:hover{background:rgba(106,156,200,.1)}
+
+/* SUMMARY */
+.sum-tab-row{display:flex;gap:.4rem;margin-bottom:.75rem}
+.sum-tab{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;padding:6px 16px;border-radius:100px;border:1px solid var(--border2);background:none;color:var(--muted);cursor:pointer;transition:.15s}
+.sum-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.sum-hist-item{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r2);overflow:hidden;margin-bottom:.75rem}
+.sum-hist-hdr{display:flex;align-items:center;justify-content:space-between;padding:.65rem 1rem;background:var(--surface2);border-bottom:1px solid var(--border2);flex-wrap:wrap;gap:.5rem}
+.sum-hist-title{font-size:12px;font-weight:500;color:var(--cream)}
+.sum-hist-date{font-size:10px;color:var(--muted)}
+.sum-hist-btns{display:flex;gap:.4rem}
+.sum-body{padding:.85rem 1rem;font-size:12px;color:var(--cream2);line-height:1.85;white-space:pre-wrap;max-height:200px;overflow:hidden;position:relative}
+.sum-body.expanded{max-height:none}
+.sum-fade{position:absolute;bottom:0;left:0;right:0;height:40px;background:linear-gradient(transparent,var(--surface));pointer-events:none}
+.sum-body.expanded .sum-fade{display:none}
+.sum-expand{font-size:10px;color:var(--gold);background:none;border:none;cursor:pointer;padding:7px 1rem;display:block;width:100%;text-align:center;border-top:1px solid var(--border2);font-family:'DM Sans',sans-serif;letter-spacing:.05em}
+.sum-expand:hover{background:var(--surface2)}
+.sum-empty{text-align:center;padding:3rem 1rem;color:var(--muted);font-size:12px;font-style:italic}
+.gen-btn-row{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.75rem}
+
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(10,4,6,.8);z-index:100;align-items:center;justify-content:center;backdrop-filter:blur(3px);padding:1rem}
+.modal-bg.show{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:1.25rem;width:100%;max-width:400px;box-shadow:0 8px 40px rgba(0,0,0,.5);max-height:90vh;overflow-y:auto}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--gold);margin-bottom:1rem}
+.modal-row{margin-bottom:.65rem}
+.modal-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:.3rem}
+.modal-btns{display:flex;gap:.5rem;margin-top:1rem;justify-content:flex-end}
+
+/* TOAST / LOADING */
+.toast{position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--surface2);border:1px solid var(--border);color:var(--cream2);font-size:11px;padding:9px 20px;border-radius:100px;box-shadow:0 4px 20px rgba(0,0,0,.4);transition:transform .25s cubic-bezier(.34,1.56,.64,1);z-index:200;pointer-events:none;white-space:nowrap}
+@media(min-width:641px){.toast{bottom:24px}}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.loading-bar{position:fixed;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--gold));z-index:300;display:none;animation:lb 1.2s ease-in-out infinite}
+@keyframes lb{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.loading-bar.show{display:block}
+</style>
+</head>
+<body>
+<div class="loading-bar" id="loadBar"></div>
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-top">
+      <div class="sb-brand">Wondergift88</div>
+      <div class="sb-sub">Team Operations</div>
+    </div>
+    <div class="sb-user">
+      <div class="sb-av">D</div>
+      <div>
+        <div class="sb-nm">Dhista</div>
+        <div class="sb-rl">Admin</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <div class="nav-s">Menu</div>
+      <div class="ni active" onclick="goPage('absensi')" id="ni-absensi"><span class="ni-ic">◷</span> Absensi</div>
+      <div class="ni" onclick="goPage('activity')" id="ni-activity"><span class="ni-ic">✦</span> Daily Activity</div>
+      <div class="ni" onclick="goPage('insight')" id="ni-insight"><span class="ni-ic">◈</span> Insight</div>
+      <div class="ni" onclick="goPage('calendar')" id="ni-calendar"><span class="ni-ic">◻</span> Calendar</div>
+      <div class="ni" onclick="goPage('summary')" id="ni-summary"><span class="ni-ic">◑</span> Summary</div>
+    </nav>
+    <div class="sb-clock">
+      <div class="sb-time" id="sb-time">00:00</div>
+      <div class="sb-date" id="sb-date"></div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <div class="tb-title" id="tb-title">Absensi</div>
+        <div class="tb-sub" id="tb-date-top"></div>
+      </div>
+      <span class="pill pill-none" id="tb-st">Belum Absen</span>
+    </div>
+
+    <div class="content">
+
+      <!-- ABSENSI -->
+      <div class="page active" id="page-absensi">
+        <div class="ab-hero">
+          <div class="ab-time" id="ab-time">00:00:00</div>
+          <div class="ab-date" id="ab-date-str"></div>
+          <div style="margin:.4rem 0"><span class="pill pill-none" id="ab-st">Belum Absen</span></div>
+          <div style="font-size:10px;color:var(--muted);margin-top:.3rem" id="ab-info"></div>
+          <div class="ab-btn-row">
+            <button class="btn btn-p" id="btn-in" onclick="clockIn()">⏱ Clock In</button>
+            <button class="btn btn-g" id="btn-out" onclick="clockOut()" disabled>⏹ Clock Out</button>
+          </div>
+        </div>
+        <div class="sec-label">Riwayat 6 Hari</div>
+        <div class="card"><div class="rw-grid" id="rw-grid"></div></div>
+        <div class="grid2">
+          <div class="card" style="text-align:center">
+            <div style="font-family:'Cormorant Garamond',serif;font-size:36px;color:var(--green2)" id="ins-hadir">0</div>
+            <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:3px">Hari Hadir</div>
+          </div>
+          <div class="card" style="text-align:center">
+            <div style="font-family:'Cormorant Garamond',serif;font-size:36px;color:var(--gold)" id="ins-avg">0j</div>
+            <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:3px">Rata-rata Jam</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAILY ACTIVITY -->
+      <div class="page" id="page-activity">
+        <div class="sec-label">Opening SOP</div>
+        <div class="card">
+          <div class="card-hdr">
+            <div class="card-title">Opening Checklist</div>
+            <button class="btn btn-s btn-xs" onclick="openSOPManager('opening')">⚙ Kelola</button>
+          </div>
+          <div class="sop-prog"><div class="sop-prog-f" id="sop-o-prog" style="width:0%"></div></div>
+          <div id="sop-o-list"></div>
+        </div>
+
+        <div class="sec-label">Closing SOP</div>
+        <div class="card">
+          <div class="card-hdr">
+            <div class="card-title">Closing Checklist</div>
+            <button class="btn btn-s btn-xs" onclick="openSOPManager('closing')">⚙ Kelola</button>
+          </div>
+          <div class="sop-prog"><div class="sop-prog-f" id="sop-c-prog" style="width:0%"></div></div>
+          <div id="sop-c-list"></div>
+        </div>
+
+        <div class="sec-label">Task Hari Ini</div>
+        <div class="card">
+          <div class="task-add-row">
+            <input type="text" id="task-input" placeholder="Nama task...">
+            <select id="task-priority">
+              <option value="normal">Normal</option>
+              <option value="penting">Penting</option>
+              <option value="urgent">Urgent</option>
+            </select>
+            <input type="time" id="task-start" placeholder="Mulai">
+            <input type="time" id="task-end" placeholder="Selesai">
+            <button class="btn btn-p btn-sm" onclick="addTask()">+ Tambah</button>
+          </div>
+          <div id="task-list"></div>
+        </div>
+      </div>
+
+      <!-- INSIGHT -->
+      <div class="page" id="page-insight">
+        <div class="sec-label">Bulan Ini</div>
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-num" id="ins2-hadir">0</div>
+            <div class="stat-lbl">Hadir</div>
+            <div class="stat-sub" id="ins2-hadir-sub">hari</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num" id="ins2-avg">0j</div>
+            <div class="stat-lbl">Rata-rata</div>
+            <div class="stat-sub">jam/hari</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num" id="ins2-sop">0%</div>
+            <div class="stat-lbl">SOP</div>
+            <div class="stat-sub">hari ini</div>
+          </div>
+        </div>
+        <div class="sec-label">Kehadiran Mingguan</div>
+        <div class="card"><div id="week-bars"></div></div>
+        <div class="sec-label">Task Hari Ini</div>
+        <div class="card">
+          <div class="bar-wrap">
+            <div class="bar-lbl"><span>Progress</span><span id="ins-task-pct">0%</span></div>
+            <div class="bar-track"><div class="bar-fill" id="ins-task-bar" style="width:0%"></div></div>
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-top:.3rem" id="ins-task-detail">Belum ada task</div>
+        </div>
+      </div>
+
+      <!-- CALENDAR -->
+      <div class="page" id="page-calendar">
+        <div class="cal-header">
+          <button class="cal-nav" onclick="calPrev()">‹</button>
+          <div class="cal-month" id="cal-month-lbl"></div>
+          <button class="cal-nav" onclick="calNext()">›</button>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+        <div class="row-between" style="margin-bottom:.5rem">
+          <div class="sec-label" style="margin:0" id="cal-ev-lbl">Agenda</div>
+          <button class="btn btn-p btn-sm" onclick="openAddEvent()">+ Agenda</button>
+        </div>
+        <div id="ev-list"></div>
+      </div>
+
+      <!-- SUMMARY -->
+      <div class="page" id="page-summary">
+        <div class="gen-btn-row">
+          <button class="btn btn-p btn-sm" onclick="generateSummary('daily')">⚡ Generate Harian</button>
+          <button class="btn btn-s btn-sm" onclick="generateSummary('weekly')">Generate Mingguan</button>
+          <button class="btn btn-s btn-sm" onclick="generateSummary('monthly')">Generate Bulanan</button>
+        </div>
+        <div class="sum-tab-row">
+          <button class="sum-tab active" onclick="switchSumTab('daily')" id="stab-daily">Harian</button>
+          <button class="sum-tab" onclick="switchSumTab('weekly')" id="stab-weekly">Mingguan</button>
+          <button class="sum-tab" onclick="switchSumTab('monthly')" id="stab-monthly">Bulanan</button>
+        </div>
+        <div id="sum-list"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <div class="bn-item active" onclick="goPage('absensi')" id="bn-absensi"><div class="bn-ic">◷</div>Absen</div>
+  <div class="bn-item" onclick="goPage('activity')" id="bn-activity"><div class="bn-ic">✦</div>Activity</div>
+  <div class="bn-item" onclick="goPage('insight')" id="bn-insight"><div class="bn-ic">◈</div>Insight</div>
+  <div class="bn-item" onclick="goPage('calendar')" id="bn-calendar"><div class="bn-ic">◻</div>Calendar</div>
+  <div class="bn-item" onclick="goPage('summary')" id="bn-summary"><div class="bn-ic">◑</div>Summary</div>
+</div>
+
+<!-- MODAL: ADD EVENT -->
+<div class="modal-bg" id="modal-ev">
+  <div class="modal">
+    <div class="modal-title">Tambah Agenda</div>
+    <div class="modal-row"><div class="modal-lbl">Judul</div><input type="text" id="ev-title"></div>
+    <div class="modal-row"><div class="modal-lbl">Tanggal</div><input type="date" id="ev-date"></div>
+    <div class="grid2" style="gap:.5rem;margin-bottom:.65rem">
+      <div><div class="modal-lbl">Mulai</div><input type="time" id="ev-start"></div>
+      <div><div class="modal-lbl">Selesai</div><input type="time" id="ev-end"></div>
+    </div>
+    <div class="modal-row"><div class="modal-lbl">Kategori</div>
+      <select id="ev-cat"><option value="work">Pekerjaan</option><option value="personal">Personal</option><option value="reminder">Reminder</option></select>
+    </div>
+    <div class="modal-row"><div class="modal-lbl">Catatan</div><textarea id="ev-desc" placeholder="Opsional..."></textarea></div>
+    <input type="hidden" id="ev-edit-id" value="new">
+    <div class="modal-btns">
+      <button class="btn btn-s" onclick="closeModal('modal-ev')">Batal</button>
+      <button class="btn btn-p" onclick="saveEvent()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: SOP MANAGER -->
+<div class="modal-bg" id="modal-sop">
+  <div class="modal">
+    <div class="modal-title" id="sop-modal-title">Kelola SOP</div>
+    <div id="sop-mgr-list" style="margin-bottom:.75rem"></div>
+    <div style="display:flex;gap:.5rem;margin-bottom:.5rem">
+      <input type="text" id="sop-new-input" placeholder="Tambah item SOP baru..." style="flex:1">
+      <button class="btn btn-p btn-sm" onclick="addSOPItem()">+</button>
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-s" onclick="closeModal('modal-sop')">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: EDIT SOP ITEM -->
+<div class="modal-bg" id="modal-sop-edit">
+  <div class="modal">
+    <div class="modal-title">Edit Item SOP</div>
+    <div class="modal-row"><input type="text" id="sop-edit-input"></div>
+    <input type="hidden" id="sop-edit-id">
+    <div class="modal-btns">
+      <button class="btn btn-s" onclick="closeModal('modal-sop-edit')">Batal</button>
+      <button class="btn btn-p" onclick="saveSOPEdit()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: EDIT TASK -->
+<div class="modal-bg" id="modal-task-edit">
+  <div class="modal">
+    <div class="modal-title">Edit Task</div>
+    <div class="modal-row"><div class="modal-lbl">Nama Task</div><input type="text" id="te-title"></div>
+    <div class="modal-row"><div class="modal-lbl">Prioritas</div>
+      <select id="te-priority"><option value="normal">Normal</option><option value="penting">Penting</option><option value="urgent">Urgent</option></select>
+    </div>
+    <div class="grid2" style="gap:.5rem;margin-bottom:.65rem">
+      <div><div class="modal-lbl">Mulai</div><input type="time" id="te-start"></div>
+      <div><div class="modal-lbl">Selesai</div><input type="time" id="te-end"></div>
+    </div>
+    <input type="hidden" id="te-idx">
+    <div class="modal-btns">
+      <button class="btn btn-s" onclick="closeModal('modal-task-edit')">Batal</button>
+      <button class="btn btn-p" onclick="saveTaskEdit()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var SUPA_URL='https://myaiyznpstjxnbkqccrw.supabase.co';
+var SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15YWl5em5wc3RqeG5ia3FjY3J3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5NDcxMjksImV4cCI6MjA5NTUyMzEyOX0.7a4Oufr532rkD-xc6X4Vaspu185Rc6RH8HPSgSEuPfs';
+var HDR={'Content-Type':'application/json','apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Prefer':'return=representation'};
+
+var DB={
+  get:async function(t,q){var r=await fetch(SUPA_URL+'/rest/v1/'+t+(q?'?'+q:''),{headers:HDR});return r.ok?r.json():[];},
+  post:async function(t,b){var r=await fetch(SUPA_URL+'/rest/v1/'+t,{method:'POST',headers:HDR,body:JSON.stringify(b)});return r.ok?r.json():null;},
+  patch:async function(t,b,q){var r=await fetch(SUPA_URL+'/rest/v1/'+t+'?'+q,{method:'PATCH',headers:HDR,body:JSON.stringify(b)});return r.ok?r.json():null;},
+  del:async function(t,q){await fetch(SUPA_URL+'/rest/v1/'+t+'?'+q,{method:'DELETE',headers:HDR});}
+};
+
+var S={userId:null,clockedIn:false,inTime:null,outTime:null,attendanceId:null,sopO:[],sopC:{},sopOLog:{},sopCLog:{},tasks:[],attendance:[],events:[],summaries:[],sumTab:'daily'};
+
+function todayStr(){return new Date().toISOString().slice(0,10);}
+function fmtTime(d){return d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});}
+function fmtDate(d){return d.toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});}
+function fmtDateShort(d){return d.toLocaleDateString('id-ID',{day:'numeric',month:'short'});}
+function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2300);}
+function loading(s){document.getElementById('loadBar').classList.toggle('show',s);}
+function closeModal(id){document.getElementById(id).classList.remove('show');}
+
+// CLOCK
+function tickClock(){
+  var n=new Date();
+  var ts=fmtTime(n);
+  var el=document.getElementById('ab-time');if(el)el.textContent=ts;
+  var sb=document.getElementById('sb-time');if(sb)sb.textContent=ts.slice(0,5);
+  document.getElementById('ab-date-str').textContent=fmtDate(n);
+  document.getElementById('sb-date').textContent=n.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
+  document.getElementById('tb-date-top').textContent=n.toLocaleDateString('id-ID',{weekday:'short',day:'numeric',month:'short'});
+}
+setInterval(tickClock,1000);tickClock();
+
+// NAV
+var PAGES=['absensi','activity','insight','calendar','summary'];
+function goPage(name){
+  PAGES.forEach(function(p){
+    document.getElementById('page-'+p).classList.toggle('active',p===name);
+    var ni=document.getElementById('ni-'+p);if(ni)ni.classList.toggle('active',p===name);
+    var bn=document.getElementById('bn-'+p);if(bn)bn.classList.toggle('active',p===name);
+  });
+  var titles={absensi:'Absensi',activity:'Daily Activity',insight:'Insight',calendar:'Calendar',summary:'Summary'};
+  document.getElementById('tb-title').textContent=titles[name]||name;
+  if(name==='insight')renderInsight();
+  if(name==='calendar')renderCalendar();
+  if(name==='summary')renderSummaryList();
+}
+
+// ABSENSI
+async function loadAttendance(){
+  if(!S.userId)return;
+  var rows=await DB.get('attendance','employee_id=eq.'+S.userId+'&date=eq.'+todayStr());
+  if(rows&&rows.length){
+    var r=rows[0];S.attendanceId=r.id;
+    if(r.clock_in){S.clockedIn=!r.clock_out;S.inTime=r.clock_in.slice(0,5);S.outTime=r.clock_out?r.clock_out.slice(0,5):null;updateAbUI();}
+  }
+  var m=todayStr().slice(0,7);
+  var all=await DB.get('attendance','employee_id=eq.'+S.userId+'&date=gte.'+m+'-01&order=date.asc');
+  S.attendance=all||[];
+  renderRW();updateAbRecap();
+}
+
+function updateAbUI(){
+  var st=document.getElementById('ab-st'),tbst=document.getElementById('tb-st'),info=document.getElementById('ab-info');
+  if(S.outTime){
+    st.className='pill pill-out';st.textContent='Selesai';tbst.className='pill pill-out';tbst.textContent='Selesai';
+    info.textContent='Clock in '+S.inTime+' · Clock out '+S.outTime;
+    document.getElementById('btn-in').disabled=true;document.getElementById('btn-out').disabled=true;
+  } else if(S.clockedIn){
+    st.className='pill pill-in';st.textContent='Hadir';tbst.className='pill pill-in';tbst.textContent='Hadir';
+    info.textContent='Clock in pukul '+S.inTime;
+    document.getElementById('btn-in').disabled=true;document.getElementById('btn-out').disabled=false;
+  }
+}
+
+async function clockIn(){
+  if(!S.userId){toast('User tidak ditemukan');return;}
+  var ts=new Date().toTimeString().slice(0,8);
+  loading(true);
+  var res=await DB.post('attendance',{employee_id:S.userId,date:todayStr(),clock_in:ts});
+  loading(false);
+  if(res&&res[0]){S.attendanceId=res[0].id;S.clockedIn=true;S.inTime=ts.slice(0,5);updateAbUI();toast('Clock in berhasil ✦');}
+  else toast('Gagal clock in');
+}
+
+async function clockOut(){
+  if(!S.attendanceId)return;
+  var ts=new Date().toTimeString().slice(0,8);
+  var ip=S.inTime.split(':'),op=ts.split(':');
+  var dur=(parseInt(op[0])-parseInt(ip[0]))*60+(parseInt(op[1])-parseInt(ip[1]));
+  loading(true);
+  await DB.patch('attendance',{clock_out:ts,duration_minutes:dur},'id=eq.'+S.attendanceId);
+  loading(false);
+  S.clockedIn=false;S.outTime=ts.slice(0,5);updateAbUI();
+  toast('Clock out. Durasi: '+Math.floor(dur/60)+'j '+(dur%60)+'m');
+  var m=todayStr().slice(0,7);
+  S.attendance=await DB.get('attendance','employee_id=eq.'+S.userId+'&date=gte.'+m+'-01&order=date.asc')||[];
+  updateAbRecap();
+}
+
+function renderRW(){
+  var grid=document.getElementById('rw-grid'),today=new Date(),html='';
+  var days=['Sen','Sel','Rab','Kam','Jum','Sab'];
+  for(var i=5;i>=0;i--){
+    var d=new Date(today);d.setDate(today.getDate()-i);
+    var ds=d.toISOString().slice(0,10),dow=d.getDay(),isOff=dow===0;
+    var rec=S.attendance.find(function(a){return a.date===ds;});
+    var cls=isOff?'rw-off':rec?'rw-h':'rw-a';
+    var lbl=days[dow===0?5:dow-1]||'';
+    html+='<div class="rw-box"><div class="rw-lbl">'+lbl+'</div><div class="rw-b '+cls+'">'+(isOff?'off':rec?'✓':'—')+'</div></div>';
+  }
+  grid.innerHTML=html;
+}
+
+function updateAbRecap(){
+  var hadir=S.attendance.filter(function(a){return a.clock_in;}).length;
+  var total=S.attendance.reduce(function(s,a){return s+(a.duration_minutes||0);},0);
+  var avg=hadir>0?Math.round(total/hadir):0;
+  document.getElementById('ins-hadir').textContent=hadir;
+  document.getElementById('ins-avg').textContent=avg>=60?Math.floor(avg/60)+'j':(avg+'m');
+}
+
+// SOP ITEMS
+async function loadSOPItems(){
+  var rows=await DB.get('sop_items','order=type.asc,order_num.asc');
+  if(rows){
+    S.sopO=rows.filter(function(r){return r.type==='opening';});
+    S.sopC=rows.filter(function(r){return r.type==='closing';});
+  }
+}
+
+async function loadSOPLogs(){
+  if(!S.userId)return;
+  var rows=await DB.get('sop_logs','employee_id=eq.'+S.userId+'&date=eq.'+todayStr());
+  S.sopOLog={};S.sopCLog={};
+  if(rows)rows.forEach(function(r){
+    if(r.type==='opening')S.sopOLog[r.item_id]=r.checked;
+    else S.sopCLog[r.item_id]=r.checked;
+  });
+  renderSOPs();
+}
+
+function renderSOPs(){
+  renderSOP('sop-o-list','sop-o-prog',S.sopO,'opening',S.sopOLog);
+  renderSOP('sop-c-list','sop-c-prog',S.sopC,'closing',S.sopCLog);
+}
+
+function renderSOP(listId,progId,items,type,logObj){
+  if(!items.length){document.getElementById(listId).innerHTML='<div style="font-size:11px;color:var(--muted);font-style:italic;padding:.3rem 0">Belum ada item. Klik ⚙ Kelola untuk menambahkan.</div>';document.getElementById(progId).style.width='0%';return;}
+  var done=items.filter(function(it){return logObj[it.id];}).length;
+  document.getElementById(progId).style.width=Math.round(done/items.length*100)+'%';
+  document.getElementById(listId).innerHTML=items.map(function(it){
+    var chk=logObj[it.id]?'checked':'';
+    return '<div class="sop-item"><input type="checkbox" class="sop-chk" '+chk+' onchange="toggleSOP(\''+type+'\',\''+it.id+'\',this.checked)"><span class="sop-lbl'+(logObj[it.id]?' done':'')+'">'+it.title+'</span><div class="sop-actions"><button class="btn-icon" onclick="editSOPItem(\''+it.id+'\',\''+it.title.replace(/'/g,"\\'")+'\')" title="Edit">✎</button></div></div>';
+  }).join('');
+}
+
+async function toggleSOP(type,itemId,val){
+  var logObj=type==='opening'?S.sopOLog:S.sopCLog;
+  logObj[itemId]=val;
+  renderSOPs();
+  if(!S.userId)return;
+  var ex=await DB.get('sop_logs','employee_id=eq.'+S.userId+'&date=eq.'+todayStr()+'&type=eq.'+type+'&item_id=eq.'+itemId);
+  if(ex&&ex.length)await DB.patch('sop_logs',{checked:val},'employee_id=eq.'+S.userId+'&date=eq.'+todayStr()+'&type=eq.'+type+'&item_id=eq.'+itemId);
+  else await DB.post('sop_logs',{employee_id:S.userId,date:todayStr(),type:type,item_id:itemId,checked:val});
+}
+
+// SOP MANAGER
+var sopMgrType='opening';
+function openSOPManager(type){
+  sopMgrType=type;
+  document.getElementById('sop-modal-title').textContent='Kelola SOP '+(type==='opening'?'Opening':'Closing');
+  document.getElementById('sop-new-input').value='';
+  renderSOPMgr();
+  document.getElementById('modal-sop').classList.add('show');
+}
+
+function renderSOPMgr(){
+  var items=sopMgrType==='opening'?S.sopO:S.sopC;
+  if(!items.length){document.getElementById('sop-mgr-list').innerHTML='<div style="font-size:11px;color:var(--muted);font-style:italic;padding:.3rem 0">Belum ada item.</div>';return;}
+  document.getElementById('sop-mgr-list').innerHTML=items.map(function(it,i){
+    return '<div class="sop-item"><span class="sop-lbl">'+it.title+'</span><div class="sop-actions"><button class="btn-icon" onclick="editSOPItem(\''+it.id+'\',\''+it.title.replace(/'/g,"\\'")+'\')" title="Edit">✎</button><button class="btn-icon del" onclick="deleteSOPItem(\''+it.id+'\')" title="Hapus">×</button></div></div>';
+  }).join('');
+}
+
+async function addSOPItem(){
+  var txt=document.getElementById('sop-new-input').value.trim();
+  if(!txt){toast('Masukkan nama item');return;}
+  var items=sopMgrType==='opening'?S.sopO:S.sopC;
+  var res=await DB.post('sop_items',{type:sopMgrType,title:txt,order_num:items.length+1});
+  if(res&&res[0]){items.push(res[0]);document.getElementById('sop-new-input').value='';renderSOPMgr();renderSOPs();toast('Item ditambahkan ✦');}
+}
+
+function editSOPItem(id,title){
+  document.getElementById('sop-edit-id').value=id;
+  document.getElementById('sop-edit-input').value=title;
+  closeModal('modal-sop');
+  document.getElementById('modal-sop-edit').classList.add('show');
+}
+
+async function saveSOPEdit(){
+  var id=document.getElementById('sop-edit-id').value;
+  var txt=document.getElementById('sop-edit-input').value.trim();
+  if(!txt){toast('Nama tidak boleh kosong');return;}
+  await DB.patch('sop_items',{title:txt},'id=eq.'+id);
+  [S.sopO,S.sopC].forEach(function(arr){var it=arr.find(function(x){return x.id===id;});if(it)it.title=txt;});
+  closeModal('modal-sop-edit');
+  renderSOPs();
+  toast('Item diperbarui ✦');
+}
+
+async function deleteSOPItem(id){
+  if(!confirm('Hapus item ini?'))return;
+  await DB.del('sop_items','id=eq.'+id);
+  S.sopO=S.sopO.filter(function(x){return x.id!==id;});
+  S.sopC=S.sopC.filter(function(x){return x.id!==id;});
+  renderSOPMgr();renderSOPs();
+  toast('Item dihapus');
+}
+
+// TASKS
+async function loadTasks(){
+  if(!S.userId)return;
+  var rows=await DB.get('daily_tasks','employee_id=eq.'+S.userId+'&date=eq.'+todayStr()+'&order=created_at.asc');
+  S.tasks=rows||[];renderTasks();
+}
+
+function renderTasks(){
+  var list=document.getElementById('task-list');
+  if(!S.tasks.length){list.innerHTML='<div style="font-size:11px;color:var(--muted);font-style:italic;padding:.4rem 0">Belum ada task hari ini</div>';return;}
+  var priColor={normal:'var(--muted)',penting:'var(--gold)',urgent:'var(--red2)'};
+  list.innerHTML=S.tasks.map(function(t,i){
+    var meta=[];
+    if(t.priority&&t.priority!=='normal')meta.push('<span style="color:'+priColor[t.priority]+'">'+t.priority+'</span>');
+    if(t.start_time)meta.push('⏱ '+t.start_time.slice(0,5)+(t.end_time?' – '+t.end_time.slice(0,5):''));
+    return '<div class="task-item"><input type="checkbox" class="sop-chk" '+(t.status==='done'?'checked':'')+' onchange="toggleTask('+i+',this.checked)"><div class="task-body"><div class="task-title'+(t.status==='done'?' done':'')+'">'+t.title+'</div>'+(meta.length?'<div class="task-meta">'+meta.join(' · ')+'</div>':'')+'</div><div class="task-actions"><button class="btn-icon" onclick="openTaskEdit('+i+')" title="Edit">✎</button><button class="btn-icon del" onclick="deleteTask('+i+')" title="Hapus">×</button></div></div>';
+  }).join('');
+}
+
+async function addTask(){
+  var txt=document.getElementById('task-input').value.trim();
+  if(!txt)return;
+  var pri=document.getElementById('task-priority').value;
+  var st=document.getElementById('task-start').value;
+  var en=document.getElementById('task-end').value;
+  document.getElementById('task-input').value='';
+  document.getElementById('task-start').value='';
+  document.getElementById('task-end').value='';
+  var body={title:txt,status:'todo',priority:pri,date:todayStr(),employee_id:S.userId,start_time:st?st+':00':null,end_time:en?en+':00':null};
+  var res=await DB.post('daily_tasks',body);
+  S.tasks.push(res&&res[0]?res[0]:body);
+  renderTasks();
+}
+
+async function toggleTask(i,val){
+  S.tasks[i].status=val?'done':'todo';
+  renderTasks();
+  if(S.tasks[i].id)await DB.patch('daily_tasks',{status:S.tasks[i].status},'id=eq.'+S.tasks[i].id);
+}
+
+async function deleteTask(i){
+  var t=S.tasks[i];
+  if(t.id)await DB.del('daily_tasks','id=eq.'+t.id);
+  S.tasks.splice(i,1);renderTasks();
+}
+
+function openTaskEdit(i){
+  var t=S.tasks[i];
+  document.getElementById('te-idx').value=i;
+  document.getElementById('te-title').value=t.title||'';
+  document.getElementById('te-priority').value=t.priority||'normal';
+  document.getElementById('te-start').value=t.start_time?t.start_time.slice(0,5):'';
+  document.getElementById('te-end').value=t.end_time?t.end_time.slice(0,5):'';
+  document.getElementById('modal-task-edit').classList.add('show');
+}
+
+async function saveTaskEdit(){
+  var i=parseInt(document.getElementById('te-idx').value);
+  var t=S.tasks[i];
+  var txt=document.getElementById('te-title').value.trim();
+  if(!txt){toast('Nama task tidak boleh kosong');return;}
+  var st=document.getElementById('te-start').value;
+  var en=document.getElementById('te-end').value;
+  var upd={title:txt,priority:document.getElementById('te-priority').value,start_time:st?st+':00':null,end_time:en?en+':00':null};
+  Object.assign(t,upd);
+  if(t.id)await DB.patch('daily_tasks',upd,'id=eq.'+t.id);
+  closeModal('modal-task-edit');renderTasks();toast('Task diperbarui ✦');
+}
+
+// INSIGHT
+function renderInsight(){
+  var hadir=S.attendance.filter(function(a){return a.clock_in;}).length;
+  var total=S.attendance.reduce(function(s,a){return s+(a.duration_minutes||0);},0);
+  var avg=hadir>0?Math.round(total/hadir):0;
+  document.getElementById('ins2-hadir').textContent=hadir;
+  document.getElementById('ins2-hadir-sub').textContent='dari '+new Date().getDate()+' hari';
+  document.getElementById('ins2-avg').textContent=avg>=60?Math.floor(avg/60)+'j':(avg+'m');
+  var totalSOP=S.sopO.length+S.sopC.length;
+  var doneSOP=Object.values(S.sopOLog).filter(Boolean).length+Object.values(S.sopCLog).filter(Boolean).length;
+  document.getElementById('ins2-sop').textContent=totalSOP>0?Math.round(doneSOP/totalSOP*100)+'%':'—';
+  var today=new Date(),html='';
+  for(var i=6;i>=1;i--){
+    var d=new Date(today);d.setDate(today.getDate()-i+1);
+    var ds=d.toISOString().slice(0,10),dow=d.getDay();
+    var days=['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
+    var rec=S.attendance.find(function(a){return a.date===ds;});
+    var dur=rec&&rec.duration_minutes?rec.duration_minutes:0;
+    var pct=Math.min(100,Math.round(dur/480*100));
+    var durStr=dur>=60?Math.floor(dur/60)+'j '+(dur%60?dur%60+'m':''):'—';
+    html+='<div class="bar-wrap"><div class="bar-lbl"><span>'+days[dow]+' '+fmtDateShort(d)+'</span><span>'+durStr+'</span></div><div class="bar-track"><div class="bar-fill" style="width:'+pct+'%"></div></div></div>';
+  }
+  document.getElementById('week-bars').innerHTML=html;
+  var taskTotal=S.tasks.length,taskDone=S.tasks.filter(function(t){return t.status==='done';}).length;
+  var tpct=taskTotal>0?Math.round(taskDone/taskTotal*100):0;
+  document.getElementById('ins-task-pct').textContent=tpct+'%';
+  document.getElementById('ins-task-bar').style.width=tpct+'%';
+  document.getElementById('ins-task-detail').textContent=taskTotal>0?(taskDone+' dari '+taskTotal+' task selesai'):('Belum ada task hari ini');
+}
+
+// CALENDAR
+var CAL={year:new Date().getFullYear(),month:new Date().getMonth()};
+async function loadCalendarEvents(){var rows=await DB.get('calendar_events','order=date.asc');S.events=rows||[];}
+function calPrev(){if(CAL.month===0){CAL.month=11;CAL.year--;}else CAL.month--;renderCalendar();}
+function calNext(){if(CAL.month===11){CAL.month=0;CAL.year++;}else CAL.month++;renderCalendar();}
+function renderCalendar(){
+  var months=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  document.getElementById('cal-month-lbl').textContent=months[CAL.month]+' '+CAL.year;
+  var today=new Date(),first=new Date(CAL.year,CAL.month,1),last=new Date(CAL.year,CAL.month+1,0);
+  var startDow=first.getDay()||7;
+  var html=['Sen','Sel','Rab','Kam','Jum','Sab','Min'].map(function(d){return '<div class="cal-day-hdr">'+d+'</div>';}).join('');
+  for(var i=1;i<startDow;i++){var pd=new Date(CAL.year,CAL.month,1-startDow+i);html+='<div class="cal-day other-month"><div class="cal-dn">'+pd.getDate()+'</div></div>';}
+  for(var d=1;d<=last.getDate();d++){
+    var ds=CAL.year+'-'+String(CAL.month+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    var iT=today.getFullYear()===CAL.year&&today.getMonth()===CAL.month&&today.getDate()===d;
+    var evs=S.events.filter(function(e){return e.date===ds;});
+    var dots=evs.slice(0,3).map(function(){return '<div class="cal-dot"></div>';}).join('');
+    html+='<div class="cal-day'+(iT?' today':'')+'" onclick="showDayEvents(\''+ds+'\')"><div class="cal-dn">'+d+'</div>'+dots+'</div>';
+  }
+  document.getElementById('cal-grid').innerHTML=html;
+  showDayEvents(todayStr());
+}
+function showDayEvents(ds){
+  var evs=S.events.filter(function(e){return e.date===ds;});
+  var d=new Date(ds);
+  document.getElementById('cal-ev-lbl').textContent='Agenda · '+d.toLocaleDateString('id-ID',{day:'numeric',month:'long'});
+  if(!evs.length){document.getElementById('ev-list').innerHTML='<div class="ev-empty">Tidak ada agenda</div>';return;}
+  var gcBase='https://calendar.google.com/calendar/render?action=TEMPLATE';
+  document.getElementById('ev-list').innerHTML=evs.map(function(e){
+    var dotCls=e.category==='personal'?'ev-dot-personal':e.category==='reminder'?'ev-dot-reminder':'ev-dot-work';
+    var tStr=e.start_time?e.start_time.slice(0,5)+(e.end_time?' – '+e.end_time.slice(0,5):''):'';
+    var gcUrl=gcBase+'&text='+encodeURIComponent(e.title)+'&dates='+ds.replace(/-/g,'')+'/'+(ds.replace(/-/g,''));
+    return '<div class="ev-item"><div class="ev-dot '+dotCls+'"></div><div style="flex:1"><div class="ev-title">'+e.title+'</div><div class="ev-meta">'+(tStr||e.category)+(e.description?' · '+e.description:'')+'</div></div><a href="'+gcUrl+'" target="_blank" class="gcal-btn" title="Buka di Google Calendar">📅</a><button class="btn-icon del" onclick="deleteEvent(\''+e.id+'\')">×</button></div>';
+  }).join('');
+}
+function openAddEvent(){
+  document.getElementById('ev-title').value='';document.getElementById('ev-date').value=todayStr();
+  document.getElementById('ev-start').value='';document.getElementById('ev-end').value='';
+  document.getElementById('ev-cat').value='work';document.getElementById('ev-desc').value='';
+  document.getElementById('ev-edit-id').value='new';
+  document.getElementById('modal-ev').classList.add('show');
+}
+async function saveEvent(){
+  var title=document.getElementById('ev-title').value.trim();if(!title){toast('Judul wajib diisi');return;}
+  var date=document.getElementById('ev-date').value;if(!date){toast('Tanggal wajib diisi');return;}
+  var st=document.getElementById('ev-start').value,en=document.getElementById('ev-end').value;
+  var body={title:title,date:date,category:document.getElementById('ev-cat').value,start_time:st?st+':00':null,end_time:en?en+':00':null,description:document.getElementById('ev-desc').value.trim()};
+  loading(true);var res=await DB.post('calendar_events',body);loading(false);
+  if(res&&res[0])S.events.push(res[0]);else S.events.push(body);
+  closeModal('modal-ev');renderCalendar();toast('Agenda disimpan ✦');
+}
+async function deleteEvent(id){
+  if(!confirm('Hapus agenda ini?'))return;
+  await DB.del('calendar_events','id=eq.'+id);
+  S.events=S.events.filter(function(e){return e.id!==id;});renderCalendar();toast('Agenda dihapus');
+}
+
+// SUMMARY
+function switchSumTab(t){
+  S.sumTab=t;
+  ['daily','weekly','monthly'].forEach(function(x){document.getElementById('stab-'+x).classList.toggle('active',x===t);});
+  renderSummaryList();
+}
+
+async function loadSummaries(){
+  if(!S.userId)return;
+  var rows=await DB.get('summaries','employee_id=eq.'+S.userId+'&order=created_at.desc');
+  S.summaries=rows||[];
+}
+
+function renderSummaryList(){
+  var items=S.summaries.filter(function(s){return s.type===S.sumTab;});
+  var el=document.getElementById('sum-list');
+  if(!items.length){el.innerHTML='<div class="sum-empty">Belum ada summary '+S.sumTab+'. Klik Generate untuk membuat.</div>';return;}
+  el.innerHTML=items.map(function(s){
+    var txt=buildSummaryText(s.data,s.type,s.period);
+    return '<div class="sum-hist-item"><div class="sum-hist-hdr"><div><div class="sum-hist-title">'+s.period+'</div><div class="sum-hist-date">'+new Date(s.created_at).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})+'</div></div><div class="sum-hist-btns"><button class="btn btn-s btn-xs" onclick="copySummary(\''+s.id+'\')">Copy</button><button class="btn btn-s btn-xs" onclick="downloadSummary(\''+s.id+'\')">↓ TXT</button><button class="btn-icon del" onclick="deleteSummary(\''+s.id+'\')">×</button></div></div><div class="sum-body" id="sb-'+s.id+'">'+txt+'<div class="sum-fade"></div></div><button class="sum-expand" onclick="toggleSumExpand(\''+s.id+'\')">Lihat selengkapnya ▾</button></div>';
+  }).join('');
+}
+
+function buildSummaryText(data,type,period){
+  if(!data)return '—';
+  var lines=['📋 SUMMARY '+type.toUpperCase()+' — '+period,''];
+  lines.push('👤 Karyawan: '+(data.employee||'Dhista'));
+  if(data.hadir!==undefined)lines.push('📅 Kehadiran: '+data.hadir+' hari'+(data.totalDays?' dari '+data.totalDays+' hari kerja':''));
+  if(data.clockIn)lines.push('⏱ Clock In: '+data.clockIn+(data.clockOut?' | Clock Out: '+data.clockOut:''));
+  if(data.duration)lines.push('⏳ Durasi Kerja: '+data.duration);
+  if(data.avgDuration)lines.push('⏳ Rata-rata Jam/Hari: '+data.avgDuration);
+  lines.push('');
+  if(data.sopOpenPct!==undefined)lines.push('✅ SOP Opening: '+data.sopOpenPct+'%');
+  if(data.sopClosePct!==undefined)lines.push('✅ SOP Closing: '+data.sopClosePct+'%');
+  lines.push('');
+  if(data.taskTotal!==undefined){
+    lines.push('📌 Task Total: '+data.taskTotal);
+    lines.push('   ✓ Selesai: '+data.taskDone);
+    lines.push('   ○ Pending: '+data.taskPending);
+    lines.push('   Progress: '+data.taskPct+'%');
+  }
+  if(data.tasks&&data.tasks.length){
+    lines.push('');lines.push('Task Detail:');
+    data.tasks.forEach(function(t){lines.push('  '+(t.status==='done'?'[✓]':'[ ]')+' '+t.title+(t.priority&&t.priority!=='normal'?' ('+t.priority+')':'')+(t.start_time?' '+t.start_time.slice(0,5)+(t.end_time?'–'+t.end_time.slice(0,5):''):''));});
+  }
+  if(data.notes)lines.push('','📝 Catatan: '+data.notes);
+  return lines.join('\n');
+}
+
+async function generateSummary(type){
+  if(!S.userId){toast('User tidak ditemukan');return;}
+  var data={employee:'Dhista'};
+  var period='';
+  var today=new Date();
+
+  if(type==='daily'){
+    period=today.toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    var todayAtt=S.attendance.find(function(a){return a.date===todayStr();});
+    data.hadir=todayAtt&&todayAtt.clock_in?1:0;
+    data.clockIn=todayAtt&&todayAtt.clock_in?todayAtt.clock_in.slice(0,5):'—';
+    data.clockOut=todayAtt&&todayAtt.clock_out?todayAtt.clock_out.slice(0,5):'—';
+    var dur=todayAtt&&todayAtt.duration_minutes?todayAtt.duration_minutes:0;
+    data.duration=dur>=60?Math.floor(dur/60)+'j '+(dur%60)+'m':(dur?dur+'m':'—');
+    var totalSOP=S.sopO.length+S.sopC.length;
+    var doneO=Object.values(S.sopOLog).filter(Boolean).length;
+    var doneC=Object.values(S.sopCLog).filter(Boolean).length;
+    data.sopOpenPct=S.sopO.length?Math.round(doneO/S.sopO.length*100):0;
+    data.sopClosePct=S.sopC.length?Math.round(doneC/S.sopC.length*100):0;
+    data.taskTotal=S.tasks.length;
+    data.taskDone=S.tasks.filter(function(t){return t.status==='done';}).length;
+    data.taskPending=data.taskTotal-data.taskDone;
+    data.taskPct=data.taskTotal>0?Math.round(data.taskDone/data.taskTotal*100):0;
+    data.tasks=S.tasks.map(function(t){return {title:t.title,status:t.status,priority:t.priority,start_time:t.start_time,end_time:t.end_time};});
+  } else if(type==='weekly'){
+    var weekStart=new Date(today);weekStart.setDate(today.getDate()-today.getDay()+1);
+    var weekEnd=new Date(weekStart);weekEnd.setDate(weekStart.getDate()+6);
+    period=fmtDateShort(weekStart)+' – '+fmtDateShort(weekEnd)+' '+weekStart.getFullYear();
+    var wAtts=S.attendance.filter(function(a){var d=new Date(a.date);return d>=weekStart&&d<=weekEnd&&a.clock_in;});
+    data.hadir=wAtts.length;data.totalDays=6;
+    var wTotal=wAtts.reduce(function(s,a){return s+(a.duration_minutes||0);},0);
+    data.avgDuration=wAtts.length>0?(function(){var a=Math.round(wTotal/wAtts.length);return a>=60?Math.floor(a/60)+'j '+(a%60)+'m':a+'m';}()):'—';
+    data.taskTotal=S.tasks.length;data.taskDone=S.tasks.filter(function(t){return t.status==='done';}).length;
+    data.taskPending=data.taskTotal-data.taskDone;
+    data.taskPct=data.taskTotal>0?Math.round(data.taskDone/data.taskTotal*100):0;
+  } else {
+    var m=todayStr().slice(0,7);
+    var months=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+    period=months[today.getMonth()]+' '+today.getFullYear();
+    var mAtts=S.attendance.filter(function(a){return a.date.startsWith(m)&&a.clock_in;});
+    data.hadir=mAtts.length;data.totalDays=today.getDate();
+    var mTotal=mAtts.reduce(function(s,a){return s+(a.duration_minutes||0);},0);
+    data.avgDuration=mAtts.length>0?(function(){var a=Math.round(mTotal/mAtts.length);return a>=60?Math.floor(a/60)+'j '+(a%60)+'m':a+'m';}()):'—';
+    data.taskTotal=S.tasks.length;data.taskDone=S.tasks.filter(function(t){return t.status==='done';}).length;
+    data.taskPending=data.taskTotal-data.taskDone;
+    data.taskPct=data.taskTotal>0?Math.round(data.taskDone/data.taskTotal*100):0;
+  }
+
+  loading(true);
+  var res=await DB.post('summaries',{employee_id:S.userId,type:type,period:period,data:data});
+  loading(false);
+  if(res&&res[0])S.summaries.unshift(res[0]);
+  else S.summaries.unshift({id:Date.now().toString(),type:type,period:period,data:data,created_at:new Date().toISOString()});
+  S.sumTab=type;
+  ['daily','weekly','monthly'].forEach(function(x){document.getElementById('stab-'+x).classList.toggle('active',x===type);});
+  renderSummaryList();
+  goPage('summary');
+  toast('Summary '+type+' dibuat ✦');
+}
+
+function toggleSumExpand(id){
+  var body=document.getElementById('sb-'+id);
+  var btn=body.nextElementSibling;
+  var exp=body.classList.toggle('expanded');
+  btn.textContent=exp?'Tutup ▴':'Lihat selengkapnya ▾';
+}
+
+function getSummaryText(id){
+  var s=S.summaries.find(function(x){return x.id===id||String(x.id)===String(id);});
+  return s?buildSummaryText(s.data,s.type,s.period):'';
+}
+
+function copySummary(id){
+  var txt=getSummaryText(id);
+  if(!txt)return;
+  navigator.clipboard.writeText(txt).then(function(){toast('Summary disalin ✦');});
+}
+
+function downloadSummary(id){
+  var s=S.summaries.find(function(x){return x.id===id||String(x.id)===String(id);});
+  if(!s)return;
+  var txt=buildSummaryText(s.data,s.type,s.period);
+  var blob=new Blob([txt],{type:'text/plain'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='wg88-summary-'+s.type+'-'+s.period.replace(/\s/g,'-')+'.txt';
+  a.click();
+  toast('File diunduh');
+}
+
+async function deleteSummary(id){
+  if(!confirm('Hapus summary ini?'))return;
+  await DB.del('summaries','id=eq.'+id);
+  S.summaries=S.summaries.filter(function(s){return String(s.id)!==String(id);});
+  renderSummaryList();toast('Summary dihapus');
+}
+
+// CLOSE MODALS ON BG
+['modal-ev','modal-sop','modal-sop-edit','modal-task-edit'].forEach(function(id){
+  document.getElementById(id).addEventListener('click',function(e){if(e.target===this)closeModal(id);});
+});
+
+// INIT
+async function init(){
+  loading(true);
+  try{
+    var emps=await DB.get('employees','name=eq.Dhista');
+    if(emps&&emps.length)S.userId=emps[0].id;
+    await Promise.all([loadSOPItems(),loadAttendance(),loadCalendarEvents(),loadSummaries()]);
+    if(S.userId){await loadSOPLogs();await loadTasks();}
+  }catch(e){console.error(e);toast('Gagal memuat data. Cek koneksi.');}
+  loading(false);
+  renderSOPs();renderTasks();renderCalendar();
+}
+init();
+</script>
+</body>
+</html>

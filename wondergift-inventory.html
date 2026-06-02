@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wondergift88 — Inventory</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--cream:#F7F4EE;--ink:#1A1714;--ink-soft:#4A4540;--ink-muted:#9A948E;--gold:#B8975A;--wine:#72243E;--border:rgba(26,23,20,0.1);--border-soft:rgba(26,23,20,0.06);--ok-bg:#EAF3E0;--ok-text:#27500A;--low-bg:#FCEBEB;--low-text:#791F1F;--warn-bg:#FAEEDA;--warn-text:#633806;}
+body{background:var(--cream);color:var(--ink);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;}
+header{border-bottom:0.5px solid var(--border);padding:1.1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:var(--cream);position:sticky;top:0;z-index:100;}
+.logo{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:500;letter-spacing:0.04em;}
+.logo sup{font-size:10px;color:var(--gold);font-family:'DM Mono',monospace;}
+.sync-pill{display:flex;align-items:center;gap:6px;font-size:11px;font-family:'DM Mono',monospace;color:var(--ink-muted);background:#fff;border:0.5px solid var(--border);border-radius:20px;padding:4px 10px;}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:#B4B2A9;flex-shrink:0;}
+.sync-dot.ok{background:#63B543;}.sync-dot.loading{background:#E8A020;}
+.container{max-width:1000px;margin:0 auto;padding:2rem;}
+.card{background:#fff;border:0.5px solid var(--border);border-radius:4px;padding:1.5rem;margin-bottom:1rem;}
+.card-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;margin-bottom:1.25rem;}
+.lbl{font-size:10px;color:var(--ink-muted);display:block;margin-bottom:5px;letter-spacing:0.1em;text-transform:uppercase;font-family:'DM Mono',monospace;}
+input[type=text],input[type=number],select,textarea{width:100%;background:var(--cream);border:0.5px solid var(--border);border-radius:3px;padding:8px 10px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--ink);outline:none;transition:border-color 0.2s;}
+input:focus,select:focus,textarea:focus{border-color:var(--gold);}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239A948E' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;-webkit-appearance:none;appearance:none;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;}
+.divider{border:none;border-top:0.5px solid var(--border-soft);margin:1.25rem 0;}
+.btn{background:var(--ink);color:var(--cream);border:none;border-radius:3px;padding:9px 18px;font-size:13px;cursor:pointer;}
+.btn-sec{background:transparent;color:var(--ink-soft);border:0.5px solid var(--border);border-radius:3px;padding:7px 13px;font-size:12px;cursor:pointer;}
+.btn-sec:hover{background:var(--cream);}
+.btn-danger{background:transparent;color:var(--low-text);border:0.5px solid rgba(121,31,31,0.25);border-radius:3px;padding:5px 10px;font-size:11px;cursor:pointer;}
+.btn-sm{padding:5px 10px;font-size:11px;}
+.metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:1.5rem;}
+.metric{background:#fff;border:0.5px solid var(--border);border-radius:4px;padding:1rem 1.25rem;}
+.metric-lbl{font-size:10px;color:var(--ink-muted);font-family:'DM Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;}
+.metric-val{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;line-height:1;}
+.search-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.25rem;align-items:center;}
+.search-bar input{flex:1;min-width:180px;}
+.cat-filter{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:1rem;}
+.cf-btn{font-size:10px;padding:3px 10px;border-radius:2px;border:0.5px solid var(--border);background:transparent;color:var(--ink-muted);cursor:pointer;font-family:'DM Mono',monospace;transition:all 0.15s;}
+.cf-btn.on{background:var(--ink);color:var(--cream);border-color:var(--ink);}
+.add-form{background:var(--cream);border:0.5px solid var(--border);border-radius:4px;padding:1.25rem;margin-bottom:1rem;display:none;}
+.add-form.open{display:block;}
+table.tbl{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed;}
+table.tbl th{text-align:left;font-size:10px;color:var(--ink-muted);padding:6px 10px;border-bottom:0.5px solid var(--border);font-weight:400;font-family:'DM Mono',monospace;letter-spacing:0.06em;}
+table.tbl td{padding:9px 10px;border-bottom:0.5px solid var(--border-soft);vertical-align:middle;}
+table.tbl tr:last-child td{border-bottom:none;}
+table.tbl tr:hover td{background:#fafaf8;}
+.empty{text-align:center;padding:3rem;color:var(--ink-muted);font-size:13px;font-family:'DM Mono',monospace;}
+.seeded-notice{background:var(--warn-bg);border:0.5px solid rgba(99,56,6,0.2);border-radius:3px;padding:10px 14px;font-size:12px;color:var(--warn-text);margin-bottom:1rem;display:none;}
+footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:center;font-size:11px;color:var(--ink-muted);font-family:'DM Mono',monospace;margin-top:2rem;}
+@media(max-width:640px){header{padding:1rem 1.25rem;}.container{padding:1.25rem;}.row2,.row3{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">Wondergift<sup>88</sup>&nbsp;<span style="font-size:11px;color:var(--ink-muted);font-family:'DM Mono',monospace;font-weight:400;">inventory</span></div>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div class="sync-pill"><span class="sync-dot" id="syncDot"></span><span id="syncText">menghubungkan...</span></div>
+    <span style="font-size:11px;font-family:'DM Mono',monospace;color:var(--ink-muted);" id="invCount"></span>
+  </div>
+</header>
+<div class="container">
+  <div class="metric-grid" id="metricGrid"></div>
+  <div id="seededNotice" class="seeded-notice">761 item dari data Shopee berhasil diimpor ke database. Silakan edit atau hapus item yang tidak relevan.</div>
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:1rem;">
+      <p class="card-title" style="margin:0;">Inventory & belanja</p>
+      <div style="display:flex;gap:8px;">
+        <button class="btn-sec btn-sm" onclick="exportCSV()">Export CSV</button>
+        <button class="btn btn-sm" onclick="toggleForm()">+ Tambah item</button>
+      </div>
+    </div>
+    <div class="add-form" id="invForm">
+      <p style="font-size:12px;font-weight:500;margin-bottom:10px;" id="invFormTitle">Item baru</p>
+      <div class="row2">
+        <div><span class="lbl">Nama produk</span><input type="text" id="if-nama" placeholder="Nama item" /></div>
+        <div><span class="lbl">Kategori</span><select id="if-kat">
+          <option>Bunga & tanaman</option><option>Art aksesoris</option><option>Packaging</option>
+          <option>Wine & spirits</option><option>Hampers & add-on</option><option>Aset kios</option>
+          <option>Peralatan & elektronik</option><option>Perlengkapan admin/kantor</option>
+        </select></div>
+      </div>
+      <div class="row3">
+        <div><span class="lbl">Toko / supplier</span><input type="text" id="if-toko" placeholder="Nama toko" /></div>
+        <div><span class="lbl">Qty</span><input type="number" id="if-qty" placeholder="1" min="0" /></div>
+        <div><span class="lbl">Harga satuan (Rp)</span><input type="number" id="if-harga" placeholder="0" min="0" /></div>
+      </div>
+      <div class="row2">
+        <div><span class="lbl">Kondisi</span><select id="if-kondisi"><option value="Baik">Baik</option><option value="Perlu cek">Perlu cek</option><option value="Rusak">Rusak</option></select></div>
+        <div><span class="lbl">Catatan</span><input type="text" id="if-catatan" placeholder="opsional" /></div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;">
+        <button class="btn-sec btn-sm" onclick="cancelForm()">Batal</button>
+        <button class="btn btn-sm" id="if-save-btn" onclick="saveItem()">Simpan</button>
+      </div>
+      <input type="hidden" id="if-edit-id" />
+    </div>
+    <div class="search-bar">
+      <input type="text" id="invSearch" placeholder="Cari nama atau toko..." oninput="renderInventory()" />
+      <select id="kondisiFilter" onchange="renderInventory()" style="width:auto;">
+        <option value="all">Semua kondisi</option><option value="Baik">Baik</option>
+        <option value="Perlu cek">Perlu cek</option><option value="Rusak">Rusak</option>
+      </select>
+    </div>
+    <div class="cat-filter" id="catFilter"></div>
+    <div style="overflow-x:auto;">
+      <table class="tbl">
+        <thead><tr>
+          <th style="width:32%;">Produk</th><th style="width:18%;">Kategori</th><th style="width:15%;">Toko</th>
+          <th style="width:8%;text-align:right;">Qty</th><th style="width:13%;text-align:right;">Harga</th>
+          <th style="width:9%;">Kondisi</th><th style="width:5%;"></th>
+        </tr></thead>
+        <tbody id="invBody"></tbody>
+      </table>
+      <div id="invEmpty" class="empty" style="display:none;">Belum ada item.</div>
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--ink-muted);font-family:'DM Mono',monospace;" id="invFooter"></div>
+  </div>
+</div>
+<footer>wondergift88.com &nbsp;·&nbsp; inventory — realtime sync</footer>
+
+<script>
+const SUPA_URL='https://cehiusuaipanuynmizdf.supabase.co';
+const SUPA_KEY='sb_publishable_eCQxemaN5Wm70442OsUV6Q_wxaReN_f';
+const H={'Content-Type':'application/json','apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}`,'Prefer':'return=representation'};
+const CATS=['Bunga & tanaman','Art aksesoris','Packaging','Wine & spirits','Hampers & add-on','Aset kios','Peralatan & elektronik','Perlengkapan admin/kantor'];
+const CAT_COLORS={'Bunga & tanaman':'background:#EAF3E0;color:#27500A;','Art aksesoris':'background:#EEEDFE;color:#3C3489;','Packaging':'background:#E6F1FB;color:#0C447C;','Wine & spirits':'background:#EEEDFE;color:#3C3489;','Hampers & add-on':'background:#FAEEDA;color:#633806;','Aset kios':'background:#FAEEDA;color:#633806;','Peralatan & elektronik':'background:#E6F1FB;color:#0C447C;','Perlengkapan admin/kantor':'background:#F1EFE8;color:#444441;'};
+const KBADGE={'Baik':'background:#EAF3E0;color:#27500A;','Rusak':'background:#FCEBEB;color:#791F1F;','Perlu cek':'background:#FAEEDA;color:#633806;'};
+
+let items=[];let catFilter='all';let editId=null;
+const SEEDED_KEY='wg88_inv_seeded_supa';
+
+function fmtRp(v){return 'Rp'+(v||0).toLocaleString('id-ID');}
+function genId(){return 'inv_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,5);}
+function setSync(ok){document.getElementById('syncDot').className='sync-dot'+(ok?' ok':' loading');document.getElementById('syncText').textContent=ok?'tersambung':'menghubungkan...';}
+
+const DEFAULT_ITEMS = [
+{produk:'Parker Jotter Stainless Steel',toko:'Parker Pen Official Shop',qty:1,harga:415000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Aklirik lembaran 5mm Uk A4',toko:'Marga Cipta Anugerah',qty:1,harga:27500,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Aklirik lembaran 4mm Uk A4',toko:'Marga Cipta Anugerah',qty:1,harga:26000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Lembaran Akrilik A2 3mm/ Acry',toko:'Aklirik Teknika',qty:1,harga:45000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Anker Powerbank 25000mAh',toko:'Electonic Gadget Official',qty:1,harga:1149000,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Rantai Tas Besar/ Premium',toko:'CERISIDA',qty:2,harga:28000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Siku Sudut Buku Gold',toko:'acconline123',qty:1,harga:23000,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Lem Aklirik Bening 150ml',toko:'FM-WORKSHOP',qty:2,harga:30000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Flower Family (round)/ topper',toko:'Flower_Family',qty:2,harga:19000,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Meja aklirik, nampan meja',toko:'acrylic_akrilik',qty:1,harga:230000,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Gelas kaca whisky 175ml',toko:'Nortsider Coffe',qty:10,harga:40000,kategori:'Wine & spirits',kondisi:'Baik',catatan:''},
+{produk:'Tripod Frame Foto Lanscade',toko:'Lautan Display',qty:2,harga:80000,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'1 Set 6 pcs Nadir Gelas Kaki',toko:'Gudang Gelas',qty:2,harga:122000,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'Paperbag Wine Kraft Box',toko:'Rumah Krave',qty:42,harga:16500,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'ARTE Mini Florist Bag',toko:'Roemah Arte',qty:1,harga:12990,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'ARTE Mini Florist Bag',toko:'',qty:2,harga:12990,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Lem Tembak Eagle 500gr',toko:'Sablon Bordir',qty:1,harga:49000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Renda tile bordir 90cm',toko:'mulia textile01',qty:1,harga:12349,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Renda tile bordir 90cm',toko:'',qty:1,harga:12349,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Renda tile bordir 90cm',toko:'',qty:2,harga:12349,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Bor Listrik Mini USB DIY',toko:'Insideflow',qty:1,harga:159999,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Rumaku Kotak Tisu Awan',toko:'Rumaku Official Shop',qty:1,harga:28998,kategori:'Wine & spirits',kondisi:'Baik',catatan:''},
+{produk:'Sarung Tangan Jaring Bunga',toko:'Loving Official',qty:1,harga:20500,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Sarung Tangan Jaring Bunga',toko:'',qty:1,harga:20500,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Stoking Motif Bunga Cosplay',toko:'',qty:1,harga:36000,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Peyek Rebon',toko:'',qty:1,harga:54760,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'OHSOME Reed Diffuser 160ml',toko:'OHSOME Indonesia',qty:1,harga:109900,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Dus packing',toko:'acrylic_akrilik',qty:1,harga:5000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Nampan Acrylic 35x35 3mm',toko:'',qty:1,harga:130000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Meja akrilik 1 Set PO',toko:'',qty:1,harga:215000,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Mtech Keyboard+Mouse Set',toko:'vio computer',qty:1,harga:54500,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Paperbag Wine Kraft Box',toko:'Rumah Krave',qty:3,harga:16500,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Stiker magnetik A4',toko:'Lucky stationery',qty:1,harga:9999,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Stiker magnetik A4',toko:'',qty:1,harga:9999,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Morandi Map File A4 60H',toko:'',qty:1,harga:18200,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Morandi Map File A4 60H',toko:'',qty:1,harga:18200,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Table Runner Nordic 160x30',toko:'Viva Vida',qty:1,harga:66000,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Holder Lilin Romantic 3pcs',toko:'',qty:2,harga:71300,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Renda Giver 3,5cm/100cm',toko:'Renda Collection',qty:1,harga:8000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Renda Giver 3,5cm/100cm',toko:'',qty:2,harga:8000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Renda Giver 3,5cm/100cm',toko:'',qty:2,harga:8000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Renda Giver 3,5cm/100cm',toko:'',qty:2,harga:8000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Renda Giver 3,5cm/100cm',toko:'',qty:3,harga:8000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Magnet kamera iphone',toko:'',qty:1,harga:24999,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Gelang Tridatu (Gratis)',toko:'',qty:1,harga:0,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Kartu perdana XL 3GB',toko:'Suburcellular1 store',qty:1,harga:32900,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Newton\'s Cradle Pendulum',toko:'Lelly_id',qty:1,harga:31800,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Kotak Musik Piano Balerina',toko:'',qty:1,harga:98000,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Akrilik A4 2mm Putih Solid',toko:'Akrilik Teknika',qty:2,harga:13500,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Akrilik Mirror A3 Silver',toko:'',qty:1,harga:40000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Tempat Brosur Akrilik A4',toko:'',qty:4,harga:16500,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Akrilik A2 3mm Putih Solid',toko:'',qty:1,harga:70000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'TECNO SPARK Go 3 4+4/128',toko:'TECNO Official Store',qty:1,harga:1648999,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Round Box Hardbox 25x11',toko:'Gracia Box',qty:3,harga:61308,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Acrylic Ball',toko:'dekorasimart',qty:4,harga:14000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Acrylic Ball',toko:'',qty:7,harga:8500,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Mawar Beludru tangkai',toko:'FlowerWorld',qty:10,harga:8500,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Mawar Beludru tangkai',toko:'',qty:15,harga:8500,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'ISKU Penggaris Besi 100cm',toko:'Jawara Tools',qty:1,harga:47900,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Sewa Meeting Premium 100',toko:'albusyrashop',qty:1,harga:8500,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'ADVAN CPE V1 Pro Modem 4G',toko:'Advan Notebook',qty:1,harga:399000,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Stand Laptop Aluminium 360',toko:'Octatrix',qty:1,harga:154000,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Uneed Cable Clip UCO204',toko:'Uneed Indonesia',qty:1,harga:20300,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Uneed Cable Clip UCO204',toko:'',qty:1,harga:20300,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Uneed Mousepad PU XL',toko:'',qty:1,harga:93769,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Xpanse Standing Desk 100x60',toko:'Xpanse Official Store',qty:1,harga:1298000,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Buket Balon Lollipop',toko:'Miki Florist',qty:1,harga:68600,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'Kartu perdana XL 3GB',toko:'Suburcellular1 store',qty:1,harga:32900,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Bloom Box Bulat',toko:'Bloombyvia',qty:1,harga:60000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Bloom Box Bulat',toko:'',qty:1,harga:65000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'MicroClean Microfiber 30x30',toko:'Gloveo+ Indonesia',qty:1,harga:12500,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'MicroClean Microfiber 30x30',toko:'',qty:1,harga:12500,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'MicroClean Microfiber 30x30',toko:'',qty:1,harga:12500,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'MOP Anti Cakey Primer 30ml',toko:'',qty:1,harga:161100,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'POL Rak Troli 3 Susun',toko:'POL Perabot Online',qty:2,harga:59999,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'POL Troli Belanja Lipat',toko:'',qty:1,harga:249999,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Mini Heat Sealer 2in1',toko:'SYQMART',qty:1,harga:23999,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Stone Texture Wrapping',toko:'TUKUNOSA',qty:2,harga:10900,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Stone Texture Wrapping',toko:'',qty:2,harga:10900,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Stone Texture Wrapping',toko:'',qty:2,harga:10900,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Paper Cutter A3 829 Premium',toko:'GrafikaKita-Tech',qty:1,harga:225000,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'MOP Tender Touch Contour',toko:'',qty:1,harga:105910,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'MOP Multifunctional Brush',toko:'',qty:1,harga:109650,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Paket 5 Pack Cleo 220ml x24',toko:'ananda store',qty:1,harga:128250,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'FTI Illipe Butter Pot',toko:'',qty:1,harga:142000,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Kapton Tape Green 10mm',toko:'mycaseindo',qty:3,harga:15900,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Mark Ryden MR7917 Backpack',toko:'Mark Ryden',qty:1,harga:687000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Baterai LR44 AG13 Maxell',toko:'Raja Sukses',qty:10,harga:4500,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Set Gunting Pemangkas Alis',toko:'',qty:2,harga:9950,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Lip Brush Silicon',toko:'',qty:3,harga:8931,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'PPC Tempat Makan 2in1',toko:'',qty:1,harga:7800,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'PPC Golden Eyes 10ml',toko:'',qty:1,harga:32250,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'PPC Cat Choize Kitten 1kg',toko:'',qty:3,harga:30300,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Bunga Valentine Bear Rose',toko:'Bybooballoon',qty:1,harga:180000,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'MAKARIZO Easy Colourz',toko:'',qty:5,harga:10500,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'CROWNCARE Hair Shadow 4g',toko:'',qty:1,harga:54500,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'VAELUS Vacuum Sealer',toko:'Vaelus Living Space',qty:1,harga:150000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Cabai Merah Keriting 150gr',toko:'',qty:2,harga:19000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Gunting Kertas Ladypop',toko:'La Natuna Official',qty:6,harga:5000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Pompa Balon Elektrik',toko:'',qty:1,harga:83100,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'Mesin Tekuk Akrilik 60cm',toko:'kaisenreklame',qty:1,harga:499000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Lapis Legit 20x20 SUPER PO',toko:'SUPPLIER LAPIS LEGIT',qty:1,harga:299900,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'DMJ Plastik Vacuum 30x34 10pcs',toko:'MR eStore',qty:1,harga:54300,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'VETTO Stop Kontak 4 in 1',toko:'Vetto Official Shop',qty:2,harga:37000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'ARVIONE Stiker (Gratis)',toko:'',qty:1,harga:0,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Amaranthus K4 4 Cabang x16',toko:'Flower_Family',qty:1,harga:17924,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Amaranthus K4 4 Cabang x16',toko:'',qty:1,harga:17924,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Amaranthus K4 4 Cabang x32',toko:'',qty:4,harga:23569,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Karpet Lumut Moss 100x100',toko:'rumahbungadekor',qty:1,harga:290000,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Balon Foil 4D Orbz 22',toko:'Party Murah Online',qty:1,harga:5488,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'Balon Foil 4D Orbz 22',toko:'',qty:1,harga:5488,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'Balon Foil 4D Orbz 22',toko:'',qty:1,harga:5488,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'Balon Foil 4D Orbz 22',toko:'',qty:1,harga:5488,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'Balon Bobo PVC 20 50pcs',toko:'',qty:1,harga:59990,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'Lapis Legit 20x10 REGULAR',toko:'SUPPLIER LAPIS LEGIT',qty:2,harga:168000,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Meja Bar Hidrolik 60x60',toko:'Morning Star Official',qty:1,harga:507224,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'TEKIRO Isi Cutter Akrilik',toko:'online technical tools',qty:1,harga:15900,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'TEKIRO Acrylic Cutter',toko:'',qty:1,harga:36760,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Angpau Lebaran Jumbo 10pcs',toko:'Dealustre Design',qty:1,harga:62000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'ACEFOOD Singkong Balado',toko:'',qty:1,harga:52900,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'ACEFOOD Singkong Keju',toko:'',qty:1,harga:57900,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'MAANGE Mask Brush 51580',toko:'',qty:1,harga:24900,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'MAANGE Mask Brush 51580',toko:'',qty:1,harga:24900,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'MAANGE Liquid Blush MG-F04',toko:'',qty:1,harga:71900,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'MAANGE Spons (Gratis)',toko:'',qty:1,harga:0,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'MAANGE Eyelash Curler 1309',toko:'',qty:1,harga:14900,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'MAANGE Sisir 1459',toko:'',qty:1,harga:20900,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Lilin Doa Misa 8x3 5pcs',toko:'Yeraya Toko Rohani',qty:1,harga:33000,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Set Hiasan Telur Paskah',toko:'',qty:1,harga:95000,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Kuas Lukis 10pcs',toko:'sentralhome88',qty:1,harga:10989,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Silicone Scalp Brush',toko:'',qty:1,harga:14700,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Foil Emas 14x14 10lbr',toko:'',qty:2,harga:9500,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Payung Terbalik C 2 Lapis',toko:'Seven Plus Indonesia',qty:1,harga:82900,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Keranjang Rotan Oval 30x25 L',toko:'KeranjangRotanku',qty:2,harga:62000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Kacang Mix 500gr',toko:'',qty:2,harga:26000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Keripik Sale Pisang 200gr',toko:'',qty:3,harga:18500,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Bidaran Keju Mini 500gr',toko:'',qty:2,harga:37000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Samosa Ebi Sarikaya 500gr',toko:'',qty:3,harga:59000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Karpet Turki 150x100',toko:'Vintures',qty:1,harga:94900,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Tree Branch Mini K3',toko:'sanflor',qty:6,harga:10000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Daun Monstera Jumbo D24+Pot',toko:'TOKO.AB',qty:1,harga:104000,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Standing Mirror 60x160 Oval',toko:'Hergoo',qty:1,harga:518999,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Naraya Orange Candy 200gr',toko:'TOKO BILAL SHOP',qty:4,harga:21800,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'Roka Wafer Ball 50pcs',toko:'',qty:3,harga:56318,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Kain Tenda Payung 3m',toko:'CAHYA JATI FURNITURE',qty:1,harga:171000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'AC Second 1/2PK + Pasang R22',toko:'LITTLE STAR 126',qty:1,harga:2150000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Ambalan dinding 200x30x4',toko:'Hupa hupa decor',qty:1,harga:257760,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Gorden Vitrase Garis 2x3',toko:'SANLI GORDEN',qty:1,harga:169000,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'MIKOTEK Stop Kontak 4L 5m',toko:'898Bintang',qty:1,harga:45000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'MIKOTEK Stop Kontak 5L 5m',toko:'',qty:1,harga:55000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Tiang Hordeng Stainless 155-280',toko:'tirai_jakarta',qty:1,harga:120280,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Lem Kuning Dextone 1L',toko:'Unique Carpet & Decoration',qty:1,harga:75000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Selongsong Stiker Kaca',toko:'Toko Stiker Indonesia',qty:1,harga:8000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Rakel Stiker Kaca',toko:'',qty:1,harga:15000,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Stiker Kaca Riben 80%',toko:'',qty:6,harga:19500,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Siku Besi L 6x8 Putih',toko:'Handel & Engsel',qty:2,harga:2100,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Siku Besi L 4x5 Putih',toko:'',qty:6,harga:1800,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Meteran Tukang 5m',toko:'',qty:1,harga:14999,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Tang Multifungsi 9 inch',toko:'',qty:1,harga:44998,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Jerami Alas Keranjang Telur',toko:'Heppyshop',qty:1,harga:12000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Miniatur Burung Ekor Perisai',toko:'',qty:1,harga:13000,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Miniatur Burung Ekor Coklat',toko:'',qty:1,harga:13000,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Hiasan Wortel Paskah',toko:'',qty:5,harga:3000,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Sarang Burung Paskah 20cm',toko:'',qty:1,harga:25000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Telur Plastik Gantung 4x6',toko:'',qty:10,harga:3000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Stiker Flanel (Gratis)',toko:'',qty:1,harga:0,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Softlens Princess Bollycon',toko:'',qty:1,harga:98723,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Softlens Princess Glowy',toko:'',qty:1,harga:98723,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'L\'Oreal Powder Foundation 130',toko:'',qty:1,harga:145719,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'L\'Oreal Liquid Foundation 30',toko:'',qty:1,harga:149435,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'SKINTIFIC Glow Mask 30pcs',toko:'',qty:1,harga:149000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Herborist Body Scrub 200gr',toko:'',qty:1,harga:31500,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Herborist Body Scrub 200gr',toko:'',qty:1,harga:31500,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Mizzu Concealer 7.5g',toko:'',qty:1,harga:59500,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Mizzu Concealer 7.5g',toko:'',qty:1,harga:80000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Mizzu Concealer 7.5g',toko:'',qty:1,harga:80000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Stiker Lantai PVC 91x15 36pcs',toko:'FOGOMART',qty:3,harga:244800,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Trimin Triplek 4x8ft 6mm',toko:'MAHA BANGUNAN',qty:1,harga:190000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Kape Gagang Kayu 4 inch',toko:'Aneka Bangunan Jaya',qty:6,harga:3375,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Kue Keranjang 1kg 4pcs',toko:'kue keranjang juni law',qty:2,harga:44000,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'Pita Lebaran 1 inch',toko:'Craft Central Grosir',qty:4,harga:25650,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Tasbih Digital 99',toko:'Grosir Berkualitas Sajadah',qty:1,harga:24998,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Tasbih Digital 99',toko:'',qty:1,harga:24998,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Leaf Co Boldora Hard Box Besar',toko:'Leaf Co Hampers',qty:3,harga:104900,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Stik Kayu Bola Ferrero 40cm',toko:'SWAN HOUSE',qty:3,harga:14480,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Tas Mika Bambu Hampers',toko:'Nata Craft',qty:3,harga:39900,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Scented Candle Voyage 250gr',toko:'Aartisan Candle',qty:1,harga:140000,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Thumbprint Cheese 500gr PO',toko:'Eka Cookies 1',qty:2,harga:70000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Nastar Wijsman 500gr PO',toko:'',qty:2,harga:75000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'TEEKA W1 Kamera 5K 75MP',toko:'TEEKA Official Store',qty:1,harga:1101415,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Leivy Shower 900ml Refill',toko:'',qty:2,harga:64700,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Nastar Wisman 500gr Natha',toko:'',qty:1,harga:65000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Set Toples Kaca Diamond 3.5',toko:'Mamoshop.id',qty:5,harga:20000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Mawar Beludru',toko:'FlowerWorld',qty:5,harga:8500,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Mawar Beludru',toko:'',qty:15,harga:8500,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Mawar Antik Perancis',toko:'',qty:15,harga:8800,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Ferrero Rocher 24pcs Twinpack',toko:'Ferrero Official Store',qty:1,harga:478977,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Wintersweet Emas CNY',toko:'Top Flower Supplier',qty:20,harga:10938,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Round Box Hardbox 25x11',toko:'Gracia Box',qty:2,harga:61308,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Korean Mesh Jute 50x80',toko:'linagifts',qty:5,harga:24599,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Tulle Bridal Maroon 0.5m',toko:'Target Textile Mayestik',qty:10,harga:10000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Meja Laptop 4 Roda 40x60',toko:'LuxeLiving-Surabaya',qty:1,harga:208900,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'DNICE Piring Buah Eropa',toko:'DNICE',qty:1,harga:14900,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'DNICE Nordic Tray Akrilik',toko:'',qty:1,harga:39500,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'DNICE Nampan XL',toko:'',qty:1,harga:47500,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'Hardbox Flat Magnet 35x25',toko:'cubeid',qty:3,harga:42500,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Glencairn Whiskey Glass 175ml',toko:'Northsider Coffee',qty:6,harga:40000,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'Tusuk Sate Bambu 20cm 200pcs',toko:'kelontongplastik',qty:1,harga:5400,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Tusuk Sate Yakitori 20cm 100pcs',toko:'',qty:2,harga:14350,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Paperbag Dior Medium',toko:'Kenny Butik Store',qty:1,harga:99900,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Lem Tembak Eagle 500gr',toko:'Sablon Bordir',qty:1,harga:46547,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Permen Jelly Mandarin',toko:'',qty:2,harga:35100,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'Bubble Wrap 8 Kolom Wine',toko:'KUY!!',qty:15,harga:3300,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Topper Akrilik CNY Gold',toko:'TopperTrooper',qty:30,harga:5500,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Set Koin Yenpao 20',toko:'Eli\'s Choice',qty:1,harga:37900,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Lampion Mini Beludru 4cm 30',toko:'',qty:1,harga:44900,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Kipas Bambu Lukisan Kuda',toko:'',qty:2,harga:47900,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Magnolia Real Touch Premium',toko:'jakartaothelloflorist',qty:6,harga:58500,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Lapis Legit 20x10 Prunes Wisjman',toko:'lapislegit nusantara',qty:3,harga:325000,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Kue Coklat Mede',toko:'',qty:1,harga:48000,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'Kue Thumbprint Strawberry',toko:'',qty:1,harga:50000,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'Sagu Keju Toples Natha',toko:'',qty:1,harga:51000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Nastar Wisman 350gr',toko:'',qty:1,harga:65000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Kue Kastengel',toko:'',qty:1,harga:65000,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'Box Hampers 45x35x12 Biru',toko:'Gracia Box',qty:1,harga:143852,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Set Toples Kaca Diamond 3.5',toko:'Mamoshop.id',qty:6,harga:19800,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Ferrero Rocher 24pcs 2 Pack',toko:'Ferrero Official Store',qty:1,harga:507794,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Tassel Uang Kecil Imlek',toko:'sparkling party',qty:20,harga:10990,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Bunga Emas Juntai 189cm',toko:'Preservedflowersjkt',qty:2,harga:66900,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Magnolia Real Touch',toko:'jakartaothelloflorist',qty:4,harga:58500,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'BNI Tabcash E-Money Black',toko:'pingkydingky',qty:6,harga:28500,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Busa Basah Oasis Sakura 20pcs',toko:'Stick_kartu.id',qty:2,harga:109800,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Busa Basah Oasis Sakura 20pcs',toko:'Stick_kartu.id',qty:2,harga:109800,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Sewa Meeting Premium 100',toko:'albusyrashop',qty:1,harga:8500,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Magnolia Real Touch',toko:'jakartaothelloflorist',qty:6,harga:58500,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Tulle Bridal Maroon 0.5m',toko:'Target Textile Mayestik',qty:10,harga:10000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Set Vas Kaca Mini 10 PCS',toko:'K Check',qty:1,harga:120000,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Kemeja Catton Syal',toko:'',qty:1,harga:233333,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Label T & J',toko:'Hidayahfajar',qty:1,harga:8000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Spidol Permanen Gold',toko:'',qty:1,harga:15000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Spidol Permanen Silver',toko:'',qty:1,harga:15000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Kertas Flipchart 60x90',toko:'',qty:1,harga:16000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Flipchart Magnet 60x90',toko:'',qty:1,harga:585000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Breylee Blackhead Step 1',toko:'',qty:1,harga:48029,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Mede Panggang 500gr',toko:'',qty:1,harga:142000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Sewa Meeting Premium 100',toko:'albusyrashop',qty:1,harga:8500,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Beef Salami 100gr',toko:'',qty:2,harga:24600,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Hook Tempel Bebas Paku',toko:'Harvey Universal Industri',qty:3,harga:2014,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Double Tape Nano 2mm 1m',toko:'',qty:1,harga:6600,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Kotak Display PET 9x9',toko:'',qty:8,harga:3300,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Lakban Fragile Merah 2x80m',toko:'simokmok',qty:1,harga:15999,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Isolasi Toples Kue 12mm',toko:'',qty:3,harga:6999,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'Gift Box Emboss Hologram M',toko:'Sahara Morano Official',qty:1,harga:92800,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Perlak Baby Meteran',toko:'Stephanie426',qty:2,harga:30000,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Perlak Baby Meteran',toko:'',qty:2,harga:30000,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Gift Box Handle Bunga L',toko:'Sahara Morano Official',qty:1,harga:176800,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'ID Card Akrilik Mika',toko:'Rekan Topla',qty:20,harga:1100,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Kipas Lipat Tangan Cherry',toko:'My Glodok',qty:2,harga:20000,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Tulle Bridal Dusty Pink 0.5m',toko:'Target Textile Mayestik',qty:4,harga:9000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Tulle Bridal Maroon 0.5m',toko:'',qty:6,harga:9000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Tassel Uang Sedang Imlek',toko:'sparkling party',qty:10,harga:10990,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Hardbox Imlek Kuda 25x25x10',toko:'Wonderful Gift Collection',qty:1,harga:109000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Patung Kuda Nordic Geometris',toko:'DI.OFFICAL.ID',qty:1,harga:89900,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Manisan Persik 500gr',toko:'',qty:1,harga:39500,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Jelly Jeruk Mandarin 500gr',toko:'',qty:1,harga:40000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Tulle Bridal 0.5m',toko:'Target Textile Mayestik',qty:2,harga:9000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Tulle Bridal 0.5m',toko:'',qty:2,harga:9000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Payung Nari 58cm',toko:'megatronmart',qty:1,harga:32799,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Payung Nari 58cm',toko:'',qty:1,harga:35000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Payung Nari 58cm',toko:'',qty:1,harga:35000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Tangkai Besi Anggrek 60cm',toko:'BerkahOnline-1',qty:30,harga:1700,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Set Koin Yenpao Besar 24',toko:'Eli\'s Choice',qty:1,harga:44900,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Angpao Pendek (Gratis)',toko:'',qty:1,harga:0,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Kipas Bambu Kuda Besar',toko:'',qty:1,harga:47900,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Single Wine Carrier',toko:'Margie.R',qty:4,harga:75000,kategori:'Wine & spirits',kondisi:'Baik',catatan:''},
+{produk:'Anthurium Sintetis 60cm',toko:'Fantasi Taman Krea',qty:12,harga:5928,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Anthurium Sintetis 60cm',toko:'',qty:4,harga:5928,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Gift Hardbox Segi 8 35x25',toko:'Gracia Box',qty:1,harga:113751,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Gift Hardbox Segi 8 35x25',toko:'',qty:1,harga:113751,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Bunga Emas Tangga 34cm',toko:'Preservedflowersjkt',qty:1,harga:10900,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Bunga Emas Anthurium',toko:'',qty:1,harga:18900,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Bunga Emas Stypha',toko:'',qty:1,harga:26200,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Bunga Emas Lotus',toko:'',qty:2,harga:19000,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Bunga Emas Kipas Bulat',toko:'',qty:3,harga:13900,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Bunga Emas Lily 3 Cabang',toko:'',qty:2,harga:20900,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Bunga Emas Sakura Mini',toko:'',qty:4,harga:12900,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Bunga Emas Juntai 189cm',toko:'',qty:1,harga:66900,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Amaranthus K4 4x32',toko:'Flower_Family',qty:1,harga:24819,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Metal Clip Card 10pcs',toko:'',qty:2,harga:18250,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Anggrek 6 Kuntum',toko:'',qty:4,harga:11999,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Jute Roll Wrapping',toko:'',qty:1,harga:52250,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Stone Texture Wrapping',toko:'TUKUNOSA',qty:2,harga:10900,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Stone Texture Wrapping',toko:'',qty:2,harga:10900,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Kain Organza Crystal',toko:'Toko kain 89',qty:1,harga:15000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Kain Organza Crystal',toko:'',qty:1,harga:15000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Kain Organza Crystal',toko:'',qty:2,harga:15000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Kain Organza Metalik',toko:'',qty:2,harga:15000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Tag Hampers Fu 7cm',toko:'TopperTrooper',qty:3,harga:7000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Hang Tag Akrilik CNT01',toko:'',qty:5,harga:7250,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Topper Akrilik CNY Gold',toko:'',qty:15,harga:5500,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Single Wine Carrier',toko:'Margie.R',qty:1,harga:75000,kategori:'Wine & spirits',kondisi:'Baik',catatan:''},
+{produk:'Kotak Kue Mika 22x22 Tutup',toko:'LewyStore',qty:2,harga:28600,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'Pita Ribbon Organza Fishtail',toko:'Eternal.Flower',qty:1,harga:21500,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Pita Ribbon Organza Fishtail',toko:'',qty:1,harga:21500,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Hampers Imlek Exclusive A208',toko:'fourleavesbakery',qty:1,harga:208000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'HOMYNEST Rak Troli 3 Tingkat',toko:'Homynest Indonesia',qty:1,harga:119900,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'HOMYNEST Rak Troli 4 Tingkat',toko:'',qty:1,harga:140580,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Alas Meja Ryu 130x130',toko:'Rissa Essentials',qty:1,harga:92500,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Alas Meja Kaito 120x120',toko:'',qty:1,harga:124500,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Flazz BCA Custom Cetak',toko:'Global Promosi',qty:2,harga:85800,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Thinwall Cup Sambal 50ml 50pcs',toko:'Eternaplast',qty:2,harga:16941,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Double Tape 12mm Joyko',toko:'ATK123',qty:3,harga:2775,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Lakban Kertas 48mm 20m',toko:'',qty:4,harga:12457,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Kuas Busa Square Set 4',toko:'',qty:10,harga:9550,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Yenpao Topper 3.4cm 12pcs',toko:'Nicenirrow season',qty:1,harga:24900,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Cake Topper Bola Disco 12pcs',toko:'Gudangnya baking tools',qty:1,harga:36500,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'Lampion Bludru Sakura 30pcs',toko:'Floral Mart',qty:1,harga:49000,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Tusuk Sate Yakitori 12cm 100pcs',toko:'Higenik Prima Kemas',qty:3,harga:21000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Angpao Velvet Fuk 4pcs',toko:'Golden Season',qty:1,harga:15900,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Angpao Imlek Kuda 6 pcs',toko:'',qty:1,harga:18888,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Lampion Sakura 10 inch',toko:'',qty:2,harga:36494,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Topper Bola Disco 12pcs',toko:'dekor.cuy',qty:2,harga:19000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Cake Topper Love Story',toko:'',qty:4,harga:9000,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'Cake Topper Love Story',toko:'',qty:1,harga:9000,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'Kain Organza 1/2 Meter',toko:'zainasister_tex',qty:2,harga:12998,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Kain Organza 1/2 Meter',toko:'',qty:2,harga:12998,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Pink Wrapping Paper 44x69',toko:'Pulpable Eco Packaging',qty:1,harga:39900,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Box Hampers Endless Serenade',toko:'Alora Artisan Curated',qty:1,harga:270000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Box Hampers Crimson Gate',toko:'Alora Artisan Curated',qty:1,harga:260000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Lem Fox Putih 150 gram',toko:'Maysa fotocopy',qty:5,harga:12900,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Magnolia Real Touch',toko:'jakartaothelloflorist',qty:2,harga:53994,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Apple Shop Tanktop',toko:'',qty:1,harga:110000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Long Dress Sleeveless Rayon',toko:'',qty:1,harga:138719,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Long Dress Sleeveless Rayon',toko:'',qty:1,harga:127000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Nadir Champagne Flute 220ml',toko:'Gudang Gelas',qty:12,harga:26137,kategori:'Wine & spirits',kondisi:'Baik',catatan:''},
+{produk:'90 DGR Sport Bra Cutout',toko:'',qty:1,harga:88800,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'AL Suit Up Trousers',toko:'',qty:1,harga:125000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Tree Branch Mini K3',toko:'sanflor',qty:6,harga:10000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Topper Natal Akrilik',toko:'Wewend\'s Shop',qty:12,harga:4950,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Rak Gelas Sloki 6 Lubang',toko:'Delapan Jaya Hengky',qty:1,harga:126350,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Pita Satin Sablon 2.5cm',toko:'Calm Cavalry',qty:3,harga:31000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Pita Satin Sablon 2.5cm',toko:'',qty:6,harga:31000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'FLOPY Bloom Box Hitam 20x20',toko:'floristsupply',qty:2,harga:29500,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'FLOPY Daun Cemara Gold',toko:'',qty:3,harga:22000,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Notebook A5 Custom Logo',toko:'Neothopia',qty:2,harga:41500,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Notebook A5 Custom Logo',toko:'',qty:3,harga:41500,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Bunga Gingko Emas 1Branch',toko:'KUY!!',qty:2,harga:6600,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Bunga 3Branch Daun Palem',toko:'',qty:1,harga:19360,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Bunga 1Branch Eucalyptus',toko:'',qty:3,harga:6600,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Bunga 3Branch Daun Gingko',toko:'',qty:2,harga:15400,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Bunga 3Branch Snowball Emas',toko:'',qty:3,harga:22000,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Tong Wine Barrel 3L',toko:'HANNSBRO Official Store',qty:1,harga:385000,kategori:'Wine & spirits',kondisi:'Baik',catatan:''},
+{produk:'Diamond Renteng 10yard SS 12',toko:'Galery Bungo',qty:2,harga:70000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Diamond Renteng 10yard SS 12',toko:'',qty:3,harga:75000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Batu American Diamond Jumbo',toko:'Galaxy Gems Store',qty:2,harga:60000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Glencairn Whiskey Glass 175ml',toko:'Northsider Coffee',qty:6,harga:40000,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'Batu Kristal Acrylic',toko:'Via.Collections',qty:2,harga:18000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Batu Kristal Acrylic',toko:'',qty:4,harga:25000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Batu Kristal Acrylic',toko:'',qty:5,harga:30000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Hardbox Imlek Kuda Bulat Fu',toko:'Wonderful Gift Collection',qty:7,harga:145000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Libbey Glass Embassy 518ml',toko:'Denby Home',qty:4,harga:27100,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'Papan Nama LED 30x30 PO',toko:'Akrilo Creations',qty:1,harga:323000,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Tulle Bridal 0.5m',toko:'Target Textile Mayestik',qty:2,harga:9000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Tulle Bridal 0.5m',toko:'',qty:2,harga:9000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Tulle Bridal 0.5m',toko:'',qty:2,harga:9000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Glencairn Whiskey Glass 175ml',toko:'Northsider Coffee',qty:4,harga:40000,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'Tempat Brosur A5 Akrilik',toko:'Cassa Acrylic',qty:2,harga:14000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Tempat Brosur A4 Akrilik',toko:'',qty:2,harga:19500,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Bahan Sintetis LV 1/2m',toko:'Berkat Jaya Cibaduyut',qty:1,harga:24499,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Bahan Sintetis LV 1/2m',toko:'',qty:1,harga:24499,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Bahan Sintetis LV 1/2m',toko:'',qty:1,harga:24499,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Giftbox Natal Wine MDF',toko:'Wonderful Gift Collection',qty:1,harga:135000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Hardbox Imlek Kuda Bulat',toko:'',qty:1,harga:145000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Kleaner Kemoceng Microfiber',toko:'Kleaner Official Shop',qty:1,harga:37729,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Kleaner Sapu Pengki 27cm',toko:'',qty:1,harga:99000,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Paking Kayu Hampers',toko:'joejoecreative',qty:1,harga:15000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Tas Akrilik Bunga 30x30x10',toko:'',qty:5,harga:145000,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Topper Bola Tusuk Gold 20pcs',toko:'dekor.cuy',qty:5,harga:17000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Gems Manik Hena 1000pcs 3mm',toko:'henna instan .id',qty:1,harga:6000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Gems Manik Hena 1000pcs 3mm',toko:'',qty:1,harga:6000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Gems Manik Hena 1000pcs 4mm',toko:'',qty:1,harga:6400,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Gems Manik Hena 1000pcs 4mm',toko:'',qty:1,harga:6400,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Gems Manik Hena 1000pcs 6mm',toko:'',qty:1,harga:6900,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Gems Manik Hena 1000pcs 6mm',toko:'',qty:1,harga:6900,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Pensil Rhinestone',toko:'',qty:3,harga:2400,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Roll Up Banner 60x160 + Rangka',toko:'Srikandi Digital Printing',qty:1,harga:186000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Gelang Kulit Titanium',toko:'',qty:1,harga:95000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Lampu Lilin LED 10pcs',toko:'Dunia Dekorasi*',qty:1,harga:56650,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Lampu Lilin LED S+M+L',toko:'',qty:2,harga:66750,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Kotak Kue Mika 26x26x34',toko:'abcXshop',qty:3,harga:39999,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'Meja Lipat 120x60x75',toko:'NEIKIA.mall.ID',qty:1,harga:321750,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Nadir Champagne Flute 220ml',toko:'Gudang Gelas',qty:4,harga:26137,kategori:'Wine & spirits',kondisi:'Baik',catatan:''},
+{produk:'FLOPY Bloom Box 15x15',toko:'floristsupply',qty:1,harga:19500,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'FLOPY Bloom Box 15x15',toko:'',qty:1,harga:19500,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Pinky Bee Kado Cemara',toko:'Pinky Bee',qty:1,harga:11760,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Pinky Bee Kado Rusa',toko:'',qty:1,harga:11760,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Pinky Bee Kado Cemara MC',toko:'',qty:1,harga:11760,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Pinky Bee Paper Bag Wine',toko:'',qty:3,harga:15960,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Pinky Bee Paper Bag Wine',toko:'',qty:3,harga:15960,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Pinky Bee Paper Bag Wine',toko:'',qty:3,harga:15960,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Rusa Tanduk Natal Gold',toko:'Tarta',qty:24,harga:14585,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Tulle Bridal 0.5m',toko:'Target Textile Mayestik',qty:2,harga:9000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Tulle Bridal 0.5m',toko:'',qty:2,harga:9000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Tempat Brosur Akrilik A4 1.5mm',toko:'Cassa Acrylic',qty:2,harga:24500,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Charles Du Lac Sparkling White 750ml',toko:'healthygrocery.id',qty:10,harga:61450,kategori:'Wine & spirits',kondisi:'Baik',catatan:''},
+{produk:'L\'Oreal Cushion Refill',toko:'',qty:1,harga:148105,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'L\'Oreal Cushion',toko:'',qty:1,harga:200200,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'L\'Oreal Revitalift Day 50ml',toko:'',qty:1,harga:254700,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Tempat Brosur Akrilik A5 1.5mm',toko:'Cassa Acrylic',qty:5,harga:20000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Charles Du Lac Sparkling White 750ml',toko:'healthygrocery.id',qty:10,harga:61450,kategori:'Wine & spirits',kondisi:'Baik',catatan:''},
+{produk:'Pohon Natal 2 Meter 150cm',toko:'Holly & Jingle Shop',qty:1,harga:229000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Taplak Aesthetic 300x140',toko:'Perlak Anak',qty:1,harga:108000,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Sewa Meeting Harian 100',toko:'Altalab.com',qty:1,harga:9500,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Pot Bunga Standing 3 Tingkat',toko:'KENZ_GARDENS_OFFICIAL',qty:2,harga:51279,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Wastafel Plastik Innoplas',toko:'Plastik Store',qty:1,harga:103900,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Rak Serbaguna 15 Kotak',toko:'shopping place',qty:1,harga:677000,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Ambalan 50x20x4',toko:'Hupa hupa decor',qty:2,harga:55950,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Ambalan 50x20x4',toko:'',qty:1,harga:55950,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Sewa Meeting Harian 100',toko:'Altalab.com',qty:1,harga:9500,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Sticker Kaca One Way 150x20',toko:'SAE GROSIR STICKER',qty:10,harga:12950,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Tas Spunbond Sablon 50x40',toko:'toko_arsha',qty:40,harga:7500,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'UC Tisu Lantai 90cm',toko:'Toko Unicom',qty:1,harga:27500,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'UC Floorex 30 lembar',toko:'',qty:5,harga:36063,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Glitter Bubuk 250gr',toko:'Sablon Bordir',qty:1,harga:33330,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Celyhome Rak Laci Underwear 5T',toko:'WILIS SHOP.',qty:1,harga:140000,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Topper Tas Hermes Brown',toko:'dekor.cuy',qty:3,harga:12500,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Topper Tas Louis Vuitton',toko:'',qty:2,harga:12500,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Topper Bola Tusuk Gold 5',toko:'',qty:1,harga:6500,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Topper Bola Tusuk Gold 5',toko:'',qty:4,harga:6500,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Caspea Dried Flower',toko:'3R Variety Store',qty:2,harga:11000,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Dried Lagurus 10 Batang',toko:'',qty:2,harga:12500,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Daun Palem Kering Emas 3pc',toko:'',qty:1,harga:25850,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Rangkaian Bunga Rustic',toko:'',qty:2,harga:24000,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Tempat Brosur A4 2mm',toko:'Cassa Acrylic',qty:2,harga:21500,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'JOY Meja Lipat 1.83m',toko:'JOYOUTH',qty:1,harga:479000,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Lampu Sorot 10W 4pcs Rell',toko:'KIKI ELEKTRIK',qty:1,harga:239900,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'HUGO Meja Lipat Koper 1.2m',toko:'HugoHousewareJakarta',qty:1,harga:395000,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Ambalan 200x30x4',toko:'Hupa hupa decor',qty:2,harga:232700,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Vinyl Lantai 36pcs PVC',toko:'QIMU STORE',qty:3,harga:229000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Rak Gelas Botol Kayu Jati',toko:'Furniture Cantik Jepara',qty:1,harga:80000,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Bunga Emas Anggrek 75cm',toko:'Preservedflowersjkt',qty:2,harga:21600,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Busa Basah Oasis Green Leaf',toko:'Blossombase.id',qty:2,harga:125000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Label Gold Stainless 100pc',toko:'seserahankujogja',qty:1,harga:350000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Stiker Bintang Kristal 3D',toko:'Bunny Official Store',qty:15,harga:8848,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Kain Tile Souvenir',toko:'Cheap Craft Supplier',qty:15,harga:3299,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Rak Pita Berdiri',toko:'RAJAKAYU PND',qty:1,harga:39999,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Tree Branch Mini K3',toko:'sanflor',qty:1,harga:10000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Tree Branch Mini K3',toko:'',qty:2,harga:10000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Tree Branch Mini K3',toko:'',qty:7,harga:10000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Bola Natal Bludru 4cm',toko:'VB_Store',qty:5,harga:18999,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Rak Anggur Kayu 52x32x116',toko:'Sunshine mall',qty:1,harga:322000,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'ACC57 Bola Natal 6cm',toko:'ladala',qty:30,harga:2980,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Kuas Roll Spons Sponge',toko:'ATK123',qty:8,harga:9650,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Rumput Kertas 30gr',toko:'Pabrik Metalik',qty:2,harga:3953,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Rumput Kertas 30gr',toko:'',qty:2,harga:3953,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Rumput Kertas 30gr',toko:'',qty:2,harga:3953,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Rumput Kertas 250gr',toko:'',qty:1,harga:10050,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Rumput Kertas 250gr',toko:'',qty:1,harga:10050,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Stiker Bintang Kristal',toko:'Bunny Official Store',qty:1,harga:8848,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Stiker Bintang Kristal',toko:'',qty:3,harga:8848,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Stiker Bintang Kristal',toko:'',qty:6,harga:8848,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Kuas Busa Square Set 4',toko:'primeartandcraft',qty:6,harga:12249,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Tag Akrilik Hampers Natal',toko:'TopperTrooper',qty:5,harga:5000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Tag Akrilik Hampers Natal',toko:'',qty:5,harga:5000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Tag Akrilik Hampers Natal',toko:'',qty:5,harga:5000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Tali Satin Korea 1mm 50m',toko:'MULIA GARMENT 3939',qty:1,harga:16250,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Tali Satin Korea 1mm 50m',toko:'',qty:1,harga:16250,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Pita Grossgrain 1cm 20Yard',toko:'Florist Room Jakarta',qty:1,harga:12500,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Pita Grossgrain 1cm 20Yard',toko:'',qty:1,harga:13000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Pita Grossgrain 1cm 20Yard',toko:'',qty:1,harga:13000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Pita Grossgrain 1cm 20Yard',toko:'',qty:1,harga:13000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Pita Grossgrain 1cm 20Yard',toko:'',qty:1,harga:13000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Pita Grossgrain 1cm 20Yard',toko:'',qty:1,harga:13000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Cake Topper Christmas-C',toko:'dekor.cuy',qty:5,harga:4000,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'Cake Topper Christmas B',toko:'',qty:1,harga:4000,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'Cake Topper Christmas B',toko:'',qty:4,harga:4000,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'Cupcake Topper Natal Mirror',toko:'Otello Official Shop',qty:3,harga:17500,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'Mawar Beludru 7CM',toko:'FlowerWorld',qty:5,harga:5700,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Mawar Beludru 7CM',toko:'',qty:9,harga:5730,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Mawar Beludru 7CM',toko:'',qty:12,harga:5730,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Chanel Box Beauty Small',toko:'Kenny Butik Store',qty:1,harga:39900,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Paper Bag Chanel Beauty Small',toko:'',qty:1,harga:43200,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Box Wine 33.5x12x11',toko:'Gracia Box',qty:1,harga:68387,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Box Hamper 30x25x10',toko:'',qty:1,harga:99857,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'6PCS Lilin LED Panjang',toko:'LoliPads',qty:1,harga:71400,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Mini Sticker Acrylic Love',toko:'Bibimcat',qty:1,harga:7800,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Mini Sticker Acrylic Love',toko:'',qty:1,harga:7800,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Sticker 3D Deco HP',toko:'',qty:1,harga:10300,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Sticker 3D Deco HP',toko:'',qty:1,harga:10300,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Sticker 3D Deco HP',toko:'',qty:1,harga:10300,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Bibimcat Jewel Bintang Med',toko:'',qty:1,harga:10500,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Bibimcat Jewel Bulat Med',toko:'',qty:1,harga:10500,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Diamond Renteng 10yard SS 12',toko:'Galery Bungo',qty:1,harga:75000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Diamond Renteng 10yard SS 12',toko:'',qty:2,harga:70000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Tali Goni 8mm/m',toko:'TOOL MAN',qty:4,harga:3300,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Youmiao Cling Wrap 30x30m',toko:'Cap Angsa',qty:5,harga:10288,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Bola Natal Pearl 6cm 6pcs',toko:'Flower Corner',qty:2,harga:30000,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Garlan Crystal Teardrop',toko:'',qty:4,harga:87000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Bando Tanduk Rusa (Gratis)',toko:'',qty:1,harga:0,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Daun Pine Fir Group',toko:'',qty:10,harga:14000,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Lem Fox Putih 150 gram',toko:'Maysa fotocopy',qty:1,harga:12900,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'HSC Alphabet Seal Wax',toko:'Hobby SealWax',qty:30,harga:858,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Seal Wax Beads 55',toko:'',qty:1,harga:30000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Busa Basah Oasis Sakura 20pcs',toko:'Stick_kartu.id',qty:1,harga:109800,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'FLOPY Pita Satin 1cm 25y',toko:'floristsupply',qty:2,harga:4000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Wrapping Tissue Carang',toko:'',qty:1,harga:21600,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Wrapping Tissue Carang',toko:'',qty:1,harga:21600,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Bola Natal Beludru 6cm 4pcs',toko:'Toko Kertas Bunga',qty:2,harga:53268,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Bola Natal Kaca 6cm',toko:'',qty:1,harga:133400,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Grossgrain 1.5cm 20 Yard',toko:'Florist Room Jakarta',qty:1,harga:16000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Pita 152011115 3.8cm 10y',toko:'',qty:1,harga:45000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Tree Branch Mini K3',toko:'sanflor',qty:5,harga:10000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'OASIS Mini Deco 12pcs',toko:'aksesoris_tokobunga',qty:1,harga:90000,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Tree Branch Mini K3',toko:'sanflor',qty:5,harga:10000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Amplop Jasmine B7',toko:'paporit store',qty:1,harga:1499,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Amplop Jasmine B7',toko:'',qty:1,harga:1499,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Amplop Jasmine B7',toko:'',qty:1,harga:1499,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Amplop Jasmine B7',toko:'',qty:1,harga:1499,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Amplop Jasmine B7',toko:'',qty:1,harga:1499,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Acrylic Custom Laser',toko:'Ltc Cell',qty:130,harga:1000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Kain Bludru Velvet',toko:'El Jaya Textile',qty:2,harga:20999,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Kain Sequin Backdrop',toko:'',qty:2,harga:26600,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Christmas Wreath S 35cm',toko:'SweetHomeDekor',qty:1,harga:55980,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Anggrek Latex Bunga+Pot',toko:'',qty:1,harga:67980,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Anggrek Latex Bunga+Pot',toko:'',qty:1,harga:67980,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Anggrek Latex Bunga+Pot',toko:'',qty:1,harga:67980,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Christmas Wreath L 45cm',toko:'',qty:1,harga:72980,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Kastuba Velvet Glitter',toko:'Flower Corner',qty:1,harga:13500,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Kastuba Velvet Glitter',toko:'',qty:1,harga:13500,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Kastuba Velvet Glitter',toko:'',qty:1,harga:13500,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Kastuba Velvet Glitter',toko:'',qty:1,harga:13500,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Bola Pearl 6cm',toko:'',qty:1,harga:27000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Bola Pearl 6cm',toko:'',qty:1,harga:27000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Berry Red Velvet',toko:'',qty:1,harga:30600,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Daun Pine Fir Group',toko:'',qty:15,harga:12600,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Scented Candle Voyage 250gr',toko:'Aartisan Candle',qty:1,harga:126000,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Kuas Bulu Nylon No 5',toko:'GPLACC88',qty:10,harga:6750,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Kuas Bulu Nylon No 5',toko:'',qty:10,harga:6750,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Pembuka Botol Wine',toko:'samiyajaya',qty:3,harga:38250,kategori:'Wine & spirits',kondisi:'Baik',catatan:''},
+{produk:'Permen Tongkat Natal 30pcs',toko:'Permen Unggul',qty:1,harga:50000,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'Glitter Bubuk 250gr',toko:'Sablon Bordir',qty:1,harga:33330,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Glitter Bubuk 250gr',toko:'',qty:1,harga:33330,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Glitter Bubuk 250gr',toko:'',qty:1,harga:33330,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Rantai Nuri Pipih 0.7',toko:'Creative Arts14',qty:5,harga:2250,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Rantai Nuri Pipih 0.7',toko:'',qty:5,harga:2250,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Ring Bulat O 7x6',toko:'',qty:1,harga:5500,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Sealing Wax Spoon',toko:'JPL ARTS',qty:1,harga:55000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'FLOPY Pita Satin 1cm',toko:'floristsupply',qty:1,harga:4000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'FLOPY Pita Satin 1cm',toko:'',qty:1,harga:4000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Pohon Natal Mini 20cm',toko:'',qty:1,harga:20000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Hiasan Pohon Natal 3pcs',toko:'',qty:1,harga:26000,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Pohon Natal Mini 25cm',toko:'',qty:1,harga:30000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Crystal Ice Pendant 12pcs',toko:'',qty:2,harga:16000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'FLOPY Mesh Jaring 26x9.2m',toko:'',qty:1,harga:55000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Jute Roll Wrapping',toko:'Flower_Family',qty:1,harga:52250,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Toples Kristal Carousel',toko:'Mamoshop.id',qty:10,harga:11000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'NIIMBOT N1 Pencetak Pita',toko:'Niimbot Official Store ID',qty:1,harga:725000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Lem B-7000 15ml',toko:'Cahaya grosir murah',qty:20,harga:3400,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Floral Foam Peony Dry 24pcs',toko:'Grand Cadeaux Official Shop',qty:1,harga:95000,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Lampu LED Kawat 2m',toko:'Minimalis Home and Decoration',qty:20,harga:3900,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Vintage Sealing Wax 10pcs',toko:'JPL ARTS',qty:1,harga:5500,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Vintage Sealing Wax 10pcs',toko:'',qty:1,harga:5500,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Vintage Sealing Wax 10pcs',toko:'',qty:1,harga:5500,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Wax Seal Stamp Wood',toko:'',qty:1,harga:89500,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Tali Tambang 14mm Putih',toko:'TOOL MAN',qty:1,harga:9851,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Tali Goni Tambang 14mm/m',toko:'',qty:3,harga:7500,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'10cm Snowflake Glitter Biru',toko:'ladala',qty:1,harga:13800,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Cemara Pine 5pcs',toko:'',qty:1,harga:18800,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'UUU Bunga Glitter 33cm',toko:'',qty:1,harga:29800,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'6ST Santa Mini Red 6pcs',toko:'',qty:1,harga:12800,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'ACC78 Pita Salju',toko:'',qty:1,harga:12800,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Bola Natal Bening 6cm 6pcs',toko:'',qty:1,harga:49800,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'ACC219 Pita Glitter 5y',toko:'',qty:1,harga:45800,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Kupu Kupu Hollow Glitter',toko:'',qty:1,harga:8800,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Garland 2m Daun Ceri',toko:'',qty:1,harga:44800,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'20cm Bunga Natal',toko:'',qty:1,harga:22800,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'47x15cm Daun Cemara',toko:'',qty:1,harga:8800,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'18cm Katsuba Glitter',toko:'',qty:1,harga:11980,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'27x13cm Daun Cemara',toko:'',qty:1,harga:6980,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'27x13cm Daun Cemara',toko:'',qty:1,harga:6980,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Topping Bintang Blue 20cm',toko:'',qty:1,harga:18800,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'ACC57 Bola Natal 6cm',toko:'',qty:1,harga:2980,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'NTL16 Rusa Lonceng',toko:'',qty:1,harga:9880,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'47x15cm Daun Cemara',toko:'',qty:1,harga:8800,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'47x15cm Daun Cemara',toko:'',qty:1,harga:8800,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'UUU Bunga Glitter 33cm',toko:'',qty:1,harga:29800,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'10cm Snowflake Silver',toko:'',qty:1,harga:13800,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Katsuba 15cm Glitter',toko:'',qty:1,harga:5980,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'10cm Snowflake Gold',toko:'',qty:1,harga:13800,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Nampan Oval 50cm',toko:'Sangkayu Official',qty:1,harga:24000,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'Nampan Oval 80cm',toko:'',qty:1,harga:38500,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'Luxury Dummy Book Cartier',toko:'LuxeHome.ID',qty:5,harga:9900,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Luxury Dummy Book BTS 5pcs',toko:'',qty:1,harga:49900,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Daun Pine Fir',toko:'Flower Corner',qty:2,harga:14000,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Bola Velvet Red 8cm',toko:'',qty:1,harga:44000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Bola 6cm Polos 12pcs',toko:'',qty:1,harga:48000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Bola Velvet Hijau 8cm',toko:'',qty:1,harga:54000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Garlan Crystal Teardrop',toko:'',qty:1,harga:87000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Berry Red Mint Garland',toko:'',qty:1,harga:113000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Daun Garlan Cemara 1m',toko:'',qty:1,harga:138999,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Long Dress Sleeveless Rayon',toko:'',qty:1,harga:141550,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'BBAK Bola Tennis 10pcs',toko:'',qty:1,harga:118874,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Chenyao Meja Bed Table',toko:'Cv_DaengGroup',qty:1,harga:192300,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Holder Lilin C-11',toko:'K Check',qty:1,harga:68500,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Rose Mix Aster Bouquet',toko:'Jeka Flowers',qty:1,harga:169000,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Lanwain Wireless Mouse',toko:'Lanwain London',qty:1,harga:349000,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Cake Topper Rusa Putih',toko:'_majujayaplastik',qty:2,harga:14000,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'Lilin Keriting 4pcs',toko:'Rumah_Semua',qty:2,harga:33000,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Sewa Harian 100',toko:'Altalab.com',qty:1,harga:7500,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Meteran Mini 150CM',toko:'OneFamilyMall',qty:5,harga:2317,kategori:'Peralatan & elektronik',kondisi:'Baik',catatan:''},
+{produk:'Box Dus Nastar 25 Hole',toko:'KELOISE_CAKE',qty:1,harga:55000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Sewa Harian 100',toko:'Altalab.com',qty:1,harga:7500,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Shower Cap',toko:'',qty:1,harga:19799,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Penutup Pintu Bawah',toko:'',qty:1,harga:54999,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Korean Color Jute',toko:'dandelionfloralwrap',qty:3,harga:6500,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Korean Color Jute',toko:'',qty:3,harga:6500,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Round Box Hardbox 25x11',toko:'Gracia Box',qty:1,harga:61308,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Kalung Beatrix Clover',toko:'',qty:1,harga:44000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Cincin Hilda Clover',toko:'',qty:1,harga:48000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Akrilik Bulat 2mm 10cm',toko:'FM-WORKSHOP',qty:5,harga:3000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Potongan akrilik gantungan',toko:'',qty:25,harga:890,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Akrilik Bulat 2mm 15cm',toko:'',qty:5,harga:6000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Gift Box Souvenir Ferrero',toko:'cocomelon jkt',qty:100,harga:1430,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'Singleton Luscious 12yo Whisky 700ml',toko:'KAPITALL',qty:1,harga:619000,kategori:'Wine & spirits',kondisi:'Baik',catatan:''},
+{produk:'Wrapping Bi Color Gold 5L',toko:'Flower_Family',qty:1,harga:10750,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Carnation Bulat 7C',toko:'',qty:1,harga:22800,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Carnation Bulat 7C',toko:'',qty:1,harga:22800,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Carnation Bulat 7C',toko:'',qty:1,harga:22800,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Hyacinth Premium 1k',toko:'',qty:2,harga:13124,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Gift Box Soy Wax Candle',toko:'HEARTEA',qty:1,harga:18000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Gift Box Soy Wax Candle',toko:'',qty:1,harga:18000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Gift Box Soy Wax Candle',toko:'',qty:1,harga:18000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Gift Box Soy Wax Candle',toko:'',qty:1,harga:18000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Gift Box Soy Wax Candle',toko:'',qty:1,harga:18000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'PE Foam Pipa',toko:'PT. INSULASI INDONESIA',qty:1,harga:11000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'PE Foam Pipa',toko:'',qty:2,harga:13600,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Daun Philodendron Monstera',toko:'Minimalis Home and Decoration',qty:4,harga:2900,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Daun Talas Mix',toko:'',qty:4,harga:2900,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Daun Monstera Palsu Besar',toko:'',qty:7,harga:3900,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Daun Palem Lebar',toko:'',qty:8,harga:3900,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Stensil Halloween 12pcs',toko:'Harapan-Mu',qty:1,harga:32700,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Gelas Champagne 10pcs',toko:'',qty:1,harga:49000,kategori:'Wine & spirits',kondisi:'Baik',catatan:''},
+{produk:'Kain Spider Web 200x400',toko:'',qty:1,harga:72500,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Sticker Balon It\'s a Boy',toko:'dandelionfloralwrap',qty:1,harga:6800,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'Balon PVC Bobo Tangkai 70cm',toko:'',qty:3,harga:2500,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'Balon PVC Bobo 36 inch',toko:'',qty:3,harga:3800,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'Cool Color Floral Spray',toko:'Flower_Family',qty:1,harga:110000,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'TD Mirrors Mosaic Tiles',toko:'Teman.Dekoruma',qty:4,harga:9900,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'BBW Body Wash 295ml',toko:'',qty:1,harga:129000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'BBW Body Lotion 192ml',toko:'',qty:1,harga:129000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'BBW Into the Night 295ml',toko:'',qty:1,harga:174000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Sewa Harian 100',toko:'Altalab.com',qty:1,harga:7500,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'BAISISI Tweezer (Gratis)',toko:'',qty:1,harga:0,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Grace Glow Smooth Deodorant',toko:'',qty:1,harga:90999,kategori:'Aset kios',kondisi:'Baik',catatan:''},
+{produk:'1 Set 6pcs Nadir Grappa',toko:'Gudang Gelas',qty:1,harga:98999,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'2m Daun Eucalyptus Rotan',toko:'GeeParty',qty:2,harga:33233,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Zoom Pro 100 Peserta 3 Hari',toko:'Zoom Premium by Rapatonline',qty:1,harga:35000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Microsoft Office 365 Pribadi',toko:'mendawai_pro',qty:1,harga:325000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Round Box Hardbox 25x11',toko:'Gracia Box',qty:1,harga:52400,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Garlickys Bumbu',toko:'',qty:1,harga:16500,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Garlickys Garlic Butter',toko:'',qty:1,harga:98000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Tissue SEE-U Facial 250s',toko:'',qty:1,harga:59000,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Finna Sambal Uleg 10',toko:'',qty:1,harga:17500,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Pronas Corned Beef 50gr',toko:'',qty:5,harga:8000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Tenderloin Meltique Steak',toko:'',qty:5,harga:29737,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'BAISISI Z11 Bulu Mata 30',toko:'',qty:1,harga:38000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'BAISISI A14 Bulu Mata 100',toko:'',qty:1,harga:140000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Bunga Daisy Mini 60',toko:'BlueWaterFlowers',qty:3,harga:29900,kategori:'Bunga & tanaman',kondisi:'Baik',catatan:''},
+{produk:'Set Toples Kaca Diamond',toko:'Mamoshop.id',qty:6,harga:19800,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Nastar Wijsman 500gr PO',toko:'Eka Cookies 1',qty:2,harga:75000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Thumbprint Cheese 500gr',toko:'',qty:2,harga:70000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Veuve Clicquot Brut 750ml',toko:'KAPITALL',qty:1,harga:1850000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Moet Chandon Brut Imperial 750ml',toko:'',qty:1,harga:1750000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'HW POWDS Azul x20',toko:'Hit it .id',qty:1,harga:7500000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Pita Satin Sablon 2.5cm',toko:'Calm Cavalry',qty:3,harga:31000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Keranjang Wire Hampers Hitam',toko:'BasketWire',qty:2,harga:89500,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Lem Tembak Eagle 500gr',toko:'Sablon Bordir',qty:1,harga:46547,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Nastar Wisman 500gr',toko:'Eka Cookies 1',qty:3,harga:75000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Tas Botol Pandan Anyaman',toko:'Native Borneo',qty:4,harga:58750,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Charles Du Lac Sparkling 750ml',toko:'healthygrocery.id',qty:10,harga:61450,kategori:'Wine & spirits',kondisi:'Baik',catatan:''},
+{produk:'Set Toples Kaca Diamond',toko:'Mamoshop.id',qty:6,harga:19800,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Sababay Wine Bundle CNY',toko:'Sababay Wine',qty:1,harga:800000,kategori:'Wine & spirits',kondisi:'Baik',catatan:''},
+{produk:'Penhaligon\'s Lilin Hampers',toko:'Ginza Avenue',qty:1,harga:475000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Stiker Shuangxi Sangjit',toko:'Yumiolshopinter',qty:2,harga:29000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Stiker Shuangxi Sangjit',toko:'Yumiolshopinter',qty:2,harga:29000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'ChatGPT Plus Subscription',toko:'CHATGPT Subs',qty:1,harga:325000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Pita Satin Sablon 2.5cm',toko:'Calm Cavalry',qty:3,harga:31000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'HW POWDS Azul x10',toko:'Hit it .id',qty:1,harga:3850000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Kastengel 500gr',toko:'Eka Cookies 1',qty:2,harga:70000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Putri Salju 500gr',toko:'Eka Cookies 1',qty:2,harga:75000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Lem Tembak Eagle 500gr',toko:'Sablon Bordir',qty:1,harga:46547,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Set Toples Kaca Diamond',toko:'Mamoshop.id',qty:5,harga:20000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Pita Satin Sablon 2.5cm',toko:'Calm Cavalry',qty:2,harga:31000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Keranjang Wire Hampers Gold',toko:'BasketWire',qty:3,harga:89500,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Capcut Pro 1 Bulan',toko:'Capcut Pro',qty:1,harga:159000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Penfolds Bin 28 Shiraz 750ml',toko:'KAPITALL',qty:1,harga:1950000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Lindemans Bin 75 Chardonnay 750ml',toko:'KAPITALL',qty:1,harga:1350000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Cockburn\'s Special Reserve Port 750ml',toko:'KAPITALL',qty:1,harga:1000000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Set Toples Kaca Diamond',toko:'Mamoshop.id',qty:5,harga:20000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Lem Tembak Eagle 500gr',toko:'Sablon Bordir',qty:1,harga:46547,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Lem Tembak Eagle 500gr',toko:'Sablon Bordir',qty:1,harga:46547,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Lidah Kucing 500gr',toko:'Eka Cookies 1',qty:2,harga:70000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Pita Satin Sablon 2.5cm',toko:'Calm Cavalry',qty:2,harga:31000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Pita Satin Sablon 2.5cm',toko:'Calm Cavalry',qty:2,harga:31000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Keranjang Wire Hampers Coklat',toko:'BasketWire',qty:2,harga:89500,kategori:'Hampers & add-on',kondisi:'Baik',catatan:''},
+{produk:'Tas Botol Pandan Anyaman',toko:'Native Borneo',qty:3,harga:58750,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Charles Du Lac Sparkling 750ml',toko:'healthygrocery.id',qty:5,harga:61450,kategori:'Wine & spirits',kondisi:'Baik',catatan:''},
+{produk:'Baileys Original 700ml',toko:'KAPITALL',qty:1,harga:800000,kategori:'Wine & spirits',kondisi:'Baik',catatan:''},
+{produk:'Sababay Black Velvet 750ml',toko:'Sababay Wine',qty:1,harga:450000,kategori:'Wine & spirits',kondisi:'Baik',catatan:''},
+{produk:'Sababay White Velvet 750ml',toko:'Sababay Wine',qty:1,harga:450000,kategori:'Wine & spirits',kondisi:'Baik',catatan:''},
+{produk:'Set Toples Kaca Diamond',toko:'Mamoshop.id',qty:6,harga:19800,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Keranjang Wire Hampers',toko:'BasketWire',qty:2,harga:89500,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Pita Satin Sablon 2.5cm',toko:'Calm Cavalry',qty:3,harga:31000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Nastar Wisman 500gr',toko:'Eka Cookies 1',qty:3,harga:75000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Lem Tembak Eagle 500gr',toko:'Sablon Bordir',qty:1,harga:46547,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Tas Botol Pandan Anyaman',toko:'Native Borneo',qty:2,harga:58750,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Set Toples Kaca Diamond',toko:'Mamoshop.id',qty:5,harga:20000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Charles Du Lac Sparkling 750ml',toko:'healthygrocery.id',qty:3,harga:61450,kategori:'Wine & spirits',kondisi:'Baik',catatan:''},
+{produk:'Martinelli\'s Sparkling Cider 750ml',toko:'Eternaland Martinellis',qty:3,harga:75000,kategori:'Wine & spirits',kondisi:'Baik',catatan:''},
+{produk:'Martinelli\'s Sparkling Cider 750ml',toko:'Eternaland Martinellis',qty:2,harga:75000,kategori:'Wine & spirits',kondisi:'Baik',catatan:''},
+{produk:'Lem Tembak Eagle 500gr',toko:'Sablon Bordir',qty:1,harga:46547,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Pita Satin Sablon 2.5cm',toko:'Calm Cavalry',qty:2,harga:31000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Pita Satin Sablon 2.5cm',toko:'Calm Cavalry',qty:3,harga:31000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Sababay Moscato 750ml',toko:'Sababay Wine',qty:1,harga:450000,kategori:'Wine & spirits',kondisi:'Baik',catatan:''},
+{produk:'Sababay Reserve 750ml',toko:'Sababay Wine',qty:1,harga:450000,kategori:'Wine & spirits',kondisi:'Baik',catatan:''},
+{produk:'Set Toples Kaca Diamond',toko:'Mamoshop.id',qty:6,harga:19800,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Keranjang Wire Hampers Gold',toko:'BasketWire',qty:3,harga:89500,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Nastar Wisman 500gr',toko:'Eka Cookies 1',qty:3,harga:75000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Kastengel 500gr',toko:'Eka Cookies 1',qty:2,harga:70000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Tas Botol Pandan Anyaman',toko:'Native Borneo',qty:3,harga:58750,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Charles Du Lac Sparkling 750ml',toko:'healthygrocery.id',qty:3,harga:61450,kategori:'Wine & spirits',kondisi:'Baik',catatan:''},
+{produk:'Lem Tembak Eagle 500gr',toko:'Sablon Bordir',qty:1,harga:46547,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Pita Satin Sablon 2.5cm',toko:'Calm Cavalry',qty:2,harga:31000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Set Toples Kaca Diamond',toko:'Mamoshop.id',qty:5,harga:20000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Keranjang Wire Hampers',toko:'BasketWire',qty:2,harga:89500,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Glenfiddich 12yo Whisky 700ml',toko:'KAPITALL',qty:1,harga:1550000,kategori:'Wine & spirits',kondisi:'Baik',catatan:''},
+{produk:'Macallan 12yo Whisky 700ml',toko:'KAPITALL',qty:1,harga:1950000,kategori:'Wine & spirits',kondisi:'Baik',catatan:''},
+{produk:'Tas Botol Pandan Anyaman',toko:'Native Borneo',qty:2,harga:58750,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Nastar Wisman 500gr',toko:'Eka Cookies 1',qty:3,harga:75000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Set Toples Kaca Diamond',toko:'Mamoshop.id',qty:6,harga:19800,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Lem Tembak Eagle 500gr',toko:'Sablon Bordir',qty:1,harga:46547,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Charles Du Lac Sparkling 750ml',toko:'healthygrocery.id',qty:5,harga:61450,kategori:'Wine & spirits',kondisi:'Baik',catatan:''},
+{produk:'Pita Satin Sablon 2.5cm',toko:'Calm Cavalry',qty:3,harga:31000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Keranjang Wire Hampers',toko:'BasketWire',qty:2,harga:89500,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Sababay Ludisia 750ml',toko:'Sababay Wine',qty:1,harga:450000,kategori:'Wine & spirits',kondisi:'Baik',catatan:''},
+{produk:'Sababay Reserve Cabernet 750ml',toko:'Sababay Wine',qty:1,harga:450000,kategori:'Wine & spirits',kondisi:'Baik',catatan:''},
+{produk:'Martinelli\'s Sparkling Apple 750ml',toko:'Eternaland Martinellis',qty:3,harga:75000,kategori:'Wine & spirits',kondisi:'Baik',catatan:''},
+{produk:'ChatGPT Plus Subscription',toko:'CHATGPT Subs',qty:1,harga:325000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Putri Salju 500gr',toko:'Eka Cookies 1',qty:2,harga:75000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Set Toples Kaca Diamond',toko:'Mamoshop.id',qty:5,harga:20000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Tas Botol Pandan Anyaman',toko:'Native Borneo',qty:4,harga:58750,kategori:'Packaging',kondisi:'Baik',catatan:''},
+{produk:'Lem Tembak Eagle 500gr',toko:'Sablon Bordir',qty:1,harga:46547,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Pita Satin Sablon 2.5cm',toko:'Calm Cavalry',qty:2,harga:31000,kategori:'Art aksesoris',kondisi:'Baik',catatan:''},
+{produk:'Cockburn\'s Reserve Port 750ml',toko:'KAPITALL',qty:1,harga:1000000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Baileys Original 700ml',toko:'KAPITALL',qty:1,harga:800000,kategori:'Wine & spirits',kondisi:'Baik',catatan:''},
+{produk:'Keranjang Wire Hampers Gold',toko:'BasketWire',qty:3,harga:89500,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Capcut Pro 1 Bulan',toko:'Capcut Pro',qty:1,harga:159000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Set Toples Kaca Diamond',toko:'Mamoshop.id',qty:6,harga:19800,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Charles Du Lac Sparkling 750ml',toko:'healthygrocery.id',qty:3,harga:61450,kategori:'Wine & spirits',kondisi:'Baik',catatan:''},
+{produk:'Nastar Wisman 500gr',toko:'Eka Cookies 1',qty:3,harga:75000,kategori:'Perlengkapan admin/kantor',kondisi:'Baik',catatan:''},
+{produk:'Lem Tembak Eagle 500gr',toko:'Sablon Bordir',qty:1,harga:46547,kategori:'Art aksesoris',kondisi:'Baik',catatan:''}
+];
+
+async function loadItems(){
+  try{
+    const res=await fetch(`${SUPA_URL}/rest/v1/inventory?order=added_at.desc`,{headers:H});
+    const data=await res.json();
+    items=data.map(i=>({id:i.id,produk:i.produk,kategori:i.kategori,toko:i.toko||'',qty:i.qty||1,harga:i.harga||0,kondisi:i.kondisi||'Baik',catatan:i.catatan||''  }));
+    setSync(true);
+
+    // Seed Shopee data if empty and not seeded before
+    if(items.length===0 && !localStorage.getItem(SEEDED_KEY)){
+      await seedShopeeData();
+    }
+
+    renderMetrics();buildCatFilter();renderInventory();
+    document.getElementById('invCount').textContent=`${items.length} item`;
+  }catch(e){setSync(false);console.error(e);}
+}
+
+async function seedShopeeData(){
+  const notice=document.getElementById('seededNotice');
+  notice.style.display='block';
+  notice.textContent='Mengimpor 761 item dari data Shopee...';
+  
+  // Batch insert in chunks of 50
+  const chunks=[];
+  for(let i=0;i<DEFAULT_ITEMS.length;i+=50) chunks.push(DEFAULT_ITEMS.slice(i,i+50));
+  
+  for(const chunk of chunks){
+    const payload=chunk.map((d,i)=>({id:genId(),produk:d.produk,kategori:d.kategori,toko:d.toko||'',qty:d.qty||1,harga:d.harga||0,kondisi:'Baik',catatan:d.catatan||''}));
+    await fetch(`${SUPA_URL}/rest/v1/inventory`,{method:'POST',headers:{...H,'Prefer':'resolution=ignore-duplicates'},body:JSON.stringify(payload)});
+  }
+  
+  localStorage.setItem(SEEDED_KEY,'1');
+  notice.textContent='761 item dari data Shopee berhasil diimpor!';
+  setTimeout(()=>notice.style.display='none',4000);
+  await loadItems();
+}
+
+function renderMetrics(){
+  const totalVal=items.reduce((s,i)=>s+(i.harga||0)*(i.qty||1),0);
+  const rusak=items.filter(i=>i.kondisi==='Rusak').length;
+  document.getElementById('metricGrid').innerHTML=`
+    <div class="metric"><div class="metric-lbl">Total item</div><div class="metric-val">${items.length}</div></div>
+    <div class="metric"><div class="metric-lbl">Total unit</div><div class="metric-val">${items.reduce((s,i)=>s+(i.qty||1),0)}</div></div>
+    <div class="metric"><div class="metric-lbl">Est. nilai</div><div class="metric-val" style="font-size:15px;">${fmtRp(totalVal)}</div></div>
+    <div class="metric"><div class="metric-lbl">Perlu cek</div><div class="metric-val">${rusak}</div></div>`;
+}
+
+function buildCatFilter(){
+  const el=document.getElementById('catFilter');if(!el)return;
+  const cats=['all',...CATS];
+  el.innerHTML=cats.map(c=>`<button class="cf-btn${c===catFilter?' on':''}" onclick="setCat('${c}')">${c==='all'?'Semua':c}</button>`).join('');
+}
+function setCat(c){catFilter=c;buildCatFilter();renderInventory();}
+
+function renderInventory(){
+  const q=(document.getElementById('invSearch')?.value||'').toLowerCase();
+  const kf=document.getElementById('kondisiFilter')?.value||'all';
+  let filtered=items.filter(i=>{
+    const mq=!q||(i.produk||'').toLowerCase().includes(q)||(i.toko||'').toLowerCase().includes(q);
+    const mc=catFilter==='all'||i.kategori===catFilter;
+    const mk=kf==='all'||i.kondisi===kf;
+    return mq&&mc&&mk;
+  });
+  const tbody=document.getElementById('invBody');const empty=document.getElementById('invEmpty');
+  document.getElementById('invFooter').textContent=`${filtered.length} dari ${items.length} item`;
+  if(!filtered.length){tbody.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  tbody.innerHTML=filtered.map(i=>`<tr>
+    <td><div style="font-weight:500;font-size:12px;">${i.produk}</div>${i.catatan?`<div style="font-size:10px;color:var(--ink-muted);">${i.catatan}</div>`:''}</td>
+    <td><span style="display:inline-block;font-size:10px;padding:2px 7px;border-radius:2px;font-family:'DM Mono',monospace;font-weight:500;${CAT_COLORS[i.kategori]||''}">${i.kategori}</span></td>
+    <td style="font-size:11px;color:var(--ink-muted);">${i.toko||'—'}</td>
+    <td style="text-align:right;font-family:'DM Mono',monospace;">${i.qty||1}</td>
+    <td style="text-align:right;font-family:'DM Mono',monospace;font-size:11px;">${fmtRp(i.harga)}</td>
+    <td><span style="display:inline-block;font-size:10px;padding:2px 7px;border-radius:2px;font-family:'DM Mono',monospace;font-weight:500;${KBADGE[i.kondisi]||''}">${i.kondisi||'Baik'}</span></td>
+    <td><div style="display:flex;gap:3px;">
+      <button class="btn-sec btn-sm" onclick="editItem('${i.id}')">✎</button>
+      <button class="btn-danger" onclick="deleteItem('${i.id}')">✕</button>
+    </div></td>
+  </tr>`).join('');
+}
+
+function toggleForm(){
+  const f=document.getElementById('invForm');
+  if(f.classList.contains('open')){cancelForm();return;}
+  f.classList.add('open');
+  document.getElementById('invFormTitle').textContent='Item baru';
+  document.getElementById('if-save-btn').textContent='Simpan';
+  document.getElementById('if-edit-id').value='';
+  ['if-nama','if-toko','if-qty','if-harga','if-catatan'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('if-kat').value='Bunga & tanaman';
+  document.getElementById('if-kondisi').value='Baik';
+}
+function cancelForm(){document.getElementById('invForm')?.classList.remove('open');}
+
+async function saveItem(){
+  const nama=document.getElementById('if-nama')?.value.trim();if(!nama){alert('Nama wajib diisi.');return;}
+  const eid=document.getElementById('if-edit-id')?.value;
+  const data={produk:nama,kategori:document.getElementById('if-kat')?.value,toko:document.getElementById('if-toko')?.value.trim()||'',qty:parseInt(document.getElementById('if-qty')?.value)||1,harga:parseInt(document.getElementById('if-harga')?.value)||0,kondisi:document.getElementById('if-kondisi')?.value,catatan:document.getElementById('if-catatan')?.value.trim()||''};
+  try{
+    if(eid){await fetch(`${SUPA_URL}/rest/v1/inventory?id=eq.${eid}`,{method:'PATCH',headers:H,body:JSON.stringify(data)});}
+    else{await fetch(`${SUPA_URL}/rest/v1/inventory`,{method:'POST',headers:H,body:JSON.stringify({id:genId(),...data})});}
+    cancelForm();await loadItems();
+  }catch(e){alert('Gagal simpan: '+e.message);}
+}
+
+function editItem(id){
+  const i=items.find(x=>x.id===id);if(!i)return;
+  const f=document.getElementById('invForm');f.classList.add('open');
+  document.getElementById('invFormTitle').textContent='Edit item';
+  document.getElementById('if-save-btn').textContent='Simpan perubahan';
+  document.getElementById('if-nama').value=i.produk;document.getElementById('if-kat').value=i.kategori||'Bunga & tanaman';
+  document.getElementById('if-toko').value=i.toko||'';document.getElementById('if-qty').value=i.qty||1;
+  document.getElementById('if-harga').value=i.harga||0;document.getElementById('if-kondisi').value=i.kondisi||'Baik';
+  document.getElementById('if-catatan').value=i.catatan||'';document.getElementById('if-edit-id').value=id;
+}
+
+async function deleteItem(id){
+  if(!confirm('Hapus item ini?'))return;
+  try{await fetch(`${SUPA_URL}/rest/v1/inventory?id=eq.${id}`,{method:'DELETE',headers:H});await loadItems();}
+  catch(e){alert('Gagal hapus: '+e.message);}
+}
+
+function exportCSV(){
+  const rows=[['Produk','Kategori','Toko','Qty','Harga','Kondisi','Catatan']];
+  items.forEach(i=>rows.push([i.produk,i.kategori,i.toko||'',i.qty||1,i.harga||0,i.kondisi||'Baik',i.catatan||''   ]));
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(rows.map(r=>r.map(v=>`"${v}"`).join(',')).join('\n'));
+  a.download='wg88-inventory.csv';a.click();
+}
+
+function initRealtime(){
+  const ws=new WebSocket(`wss://cehiusuaipanuynmizdf.supabase.co/realtime/v1/websocket?apikey=${SUPA_KEY}&vsn=1.0.0`);
+  ws.onopen=()=>ws.send(JSON.stringify({topic:'realtime:public:inventory',event:'phx_join',payload:{config:{broadcast:{self:false},presence:{key:''},postgres_changes:[{event:'*',schema:'public',table:'inventory'}]}},ref:'1'}));
+  ws.onmessage=(e)=>{const msg=JSON.parse(e.data);if(msg.event==='postgres_changes')loadItems();};
+  ws.onclose=()=>{setSync(false);setTimeout(initRealtime,3000);};
+}
+
+loadItems();initRealtime();
+</script>
+</body>
+</html>

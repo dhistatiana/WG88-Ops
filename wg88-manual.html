@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wondergift88 — Panduan Operasional</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --cream:#F7F4EE;--ink:#1A1714;--ink-soft:#4A4540;--ink-muted:#9A948E;
+  --gold:#B8975A;--gold-pale:#F5EED8;
+  --wine:#72243E;--wine-light:#FBEAF0;
+  --green:#25D366;
+  --border:rgba(26,23,20,0.1);--border-soft:rgba(26,23,20,0.06);
+  --ok-bg:#EAF3E0;--ok-text:#27500A;
+  --warn-bg:#FAEEDA;--warn-text:#633806;
+  --info-bg:#E6F1FB;--info-text:#0C447C;
+}
+body{background:var(--cream);color:var(--ink);font-family:'DM Sans',sans-serif;font-weight:300;font-size:14px;line-height:1.7;}
+
+/* LAYOUT */
+.layout{display:flex;min-height:100vh;}
+.sidebar{width:240px;background:#fff;border-right:0.5px solid var(--border);position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;transition:transform 0.25s;}
+.sidebar-head{padding:1.5rem;border-bottom:0.5px solid var(--border);}
+.sidebar-logo{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500;letter-spacing:0.04em;}
+.sidebar-logo sup{font-size:10px;color:var(--gold);}
+.sidebar-sub{font-size:10px;color:var(--ink-muted);font-family:'DM Mono',monospace;letter-spacing:0.08em;margin-top:2px;}
+.nav-section{padding:0.75rem 1rem;border-bottom:0.5px solid var(--border-soft);}
+.nav-section-label{font-size:9px;color:var(--ink-muted);font-family:'DM Mono',monospace;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:6px;padding:0 4px;}
+.nav-link{display:block;padding:6px 10px;border-radius:3px;font-size:12px;color:var(--ink-soft);text-decoration:none;transition:all 0.15s;cursor:pointer;}
+.nav-link:hover{background:var(--cream);color:var(--ink);}
+.nav-link.active{background:var(--ink);color:var(--cream);}
+.nav-num{display:inline-block;width:18px;height:18px;border-radius:50%;background:var(--gold);color:#fff;font-size:9px;text-align:center;line-height:18px;margin-right:6px;font-family:'DM Mono',monospace;flex-shrink:0;}
+
+.main{margin-left:240px;padding:3rem 3.5rem;max-width:900px;}
+.topbar{display:none;background:var(--cream);border-bottom:0.5px solid var(--border);padding:0.9rem 1.5rem;align-items:center;gap:12px;position:sticky;top:0;z-index:99;}
+.hamburger{background:none;border:none;cursor:pointer;font-size:22px;color:var(--ink);padding:0;}
+.overlay{display:none;position:fixed;inset:0;background:rgba(26,23,20,0.4);z-index:150;}
+.overlay.open{display:block;}
+.section{margin-bottom:4rem;scroll-margin-top:2rem;}
+.section-num{font-size:10px;color:var(--gold);font-family:'DM Mono',monospace;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:6px;}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:500;margin-bottom:6px;letter-spacing:0.02em;}
+.section-desc{font-size:13px;color:var(--ink-soft);margin-bottom:1.5rem;line-height:1.7;max-width:600px;}
+.divider{border:none;border-top:0.5px solid var(--border);margin:2rem 0;}
+
+/* CARDS */
+.card{background:#fff;border:0.5px solid var(--border);border-radius:4px;padding:1.5rem;margin-bottom:1rem;}
+.card-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;margin-bottom:1rem;letter-spacing:0.02em;}
+.tip{background:var(--gold-pale);border:0.5px solid var(--gold);border-radius:4px;padding:1rem 1.25rem;margin-bottom:1rem;font-size:13px;line-height:1.7;}
+.tip strong{color:var(--gold);font-size:10px;font-family:'DM Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;display:block;margin-bottom:4px;}
+.info{background:var(--info-bg);border:0.5px solid rgba(12,68,124,0.2);border-radius:4px;padding:1rem 1.25rem;margin-bottom:1rem;font-size:13px;line-height:1.7;}
+.info strong{color:var(--info-text);font-size:10px;font-family:'DM Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;display:block;margin-bottom:4px;}
+.warn{background:var(--warn-bg);border:0.5px solid rgba(99,56,6,0.2);border-radius:4px;padding:1rem 1.25rem;margin-bottom:1rem;font-size:13px;line-height:1.7;}
+.warn strong{color:var(--warn-text);font-size:10px;font-family:'DM Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;display:block;margin-bottom:4px;}
+
+/* STEPS */
+.steps{counter-reset:step;}
+.step{display:grid;grid-template-columns:36px 1fr;gap:12px;align-items:start;margin-bottom:1.25rem;}
+.step-n{width:36px;height:36px;border-radius:50%;background:var(--ink);color:var(--cream);display:flex;align-items:center;justify-content:center;font-size:13px;font-family:'DM Mono',monospace;flex-shrink:0;margin-top:2px;}
+.step-n.gold{background:var(--gold);}
+.step-n.wine{background:var(--wine);}
+.step-n.green{background:var(--green);}
+.step-body{}
+.step-title{font-size:14px;font-weight:500;margin-bottom:4px;}
+.step-desc{font-size:13px;color:var(--ink-soft);line-height:1.7;}
+
+/* FLOW DIAGRAM */
+.flow{display:flex;flex-direction:column;gap:0;margin:1.5rem 0;}
+.flow-row{display:flex;align-items:center;gap:0;}
+.flow-node{flex:1;background:#fff;border:0.5px solid var(--border);border-radius:4px;padding:10px 14px;text-align:center;}
+.flow-node-title{font-size:12px;font-weight:500;}
+.flow-node-sub{font-size:10px;color:var(--ink-muted);font-family:'DM Mono',monospace;margin-top:2px;}
+.flow-node.wine-bg{background:var(--wine);border-color:var(--wine);}.flow-node.wine-bg .flow-node-title{color:#fff;}.flow-node.wine-bg .flow-node-sub{color:rgba(255,255,255,0.6);}
+.flow-node.gold-bg{background:var(--gold);border-color:var(--gold);}.flow-node.gold-bg .flow-node-title{color:#fff;}.flow-node.gold-bg .flow-node-sub{color:rgba(255,255,255,0.6);}
+.flow-node.green-bg{background:#1A7A40;border-color:#1A7A40;}.flow-node.green-bg .flow-node-title{color:#fff;}.flow-node.green-bg .flow-node-sub{color:rgba(255,255,255,0.6);}
+.flow-node.cream-bg{background:var(--cream);}
+.flow-arrow{display:flex;align-items:center;justify-content:center;padding:0 6px;color:var(--ink-muted);font-size:18px;flex-shrink:0;}
+.flow-arrow-down{display:flex;justify-content:center;padding:2px 0;color:var(--ink-muted);font-size:20px;}
+.flow-label{font-size:10px;color:var(--ink-muted);font-family:'DM Mono',monospace;text-align:center;margin:2px 0;}
+
+/* WA FLOW */
+.wa-flow{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin:1.5rem 0;}
+.wa-step{background:#fff;border:0.5px solid var(--border);border-radius:4px;padding:10px;text-align:center;position:relative;}
+.wa-step-num{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-family:'DM Mono',monospace;font-weight:500;margin:0 auto 6px;color:#fff;}
+.wa-step-name{font-size:11px;font-weight:500;line-height:1.4;}
+.wa-step-when{font-size:9px;color:var(--ink-muted);margin-top:3px;line-height:1.4;}
+
+/* MODULE LIST */
+.module-list{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:1rem 0;}
+.module-item{background:#fff;border:0.5px solid var(--border);border-radius:4px;padding:1rem;}
+.module-icon{font-size:18px;margin-bottom:5px;}
+.module-name{font-size:13px;font-weight:500;margin-bottom:3px;}
+.module-desc{font-size:11px;color:var(--ink-muted);line-height:1.5;}
+.module-who{display:inline-block;font-size:9px;padding:2px 7px;border-radius:2px;font-family:'DM Mono',monospace;margin-top:5px;}
+.who-all{background:#EAF3DE;color:#27500A;}
+.who-owner{background:#FAEEDA;color:#633806;}
+.who-team{background:#E6F1FB;color:#0C447C;}
+
+/* STATUS BADGES */
+.badge{display:inline-block;font-size:10px;padding:2px 9px;border-radius:2px;font-family:'DM Mono',monospace;font-weight:500;margin:2px;}
+.s-q{background:#F1EFE8;color:#444441;}
+.s-c{background:#E6F1FB;color:#0C447C;}
+.s-p{background:#FAEEDA;color:#633806;}
+.s-s{background:#EEEDFE;color:#3C3489;}
+.s-done{background:#EAF3DE;color:#27500A;}
+.s-x{background:#FCEBEB;color:#791F1F;}
+
+/* TABLE */
+table.tbl{width:100%;border-collapse:collapse;font-size:13px;margin:1rem 0;}
+table.tbl th{text-align:left;font-size:10px;color:var(--ink-muted);padding:7px 10px;border-bottom:0.5px solid var(--border);font-weight:400;font-family:'DM Mono',monospace;letter-spacing:0.06em;}
+table.tbl td{padding:9px 10px;border-bottom:0.5px solid var(--border-soft);vertical-align:top;font-size:13px;}
+table.tbl tr:last-child td{border-bottom:none;}
+
+/* COVER */
+.cover{background:var(--ink);border-radius:6px;padding:3rem;margin-bottom:3rem;position:relative;overflow:hidden;}
+.cover::before{content:'WONDERGIFT88';position:absolute;font-family:'Cormorant Garamond',serif;font-size:120px;font-weight:700;color:rgba(255,255,255,0.04);top:-20px;right:-30px;letter-spacing:0.05em;white-space:nowrap;}
+.cover-eyebrow{font-size:10px;color:var(--gold);font-family:'DM Mono',monospace;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:10px;}
+.cover-title{font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:500;color:#fff;letter-spacing:0.02em;line-height:1.2;margin-bottom:8px;}
+.cover-sub{font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:2rem;line-height:1.6;}
+.cover-meta{display:flex;gap:2rem;flex-wrap:wrap;}
+.cover-meta-item{font-size:11px;color:rgba(255,255,255,0.4);font-family:'DM Mono',monospace;}
+.cover-meta-item span{display:block;color:rgba(255,255,255,0.7);font-size:13px;font-family:'DM Sans',sans-serif;margin-top:2px;}
+
+/* PRINT */
+@media print{
+  .sidebar{display:none;}
+  .main{margin-left:0;padding:2rem;}
+  .section{page-break-inside:avoid;}
+}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;padding:1.5rem;}
+  .topbar{display:flex;}
+  .module-list{grid-template-columns:1fr;}
+  .wa-flow{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+<div class="topbar">
+  <button class="hamburger" onclick="toggleSidebar()">☰</button>
+  <span style="font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:500;">Panduan Operasional</span>
+</div>
+<div class="layout">
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-head">
+    <div class="sidebar-logo">Wondergift<sup>88</sup></div>
+    <div class="sidebar-sub">panduan operasional</div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-label">Pendahuluan</div>
+    <a class="nav-link active" onclick="scrollTo('intro')">Tentang sistem ini</a>
+    <a class="nav-link" onclick="scrollTo('modul')">Daftar modul</a>
+    <a class="nav-link" onclick="scrollTo('akses')">Cara akses</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-label">Alur kerja utama</div>
+    <a class="nav-link" onclick="scrollTo('alur-order')"><span class="nav-num">1</span>Alur order baru</a>
+    <a class="nav-link" onclick="scrollTo('alur-wa')"><span class="nav-num">2</span>Alur template WA</a>
+    <a class="nav-link" onclick="scrollTo('alur-invoice')"><span class="nav-num">3</span>Invoice & pembayaran</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-label">Panduan per modul</div>
+    <a class="nav-link" onclick="scrollTo('m-kalkulator')">Kalkulator</a>
+    <a class="nav-link" onclick="scrollTo('m-order')">Order & Invoice</a>
+    <a class="nav-link" onclick="scrollTo('m-customer')">Customer</a>
+    <a class="nav-link" onclick="scrollTo('m-supplier')">Supplier</a>
+    <a class="nav-link" onclick="scrollTo('m-inventory')">Inventory</a>
+    <a class="nav-link" onclick="scrollTo('m-stock')">Stock Opname</a>
+    <a class="nav-link" onclick="scrollTo('m-voucher')">Voucher</a>
+    <a class="nav-link" onclick="scrollTo('m-dashboard')">Dashboard & Rekap</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-label">Referensi</div>
+    <a class="nav-link" onclick="scrollTo('ref-status')">Status order</a>
+    <a class="nav-link" onclick="scrollTo('ref-tipe')">Tipe customer</a>
+    <a class="nav-link" onclick="scrollTo('ref-faq')">FAQ</a>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- COVER -->
+  <div class="cover">
+    <div class="cover-eyebrow">Dokumen internal</div>
+    <div class="cover-title">Panduan<br>Operasional</div>
+    <div class="cover-sub">Panduan lengkap penggunaan Wondergift88 Operations Hub<br>untuk tim kios Pakubuwono Business Center.</div>
+    <div class="cover-meta">
+      <div class="cover-meta-item">Versi<span>1.0 — Mei 2026</span></div>
+      <div class="cover-meta-item">Untuk<span>Tim Wondergift88</span></div>
+      <div class="cover-meta-item">Total modul<span>10 modul aktif</span></div>
+    </div>
+  </div>
+
+  <!-- INTRO -->
+  <div class="section" id="intro">
+    <div class="section-num">Pendahuluan</div>
+    <div class="section-title">Tentang sistem ini</div>
+    <div class="section-desc">Wondergift88 Operations Hub adalah sistem manajemen operasional berbasis web yang dirancang khusus untuk kebutuhan bisnis Wondergift88. Semua tools tersedia dalam satu tempat — dari hitung harga sampai kirim notifikasi ke penerima hadiah.</div>
+
+    <div class="card">
+      <div class="card-title">Apa yang bisa dilakukan sistem ini?</div>
+      <div class="step">
+        <div class="step-n gold">✦</div>
+        <div class="step-body"><div class="step-title">Hitung harga otomatis</div><div class="step-desc">Input item, sistem otomatis hitung HPP + margin + ongkir. Tidak perlu hitung manual lagi.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-n gold">✦</div>
+        <div class="step-body"><div class="step-title">Kelola semua order dalam satu tempat</div><div class="step-desc">Dari quotation sampai selesai — semua tercatat, bisa dicek kapanpun dari HP atau laptop.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-n gold">✦</div>
+        <div class="step-body"><div class="step-title">Template WA siap kirim</div><div class="step-desc">7 step template sudah tersedia. Tinggal isi data order, salin, kirim ke customer. Tidak perlu nulis ulang setiap kali.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-n gold">✦</div>
+        <div class="step-body"><div class="step-title">Invoice PDF profesional</div><div class="step-desc">Generate invoice dengan satu klik. Format sudah sesuai branding Wondergift88.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-n gold">✦</div>
+        <div class="step-body"><div class="step-title">Database customer & supplier</div><div class="step-desc">Semua data customer tersimpan rapi. Riwayat order, preferensi, tipe customer otomatis terupdate.</div></div>
+      </div>
+    </div>
+
+    <div class="info">
+      <strong>Penting</strong>
+      Data tersimpan di browser (localStorage). Pastikan selalu akses dari browser dan perangkat yang sama supaya data tidak hilang. Untuk backup permanen, gunakan fitur Sheets & Sync ke Google Sheets.
+    </div>
+  </div>
+
+  <!-- DAFTAR MODUL -->
+  <div class="section" id="modul">
+    <div class="section-num">Pendahuluan</div>
+    <div class="section-title">Daftar modul</div>
+    <div class="section-desc">10 modul aktif, masing-masing punya fungsi spesifik. Semua bisa diakses dari halaman Hub utama.</div>
+
+    <div class="module-list">
+      <div class="module-item"><div class="module-icon">◈</div><div class="module-name">Kalkulator</div><div class="module-desc">Hitung harga order, pilih preset item, atur margin. Output: summary harga + template WA.</div><span class="module-who who-team">Tim & Owner</span></div>
+      <div class="module-item"><div class="module-icon">◻</div><div class="module-name">Order & Invoice</div><div class="module-desc">Daftar semua order, update status, lihat detail, generate invoice PDF.</div><span class="module-who who-team">Tim & Owner</span></div>
+      <div class="module-item"><div class="module-icon">◁</div><div class="module-name">Template WA</div><div class="module-desc">7 template siap kirim — dari greeting sampai notifikasi ke penerima hadiah.</div><span class="module-who who-team">Tim</span></div>
+      <div class="module-item"><div class="module-icon">◎</div><div class="module-name">Customer</div><div class="module-desc">Database pelanggan, riwayat order, tipe otomatis (New/Regular/VIP/Corporate).</div><span class="module-who who-owner">Owner</span></div>
+      <div class="module-item"><div class="module-icon">◉</div><div class="module-name">Supplier</div><div class="module-desc">Contact list supplier, jenis, lokasi, bisa pickup atau tidak, daftar item.</div><span class="module-who who-team">Tim</span></div>
+      <div class="module-item"><div class="module-icon">◑</div><div class="module-name">Inventory & Belanja</div><div class="module-desc">Catat semua pembelian bahan & aset. 761 item dari Shopee sudah tersedia.</div><span class="module-who who-team">Tim</span></div>
+      <div class="module-item"><div class="module-icon">◐</div><div class="module-name">Stock Opname</div><div class="module-desc">Input stok mingguan, lihat heatmap kondisi stok, sync ke Google Sheets.</div><span class="module-who who-team">Tim</span></div>
+      <div class="module-item"><div class="module-icon">◇</div><div class="module-name">Voucher</div><div class="module-desc">Generate kode voucher, cek status, proses klaim saat customer bayar.</div><span class="module-who who-all">Semua</span></div>
+      <div class="module-item"><div class="module-icon">▦</div><div class="module-name">Dashboard</div><div class="module-desc">Overview revenue, pipeline order, alert kondisi kios, top customer.</div><span class="module-who who-owner">Owner</span></div>
+      <div class="module-item"><div class="module-icon">▤</div><div class="module-name">Rekap & Laporan</div><div class="module-desc">Laporan bulanan/mingguan, export CSV, print PDF.</div><span class="module-who who-owner">Owner</span></div>
+    </div>
+
+    <div class="tip">
+      <strong>Keterangan akses</strong>
+      <span style="background:#EAF3DE;color:#27500A;padding:1px 7px;border-radius:2px;font-size:10px;font-family:'DM Mono',monospace;">Semua</span> = semua tim bisa akses &nbsp;
+      <span style="background:#E6F1FB;color:#0C447C;padding:1px 7px;border-radius:2px;font-size:10px;font-family:'DM Mono',monospace;">Tim</span> = tim operasional &nbsp;
+      <span style="background:#FAEEDA;color:#633806;padding:1px 7px;border-radius:2px;font-size:10px;font-family:'DM Mono',monospace;">Owner</span> = disarankan owner saja
+    </div>
+  </div>
+
+  <!-- CARA AKSES -->
+  <div class="section" id="akses">
+    <div class="section-num">Pendahuluan</div>
+    <div class="section-title">Cara akses</div>
+
+    <div class="card">
+      <div class="card-title">Buka di browser</div>
+      <div class="step">
+        <div class="step-n">1</div>
+        <div class="step-body"><div class="step-title">Buka browser</div><div class="step-desc">Gunakan Chrome atau Safari. Bisa dari HP maupun laptop.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-n">2</div>
+        <div class="step-body"><div class="step-title">Masuk ke URL sistem</div><div class="step-desc">Ketik alamat Netlify yang diberikan owner. Bookmark supaya mudah diakses berikutnya.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-n">3</div>
+        <div class="step-body"><div class="step-title">Navigasi via sidebar</div><div class="step-desc">Klik menu di sidebar kiri untuk pindah antar modul. Di HP, ketuk ikon ☰ di pojok kiri atas.</div></div>
+      </div>
+    </div>
+
+    <div class="warn">
+      <strong>Perhatian</strong>
+      Jangan buka sistem di mode Incognito/Private — data tidak akan tersimpan. Selalu gunakan browser biasa dan perangkat yang sama.
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ALUR ORDER -->
+  <div class="section" id="alur-order">
+    <div class="section-num">Alur kerja utama — 01</div>
+    <div class="section-title">Alur order baru</div>
+    <div class="section-desc">Ini adalah alur utama dari customer pertama kali kontak sampai order selesai. Ikuti urutan ini setiap kali ada pesanan masuk.</div>
+
+    <!-- FLOW DIAGRAM -->
+    <div class="flow">
+      <div class="flow-row">
+        <div class="flow-node wine-bg">
+          <div class="flow-node-title">Customer kontak</div>
+          <div class="flow-node-sub">via WA / Instagram</div>
+        </div>
+      </div>
+      <div class="flow-arrow-down">↓</div>
+      <div class="flow-row">
+        <div class="flow-node">
+          <div class="flow-node-title">Kirim greeting & assessment</div>
+          <div class="flow-node-sub">Template WA — Step 1</div>
+        </div>
+      </div>
+      <div class="flow-arrow-down">↓</div>
+      <div class="flow-row">
+        <div class="flow-node">
+          <div class="flow-node-title">Buka Kalkulator</div>
+          <div class="flow-node-sub">Pilih preset item, atur margin</div>
+        </div>
+      </div>
+      <div class="flow-arrow-down">↓</div>
+      <div class="flow-row">
+        <div class="flow-node gold-bg">
+          <div class="flow-node-title">Kirim quotation / order form</div>
+          <div class="flow-node-sub">Template WA — Step 2 atau 3</div>
+        </div>
+      </div>
+      <div class="flow-arrow-down">↓</div>
+      <div class="flow-row" style="gap:10px;">
+        <div class="flow-node cream-bg" style="flex:1;">
+          <div class="flow-node-title" style="font-size:11px;">Customer setuju</div>
+          <div class="flow-node-sub">Klik Fix Order di kalkulator</div>
+        </div>
+        <div class="flow-arrow">atau</div>
+        <div class="flow-node cream-bg" style="flex:1;">
+          <div class="flow-node-title" style="font-size:11px;">Customer negosiasi</div>
+          <div class="flow-node-sub">Revisi kalkulator, kirim ulang</div>
+        </div>
+      </div>
+      <div class="flow-arrow-down">↓</div>
+      <div class="flow-row">
+        <div class="flow-node">
+          <div class="flow-node-title">Terima pembayaran</div>
+          <div class="flow-node-sub">Kirim konfirmasi — Step 4</div>
+        </div>
+      </div>
+      <div class="flow-arrow-down">↓</div>
+      <div class="flow-row">
+        <div class="flow-node">
+          <div class="flow-node-title">Proses pengerjaan</div>
+          <div class="flow-node-sub">Update status → Dalam proses</div>
+        </div>
+      </div>
+      <div class="flow-arrow-down">↓</div>
+      <div class="flow-row">
+        <div class="flow-node">
+          <div class="flow-node-title">Gift jadi — kirim foto & video</div>
+          <div class="flow-node-sub">Template WA — Step 5</div>
+        </div>
+      </div>
+      <div class="flow-arrow-down">↓</div>
+      <div class="flow-row">
+        <div class="flow-node">
+          <div class="flow-node-title">Kirim via driver</div>
+          <div class="flow-node-sub">Foto driver + tracking — Step 6</div>
+        </div>
+      </div>
+      <div class="flow-arrow-down">↓</div>
+      <div class="flow-row">
+        <div class="flow-node green-bg">
+          <div class="flow-node-title">Notifikasi ke penerima</div>
+          <div class="flow-node-sub">Template WA — Step 7 · Update status → Selesai</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ALUR WA -->
+  <div class="section" id="alur-wa">
+    <div class="section-num">Alur kerja utama — 02</div>
+    <div class="section-title">Alur template WA</div>
+    <div class="section-desc">7 template siap pakai. Tidak semua harus dikirim di setiap order — sesuaikan dengan situasi.</div>
+
+    <div class="wa-flow">
+      <div class="wa-step">
+        <div class="wa-step-num" style="background:#25D366;">1</div>
+        <div class="wa-step-name">Greeting & assessment</div>
+        <div class="wa-step-when">Customer baru kontak</div>
+      </div>
+      <div class="wa-step">
+        <div class="wa-step-num" style="background:#1A1714;">2</div>
+        <div class="wa-step-name">Order form</div>
+        <div class="wa-step-when">Setelah harga & pilihan fix</div>
+      </div>
+      <div class="wa-step">
+        <div class="wa-step-num" style="background:#B8975A;">3</div>
+        <div class="wa-step-name">Rincian + payment</div>
+        <div class="wa-step-when">Opsional — repeat customer</div>
+      </div>
+      <div class="wa-step">
+        <div class="wa-step-num" style="background:#1A1714;">4</div>
+        <div class="wa-step-name">Konfirmasi payment</div>
+        <div class="wa-step-when">Setelah bukti transfer masuk</div>
+      </div>
+      <div class="wa-step">
+        <div class="wa-step-num" style="background:#1A1714;">5</div>
+        <div class="wa-step-name">Foto & video gift</div>
+        <div class="wa-step-when">Gift selesai dibuat</div>
+      </div>
+      <div class="wa-step">
+        <div class="wa-step-num" style="background:#72243E;">6</div>
+        <div class="wa-step-name">Foto driver + tracking</div>
+        <div class="wa-step-when">Gift sudah di driver</div>
+      </div>
+      <div class="wa-step">
+        <div class="wa-step-num" style="background:#25D366;">7</div>
+        <div class="wa-step-name">Pesan ke penerima</div>
+        <div class="wa-step-when">Kirim ke nomor penerima hadiah</div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <strong>Tips penggunaan</strong>
+      Di modul Template WA, isi data order dulu di panel atas (nama, invoice, total, item). Semua template otomatis terisi. Tinggal klik "Salin" lalu paste ke WhatsApp.
+    </div>
+
+    <div class="info">
+      <strong>Untuk repeat customer</strong>
+      Step 2 (Order Form) bisa dilewati. Langsung kirim Step 3 (Rincian order + payment) yang sudah berisi detail item dari kalkulator.
+    </div>
+  </div>
+
+  <!-- ALUR INVOICE -->
+  <div class="section" id="alur-invoice">
+    <div class="section-num">Alur kerja utama — 03</div>
+    <div class="section-title">Invoice & pembayaran</div>
+
+    <div class="card">
+      <div class="card-title">Cara generate invoice</div>
+      <div class="step">
+        <div class="step-n">1</div>
+        <div class="step-body"><div class="step-title">Buka modul Order & Invoice</div><div class="step-desc">Cari order yang ingin dibuat invoice-nya di daftar order.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-n">2</div>
+        <div class="step-body"><div class="step-title">Klik tombol "Invoice"</div><div class="step-desc">Invoice otomatis tampil dengan semua detail order, nomor invoice, dan info pembayaran BCA.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-n">3</div>
+        <div class="step-body"><div class="step-title">Edit deskripsi item (opsional)</div><div class="step-desc">Klik "Edit items" untuk menyesuaikan nama dan detail item yang tampil di invoice. Harga tidak berubah.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-n gold">4</div>
+        <div class="step-body"><div class="step-title">Download PDF</div><div class="step-desc">Klik "Download PDF" — browser akan membuka tab baru dan langsung print. Pilih "Save as PDF" di dialog print.</div></div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <strong>Stempel PAID</strong>
+      Invoice otomatis menampilkan stempel PAID merah kalau status order sudah "Selesai". Ubah status order dulu sebelum download invoice untuk customer.
+    </div>
+
+    <table class="tbl">
+      <thead><tr><th>Info pembayaran</th><th>Detail</th></tr></thead>
+      <tbody>
+        <tr><td>Bank</td><td>BCA</td></tr>
+        <tr><td>Nomor rekening</td><td style="font-family:'DM Mono',monospace;font-weight:500;">248-070-1391</td></tr>
+        <tr><td>Atas nama</td><td>Wonder Tech Nusantara</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- KALKULATOR -->
+  <div class="section" id="m-kalkulator">
+    <div class="section-num">Panduan modul</div>
+    <div class="section-title">Kalkulator</div>
+    <div class="section-desc">Modul utama untuk menghitung harga order. Selalu mulai dari sini setiap ada pesanan masuk.</div>
+
+    <div class="card">
+      <div class="card-title">Cara pakai</div>
+      <div class="step">
+        <div class="step-n">1</div>
+        <div class="step-body"><div class="step-title">Isi nama customer & tanggal</div><div class="step-desc">Di bagian atas form. Tanggal otomatis terisi hari ini.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-n">2</div>
+        <div class="step-body"><div class="step-title">Pilih item dari preset chips</div><div class="step-desc">Klik chip item di setiap seksi (Packaging, Isi hampers, Botol, Add-on). Item langsung masuk ke daftar. Qty bisa diubah.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-n">3</div>
+        <div class="step-body"><div class="step-title">Tambah item custom (opsional)</div><div class="step-desc">Isi kolom di bawah chips: nama item, qty, harga → klik "+". Untuk item yang tidak ada di preset.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-n">4</div>
+        <div class="step-body"><div class="step-title">Atur margin di panel kanan</div><div class="step-desc">Geser slider margin. Default 30%. Harga final otomatis berubah.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-n gold">5</div>
+        <div class="step-body"><div class="step-title">Klik Fix Order</div><div class="step-desc">Order tersimpan ke sistem dengan nomor invoice otomatis (format WG-INV-26/01). Muncul pilihan untuk langsung buka Template WA.</div></div>
+      </div>
+    </div>
+
+    <div class="info">
+      <strong>Biaya operasional</strong>
+      Ops kios (Rp300.000) dan karyawan (Rp200.000) sudah termasuk di kalkulasi. Bisa diubah default-nya di modul Preset & Pricing.
+    </div>
+  </div>
+
+  <!-- ORDER -->
+  <div class="section" id="m-order">
+    <div class="section-num">Panduan modul</div>
+    <div class="section-title">Order & Invoice</div>
+    <div class="section-desc">Tempat semua order tercatat. Update status order di sini setiap ada perubahan.</div>
+
+    <div class="card">
+      <div class="card-title">Status order & artinya</div>
+      <table class="tbl">
+        <thead><tr><th>Status</th><th>Artinya</th><th>Kapan diubah</th></tr></thead>
+        <tbody>
+          <tr><td><span class="badge s-q">Quotation</span></td><td>Harga sudah dikirim, belum ada konfirmasi</td><td>Otomatis saat pertama buat order</td></tr>
+          <tr><td><span class="badge s-c">Confirmed</span></td><td>Customer sudah setuju, menunggu bayar</td><td>Saat customer bilang ok</td></tr>
+          <tr><td><span class="badge s-p">Dalam proses</span></td><td>Pembayaran masuk, sedang dikerjakan</td><td>Setelah transfer masuk</td></tr>
+          <tr><td><span class="badge s-s">Siap kirim</span></td><td>Gift sudah jadi, siap dikirim</td><td>Setelah foto & video dikirim ke customer</td></tr>
+          <tr><td><span class="badge s-done">Selesai</span></td><td>Order tuntas, gift sudah diterima</td><td>Setelah konfirmasi penerima</td></tr>
+          <tr><td><span class="badge s-x">Batal</span></td><td>Order dibatalkan</td><td>Kalau customer cancel</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tip">
+      <strong>Tips</strong>
+      Update status order setiap ada perubahan — ini yang muncul di Dashboard sebagai alert. Kalau ada order "Siap kirim" tapi belum dikirim, akan muncul notifikasi di Home.
+    </div>
+  </div>
+
+  <!-- CUSTOMER -->
+  <div class="section" id="m-customer">
+    <div class="section-num">Panduan modul</div>
+    <div class="section-title">Customer</div>
+    <div class="section-desc">Database semua pelanggan Wondergift88. Tipe customer otomatis terupdate berdasarkan riwayat order.</div>
+
+    <div class="card">
+      <div class="card-title">Sistem tipe customer (otomatis)</div>
+      <table class="tbl">
+        <thead><tr><th>Tipe</th><th>Syarat</th></tr></thead>
+        <tbody>
+          <tr><td><span class="badge" style="background:#E6F1FB;color:#0C447C;">New</span></td><td>1x order dengan spending di bawah Rp3.000.000</td></tr>
+          <tr><td><span class="badge" style="background:#EAF3DE;color:#27500A;">Regular</span></td><td>1x order spending ≥ Rp3.000.000, atau sudah 2x order</td></tr>
+          <tr><td><span class="badge" style="background:#FAEEDA;color:#633806;">VIP</span></td><td>Sudah 3x order ke atas</td></tr>
+          <tr><td><span class="badge" style="background:#EEEDFE;color:#3C3489;">Corporate</span></td><td>Diset manual oleh owner</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Cara tambah catatan customer</div>
+      <div class="step">
+        <div class="step-n">1</div>
+        <div class="step-body"><div class="step-title">Klik nama customer</div><div class="step-desc">Modal detail terbuka.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-n">2</div>
+        <div class="step-body"><div class="step-title">Klik "+ Tambah catatan"</div><div class="step-desc">Tulis catatan tim — misal preferensi packaging, permintaan khusus, dll.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-n">3</div>
+        <div class="step-body"><div class="step-title">Klik Simpan</div><div class="step-desc">Catatan tersimpan dengan tanggal otomatis.</div></div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <strong>Sync dari order</strong>
+      Klik tombol "Sync dari order" untuk otomatis import semua nama customer dari data order yang belum ada di daftar customer.
+    </div>
+  </div>
+
+  <!-- SUPPLIER -->
+  <div class="section" id="m-supplier">
+    <div class="section-num">Panduan modul</div>
+    <div class="section-title">Supplier</div>
+    <div class="section-desc">Contact list semua supplier. Tim bisa tambah supplier baru kapanpun langsung dari sistem.</div>
+
+    <div class="card">
+      <div class="card-title">Cara tambah supplier baru</div>
+      <div class="step">
+        <div class="step-n">1</div>
+        <div class="step-body"><div class="step-title">Klik "+ Tambah"</div><div class="step-desc">Form tambah supplier muncul di atas daftar.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-n">2</div>
+        <div class="step-body"><div class="step-title">Isi data supplier</div><div class="step-desc">Nama, WA, platform, jenis, lokasi, bisa pickup atau tidak.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-n">3</div>
+        <div class="step-body"><div class="step-title">Tambah item yang dijual</div><div class="step-desc">Ketik nama item lalu tekan Enter. Bisa tambah sebanyak-banyaknya.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-n gold">4</div>
+        <div class="step-body"><div class="step-title">Simpan</div><div class="step-desc">Supplier muncul di daftar. Klik kartu supplier → tombol "Buka WA" untuk langsung chat.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INVENTORY -->
+  <div class="section" id="m-inventory">
+    <div class="section-num">Panduan modul</div>
+    <div class="section-title">Inventory & Belanja</div>
+    <div class="section-desc">Catat semua pembelian bahan dan aset kios. 761 item dari data Shopee sudah tersedia sebagai data awal.</div>
+
+    <div class="card">
+      <div class="card-title">Cara catat belanja baru</div>
+      <div class="step">
+        <div class="step-n">1</div>
+        <div class="step-body"><div class="step-title">Klik "+ Tambah item"</div></div>
+      </div>
+      <div class="step">
+        <div class="step-n">2</div>
+        <div class="step-body"><div class="step-title">Isi detail item</div><div class="step-desc">Nama produk, kategori, nama toko/supplier, qty, harga satuan, kondisi.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-n gold">3</div>
+        <div class="step-body"><div class="step-title">Simpan</div><div class="step-desc">Item masuk ke daftar dan terhitung di total nilai inventory.</div></div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <strong>Kategori inventory</strong>
+      Bunga & tanaman · Art aksesoris · Packaging · Wine & spirits · Hampers & add-on · Aset kios · Peralatan & elektronik · Perlengkapan admin/kantor
+    </div>
+  </div>
+
+  <!-- STOCK OPNAME -->
+  <div class="section" id="m-stock">
+    <div class="section-num">Panduan modul</div>
+    <div class="section-title">Stock Opname</div>
+    <div class="section-desc">Dilakukan setiap minggu untuk memantau kondisi stok bahan habis pakai.</div>
+
+    <div class="card">
+      <div class="card-title">Cara input stok mingguan</div>
+      <div class="step">
+        <div class="step-n">1</div>
+        <div class="step-body"><div class="step-title">Hitung stok fisik dulu</div><div class="step-desc">Hitung stok aktual yang ada di kios. Lakukan setiap Senin pagi sebelum mulai kerja.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-n">2</div>
+        <div class="step-body"><div class="step-title">Buka modul Stock Opname</div><div class="step-desc">Isi angka di kolom "Stok skrg" untuk setiap item. Warna indikator berubah otomatis.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-n gold">3</div>
+        <div class="step-body"><div class="step-title">Klik "Simpan ke Sheets"</div><div class="step-desc">Data tersimpan dan tersync ke Google Sheets (kalau sudah tersambung).</div></div>
+      </div>
+    </div>
+
+    <table class="tbl">
+      <thead><tr><th>Indikator warna</th><th>Artinya</th><th>Tindakan</th></tr></thead>
+      <tbody>
+        <tr><td><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#63B543;"></span> Hijau</td><td>Stok aman</td><td>Tidak perlu tindakan</td></tr>
+        <tr><td><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#E8A020;"></span> Kuning</td><td>Hampir habis (< 130% dari minimum)</td><td>Rencanakan restock minggu ini</td></tr>
+        <tr><td><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#D94040;"></span> Merah</td><td>Di bawah minimum — restock segera</td><td>Order ke supplier hari ini</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- VOUCHER -->
+  <div class="section" id="m-voucher">
+    <div class="section-num">Panduan modul</div>
+    <div class="section-title">Voucher</div>
+    <div class="section-desc">Generate kode voucher untuk promo, cek validitas, dan proses klaim saat customer checkout.</div>
+
+    <div class="card">
+      <div class="card-title">Cara generate voucher baru</div>
+      <div class="step">
+        <div class="step-n">1</div>
+        <div class="step-body"><div class="step-title">Pilih kategori & tipe diskon</div><div class="step-desc">Persen (%) atau nominal (Rp). Isi nilai diskon dan minimum pembelian.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-n">2</div>
+        <div class="step-body"><div class="step-title">Isi jumlah kode</div><div class="step-desc">Bisa generate 1–50 kode sekaligus.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-n gold">3</div>
+        <div class="step-body"><div class="step-title">Klik Generate</div><div class="step-desc">Kode tampil dalam format WG-WINE-XXXX. Salin dan kirim ke customer.</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Cara klaim voucher customer</div>
+      <div class="step">
+        <div class="step-n">1</div>
+        <div class="step-body"><div class="step-title">Masukkan kode voucher di kolom Cek</div><div class="step-desc">Sistem otomatis cek apakah kode valid dan belum dipakai.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-n">2</div>
+        <div class="step-body"><div class="step-title">Isi nama, WA, dan total pembelian</div><div class="step-desc">Form klaim muncul otomatis kalau kode valid.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-n gold">3</div>
+        <div class="step-body"><div class="step-title">Konfirmasi klaim</div><div class="step-desc">Status voucher berubah jadi "klaim". Kode tidak bisa dipakai lagi.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="section" id="m-dashboard">
+    <div class="section-num">Panduan modul</div>
+    <div class="section-title">Dashboard & Rekap</div>
+    <div class="section-desc">Overview kondisi bisnis secara keseluruhan. Disarankan dibuka setiap pagi oleh owner.</div>
+
+    <div class="card">
+      <div class="card-title">Yang tersedia di Dashboard</div>
+      <table class="tbl">
+        <thead><tr><th>Fitur</th><th>Keterangan</th></tr></thead>
+        <tbody>
+          <tr><td>Metric cards</td><td>Revenue, order selesai, order aktif, rata-rata/order, total customer</td></tr>
+          <tr><td>Pipeline order</td><td>Jumlah order di setiap status — dari Quotation sampai Selesai</td></tr>
+          <tr><td>Revenue chart</td><td>Grafik revenue 6 bulan terakhir</td></tr>
+          <tr><td>Alert panel</td><td>Notifikasi order siap kirim, dalam proses, stok kritis, item rusak</td></tr>
+          <tr><td>Top customer</td><td>5 customer dengan spending tertinggi</td></tr>
+          <tr><td>Filter periode</td><td>Bulan ini / 7 hari terakhir / Semua waktu</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Rekap & laporan</div>
+      <div class="step-desc" style="margin-bottom:1rem;">Akses via tab "Rekap & laporan" di modul Dashboard. Tersedia filter periode: bulan ini, bulan lalu, 3 bulan, semua waktu.</div>
+      <table class="tbl">
+        <thead><tr><th>Yang bisa dilakukan</th><th>Caranya</th></tr></thead>
+        <tbody>
+          <tr><td>Export data ke Excel</td><td>Klik tombol "Export CSV"</td></tr>
+          <tr><td>Print laporan PDF</td><td>Klik tombol "Print / PDF" → Save as PDF</td></tr>
+          <tr><td>Lihat top customer periode ini</td><td>Tabel di bagian bawah halaman Rekap</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- REFERENSI STATUS -->
+  <div class="section" id="ref-status">
+    <div class="section-num">Referensi</div>
+    <div class="section-title">Status order</div>
+    <table class="tbl">
+      <thead><tr><th>Status</th><th>Artinya</th><th>Siapa yang update</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge s-q">Quotation</span></td><td>Harga dikirim, belum konfirmasi</td><td>Otomatis saat Fix Order</td></tr>
+        <tr><td><span class="badge s-c">Confirmed</span></td><td>Customer setuju, belum bayar</td><td>Tim</td></tr>
+        <tr><td><span class="badge s-p">Dalam proses</span></td><td>Bayar masuk, sedang dikerjakan</td><td>Tim setelah terima transfer</td></tr>
+        <tr><td><span class="badge s-s">Siap kirim</span></td><td>Gift jadi, siap dikirim</td><td>Tim setelah foto & video dikirim</td></tr>
+        <tr><td><span class="badge s-done">Selesai</span></td><td>Gift sudah diterima</td><td>Tim setelah konfirmasi penerima</td></tr>
+        <tr><td><span class="badge s-x">Batal</span></td><td>Order dibatalkan</td><td>Tim / Owner</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- REFERENSI TIPE -->
+  <div class="section" id="ref-tipe">
+    <div class="section-num">Referensi</div>
+    <div class="section-title">Tipe customer</div>
+    <table class="tbl">
+      <thead><tr><th>Tipe</th><th>Syarat otomatis</th><th>Perlakuan</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge" style="background:#E6F1FB;color:#0C447C;">New</span></td><td>1x order, spending &lt; Rp3jt</td><td>Perkenalkan program voucher</td></tr>
+        <tr><td><span class="badge" style="background:#EAF3DE;color:#27500A;">Regular</span></td><td>1x order ≥ Rp3jt, atau 2x order</td><td>Prioritas respons, tawarkan paket bundling</td></tr>
+        <tr><td><span class="badge" style="background:#FAEEDA;color:#633806;">VIP</span></td><td>3x order ke atas</td><td>Perlakuan prioritas, akses promo eksklusif</td></tr>
+        <tr><td><span class="badge" style="background:#EEEDFE;color:#3C3489;">Corporate</span></td><td>Diset manual</td><td>Invoice resmi, pembayaran bisa tempo</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- FAQ -->
+  <div class="section" id="ref-faq">
+    <div class="section-num">Referensi</div>
+    <div class="section-title">FAQ</div>
+
+    <div class="card">
+      <div class="card-title">Data hilang setelah buka di HP lain?</div>
+      <div class="step-desc">Data tersimpan di browser masing-masing perangkat (localStorage). Kalau buka di HP berbeda, data tidak akan muncul. Solusi: setup Google Sheets sync di menu Sheets & Sync — semua data akan tersimpan permanen di cloud.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Nomor invoice sudah sampai WG-INV-26/99, terus bagaimana?</div>
+      <div class="step-desc">Sistem otomatis lanjut ke WG-INV-26/100, WG-INV-26/101, dst. Tidak perlu khawatir.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Bagaimana kalau ada item preset yang harganya berubah?</div>
+      <div class="step-desc">Buka modul Preset & Pricing → cari preset yang ingin diubah → klik Edit → update harga → Simpan. Harga baru langsung berlaku untuk kalkulasi berikutnya.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Bisa tambah template WA sendiri?</div>
+      <div class="step-desc">Bisa. Di modul Template WA, klik tab "Edit template" di pojok kanan atas. Ubah teks sesuai kebutuhan, klik Simpan semua. Perubahan berlaku langsung.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Tipe customer tidak otomatis berubah ke VIP?</div>
+      <div class="step-desc">Pastikan status order sudah diupdate ke "Selesai". Sistem menghitung berdasarkan order yang statusnya Selesai saja. Order yang masih Confirmed atau Dalam proses tidak dihitung.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Bagaimana cara update Netlify kalau ada perubahan file?</div>
+      <div class="step-desc">Buka netlify.com/drop → drag folder yang sudah diupdate. Netlify otomatis replace dengan versi terbaru. URL tidak berubah.</div>
+    </div>
+  </div>
+
+  <div style="text-align:center;padding:3rem 0 2rem;font-size:11px;color:var(--ink-muted);font-family:'DM Mono',monospace;">
+    Wondergift88 Operations Hub &nbsp;·&nbsp; Panduan Operasional v1.0 &nbsp;·&nbsp; Mei 2026<br>
+    Dokumen internal — hanya untuk tim Wondergift88
+  </div>
+
+</main>
+</div>
+
+<script>
+function scrollTo(id){
+  const el = document.getElementById(id);
+  if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+  closeSidebar();
+}
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('open');
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
+
+// Highlight active nav on scroll
+const sections = document.querySelectorAll('.section');
+const navLinks = document.querySelectorAll('.nav-link');
+window.addEventListener('scroll', ()=>{
+  let current = '';
+  sections.forEach(s=>{
+    if(window.scrollY >= s.offsetTop - 100) current = s.id;
+  });
+  navLinks.forEach(l=>{
+    l.classList.remove('active');
+    if(l.getAttribute('onclick')?.includes(current)) l.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wondergift88 — Order & Invoice</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --cream:#F7F4EE;--ink:#1A1714;--ink-soft:#4A4540;--ink-muted:#9A948E;
+  --gold:#B8975A;--gold-pale:#F5EED8;
+  --wine:#72243E;--wine-light:#FBEAF0;
+  --border:rgba(26,23,20,0.1);--border-soft:rgba(26,23,20,0.06);
+  --ok-bg:#EAF3E0;--ok-text:#27500A;
+  --warn-bg:#FAEEDA;--warn-text:#633806;
+  --low-bg:#FCEBEB;--low-text:#791F1F;
+  --info-bg:#E6F1FB;--info-text:#0C447C;
+}
+body{background:var(--cream);color:var(--ink);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;}
+header{border-bottom:0.5px solid var(--border);padding:1.1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:var(--cream);position:sticky;top:0;z-index:100;}
+.logo{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:500;letter-spacing:0.04em;}
+.logo sup{font-size:10px;color:var(--gold);font-family:'DM Mono',monospace;}
+.sync-pill{display:flex;align-items:center;gap:6px;font-size:11px;font-family:'DM Mono',monospace;color:var(--ink-muted);background:#fff;border:0.5px solid var(--border);border-radius:20px;padding:4px 10px;}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:#B4B2A9;flex-shrink:0;}
+.sync-dot.ok{background:#63B543;}
+.sync-dot.loading{background:#E8A020;}
+.container{max-width:1000px;margin:0 auto;padding:2rem;}
+.card{background:#fff;border:0.5px solid var(--border);border-radius:4px;padding:1.5rem;margin-bottom:1rem;}
+.card-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;margin-bottom:1.25rem;letter-spacing:0.02em;}
+.lbl{font-size:10px;color:var(--ink-muted);display:block;margin-bottom:5px;letter-spacing:0.1em;text-transform:uppercase;font-family:'DM Mono',monospace;}
+input[type=text],input[type=number],select,textarea{width:100%;background:var(--cream);border:0.5px solid var(--border);border-radius:3px;padding:8px 10px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--ink);outline:none;transition:border-color 0.2s;}
+input:focus,select:focus,textarea:focus{border-color:var(--gold);}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239A948E' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;-webkit-appearance:none;appearance:none;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;}
+.divider{border:none;border-top:0.5px solid var(--border-soft);margin:1.25rem 0;}
+.btn{background:var(--ink);color:var(--cream);border:none;border-radius:3px;padding:9px 18px;font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:background 0.2s;}
+.btn:hover{background:#2d2926;}
+.btn-sec{background:transparent;color:var(--ink-soft);border:0.5px solid var(--border);border-radius:3px;padding:7px 13px;font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:background 0.15s;}
+.btn-sec:hover{background:var(--cream);}
+.btn-wine{background:var(--wine);color:#fff;border:none;border-radius:3px;padding:9px 18px;font-size:13px;cursor:pointer;}
+.btn-gold{background:var(--gold);color:#fff;border:none;border-radius:3px;padding:7px 14px;font-size:12px;cursor:pointer;}
+.btn-danger{background:transparent;color:var(--low-text);border:0.5px solid rgba(121,31,31,0.25);border-radius:3px;padding:5px 10px;font-size:11px;cursor:pointer;}
+.btn-danger:hover{background:var(--low-bg);}
+.btn-sm{padding:5px 10px;font-size:11px;}
+.badge{display:inline-block;font-size:10px;padding:2px 9px;border-radius:2px;font-family:'DM Mono',monospace;font-weight:500;white-space:nowrap;}
+.s-quotation{background:#F1EFE8;color:#444441;}
+.s-confirmed{background:#E6F1FB;color:#0C447C;}
+.s-proses{background:#FAEEDA;color:#633806;}
+.s-siap{background:#EEEDFE;color:#3C3489;}
+.s-selesai{background:#EAF3DE;color:#27500A;}
+.s-batal{background:#FCEBEB;color:#791F1F;}
+.metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:1.5rem;}
+.metric{background:#fff;border:0.5px solid var(--border);border-radius:4px;padding:1rem 1.25rem;}
+.metric-lbl{font-size:10px;color:var(--ink-muted);font-family:'DM Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;}
+.metric-val{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;line-height:1;}
+table.ord{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed;}
+table.ord th{text-align:left;font-size:10px;color:var(--ink-muted);padding:6px 10px;border-bottom:0.5px solid var(--border);font-weight:400;font-family:'DM Mono',monospace;letter-spacing:0.06em;}
+table.ord td{padding:10px;border-bottom:0.5px solid var(--border-soft);vertical-align:middle;}
+table.ord tr:last-child td{border-bottom:none;}
+table.ord tr:hover td{background:#fafaf8;}
+.search-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.25rem;align-items:center;}
+.search-bar input{flex:1;min-width:180px;}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(26,23,20,0.45);z-index:300;align-items:flex-start;justify-content:center;padding:2rem 1rem;overflow-y:auto;}
+.modal-bg.open{display:flex;}
+.modal{background:#fff;border-radius:6px;padding:1.5rem;width:600px;max-width:96vw;border:0.5px solid var(--border);}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;margin-bottom:1.25rem;}
+.modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:1.25rem;flex-wrap:wrap;}
+.inv-head{background:var(--wine);padding:2rem;text-align:center;border-radius:4px 4px 0 0;}
+.inv-brand{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:#fff;letter-spacing:0.08em;margin-top:8px;}
+.inv-word{font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:700;color:rgba(255,255,255,0.15);letter-spacing:0.1em;line-height:1;margin-top:4px;}
+.inv-body{padding:1.5rem 2rem;}
+.inv-tbl{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:1.5rem;}
+.inv-tbl th{background:var(--wine);color:#fff;padding:10px 12px;text-align:left;font-size:11px;letter-spacing:0.08em;font-weight:500;}
+.inv-tbl td{padding:10px 12px;border-bottom:0.5px solid var(--border-soft);vertical-align:top;}
+.inv-total-row td{background:var(--wine-light);color:var(--wine);font-family:'DM Mono',monospace;font-weight:500;padding:12px;}
+.inv-foot{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;padding:1.5rem 2rem;border-top:0.5px solid var(--border);}
+.inv-sig-line{border-top:0.5px solid var(--border);width:140px;margin:40px auto 8px;}
+.inv-contact{padding:1rem 2rem;background:var(--cream);border-radius:0 0 4px 4px;font-size:11px;color:var(--ink-muted);display:flex;gap:1.5rem;flex-wrap:wrap;}
+.paid-stamp{position:absolute;bottom:60px;right:40px;border:3px solid #D94040;border-radius:4px;padding:6px 16px;color:#D94040;font-size:20px;font-weight:700;letter-spacing:0.1em;transform:rotate(-8deg);opacity:0.7;font-family:'DM Mono',monospace;}
+.item-row{display:grid;grid-template-columns:1fr 60px 110px 110px 32px;gap:8px;align-items:center;margin-bottom:6px;}
+.item-row input{padding:6px 8px;font-size:12px;}
+.rbox{border-radius:3px;padding:10px 14px;font-size:13px;display:none;margin-top:10px;}
+.rv{background:var(--ok-bg);color:var(--ok-text);}
+.re{background:var(--low-bg);color:var(--low-text);}
+.empty{text-align:center;padding:3rem;color:var(--ink-muted);font-size:13px;font-family:'DM Mono',monospace;}
+.loading-overlay{position:fixed;inset:0;background:rgba(247,244,238,0.8);z-index:500;display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px;}
+.loading-overlay.show{display:flex;}
+.spinner{width:32px;height:32px;border:2px solid var(--border);border-top-color:var(--wine);border-radius:50%;animation:spin 0.7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:center;font-size:11px;color:var(--ink-muted);font-family:'DM Mono',monospace;margin-top:2rem;}
+@media(max-width:640px){header{padding:1rem 1.25rem;}.container{padding:1.25rem;}.row2,.row3{grid-template-columns:1fr;}.inv-foot{grid-template-columns:1fr;}.item-row{grid-template-columns:1fr 50px 90px 32px;}}
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <div style="font-size:12px;font-family:'DM Mono',monospace;color:var(--ink-muted);">Memuat data...</div>
+</div>
+
+<header>
+  <div class="logo">Wondergift<sup>88</sup>&nbsp;<span style="font-size:11px;color:var(--ink-muted);font-family:'DM Mono',monospace;font-weight:400;">order & invoice</span></div>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div class="sync-pill"><span class="sync-dot" id="syncDot"></span><span id="syncText">menghubungkan...</span></div>
+    <button class="btn-wine btn-sm" onclick="showNewOrderForm()">+ Order baru</button>
+  </div>
+</header>
+
+<div class="container">
+  <div class="metric-grid" id="metricGrid"></div>
+
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:1rem;">
+      <p class="card-title" style="margin:0;">Daftar order</p>
+      <button class="btn-sec btn-sm" onclick="exportCSV()">Export CSV</button>
+    </div>
+    <div class="search-bar">
+      <input type="text" id="searchOrder" placeholder="Cari nama customer atau no. invoice..." oninput="renderOrders()" />
+      <select id="statusFilter" onchange="renderOrders()" style="width:auto;">
+        <option value="all">Semua status</option>
+        <option value="Quotation">Quotation</option>
+        <option value="Confirmed">Confirmed</option>
+        <option value="Dalam proses">Dalam proses</option>
+        <option value="Siap kirim">Siap kirim</option>
+        <option value="Selesai">Selesai</option>
+        <option value="Batal">Batal</option>
+      </select>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="ord">
+        <thead><tr>
+          <th style="width:16%;">No. Invoice</th>
+          <th style="width:20%;">Customer</th>
+          <th style="width:12%;">Tanggal</th>
+          <th style="width:14%;text-align:right;">Total</th>
+          <th style="width:14%;">Status</th>
+          <th style="width:24%;"></th>
+        </tr></thead>
+        <tbody id="orderBody"></tbody>
+      </table>
+      <div id="orderEmpty" class="empty" style="display:none;">Belum ada order.</div>
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--ink-muted);font-family:'DM Mono',monospace;" id="orderFooter"></div>
+  </div>
+</div>
+
+<!-- NEW ORDER MODAL -->
+<div class="modal-bg" id="newOrderModal">
+  <div class="modal" style="width:680px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
+      <div class="modal-title" style="margin:0;">Order baru</div>
+      <button class="btn-sec btn-sm" onclick="closeNewOrder()">Tutup</button>
+    </div>
+    <div class="row3">
+      <div><span class="lbl">Nama customer</span><input type="text" id="n-cust" placeholder="Nama pemesan" /></div>
+      <div><span class="lbl">No. WA</span><input type="text" id="n-wa" placeholder="08xx..." /></div>
+      <div><span class="lbl">Tanggal order</span><input type="text" id="n-date" /></div>
+    </div>
+    <div class="row2">
+      <div><span class="lbl">Target pengiriman</span><input type="text" id="n-deliver" placeholder="mis. 25 Mei 2026" /></div>
+      <div><span class="lbl">Catatan</span><input type="text" id="n-note" placeholder="Detail pesanan khusus" /></div>
+    </div>
+    <div class="divider"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+      <span style="font-size:13px;font-weight:500;">Item pesanan</span>
+      <button class="btn-sec btn-sm" onclick="addItemRow()">+ Tambah item</button>
+    </div>
+    <div style="font-size:11px;color:var(--ink-muted);font-family:'DM Mono',monospace;display:grid;grid-template-columns:1fr 60px 110px 110px 32px;gap:8px;padding:0 0 6px;border-bottom:0.5px solid var(--border);">
+      <span>Deskripsi</span><span style="text-align:center;">Qty</span><span style="text-align:right;">Harga/unit</span><span style="text-align:right;">Subtotal</span><span></span>
+    </div>
+    <div id="itemRows" style="margin-top:6px;"></div>
+    <div class="divider"></div>
+    <div style="display:grid;grid-template-columns:1fr 220px;gap:1rem;">
+      <div></div>
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:0.5px solid var(--border-soft);font-size:13px;">
+          <span class="lbl" style="margin:0;">Ongkir</span>
+          <input type="number" id="n-ongkir" value="0" style="width:100px;text-align:right;padding:4px 6px;font-size:12px;" oninput="recalc()" />
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:13px;border-bottom:0.5px solid var(--border-soft);">
+          <span style="color:var(--ink-muted);">Subtotal</span>
+          <span style="font-family:'DM Mono',monospace;" id="n-subtotal">Rp0</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;font-size:15px;font-weight:500;">
+          <span>Total</span>
+          <span style="font-family:'DM Mono',monospace;color:var(--wine);" id="n-total">Rp0</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sec" onclick="closeNewOrder()">Batal</button>
+      <button class="btn-wine" onclick="saveNewOrder()">Simpan order</button>
+    </div>
+    <div id="newOrderResult" class="rbox"></div>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="modal-bg" id="detailModal">
+  <div class="modal" style="width:680px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:8px;">
+      <div class="modal-title" style="margin:0;" id="detailTitle">Detail Order</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <select id="statusSelect" onchange="updateStatus()" style="width:auto;font-size:12px;padding:5px 8px;"></select>
+        <button class="btn-gold btn-sm" onclick="openInvoice()">Invoice</button>
+        <button class="btn-sec btn-sm" onclick="closeDetail()">Tutup</button>
+      </div>
+    </div>
+    <div id="detailBody"></div>
+  </div>
+</div>
+
+<!-- INVOICE MODAL -->
+<div class="modal-bg" id="invoiceModal">
+  <div class="modal" style="width:700px;padding:0;">
+    <div style="display:flex;gap:8px;padding:1rem 1.5rem;border-bottom:0.5px solid var(--border);background:#fff;border-radius:6px 6px 0 0;flex-wrap:wrap;">
+      <div style="flex:1;font-family:'DM Mono',monospace;font-size:13px;font-weight:500;" id="invModalNo"></div>
+      <button class="btn-sec btn-sm" onclick="editInvoiceItems()">Edit items</button>
+      <button class="btn-wine btn-sm" onclick="printInvoice()">Download PDF</button>
+      <button class="btn-sec btn-sm" onclick="closeInvoice()">Tutup</button>
+    </div>
+    <div style="max-height:75vh;overflow-y:auto;padding:1.5rem;" id="invoicePreview"></div>
+  </div>
+</div>
+
+<!-- EDIT INV ITEMS -->
+<div class="modal-bg" id="editInvModal">
+  <div class="modal">
+    <div class="modal-title">Edit deskripsi invoice</div>
+    <p style="font-size:12px;color:var(--ink-muted);margin-bottom:1rem;line-height:1.6;">Sesuaikan nama dan detail item yang tampil di invoice.</p>
+    <div id="editInvItems"></div>
+    <div class="modal-footer">
+      <button class="btn-sec" onclick="closeEditInv()">Batal</button>
+      <button class="btn-wine" onclick="saveInvEdits()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<footer>wondergift88.com &nbsp;·&nbsp; order & invoice — realtime sync</footer>
+
+<script>
+const SUPA_URL = 'https://cehiusuaipanuynmizdf.supabase.co';
+const SUPA_KEY = 'sb_publishable_eCQxemaN5Wm70442OsUV6Q_wxaReN_f';
+const MONTHS = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agt','Sep','Okt','Nov','Des'];
+const STATUS_LIST = ['Quotation','Confirmed','Dalam proses','Siap kirim','Selesai','Batal'];
+const STATUS_CLASS = {'Quotation':'s-quotation','Confirmed':'s-confirmed','Dalam proses':'s-proses','Siap kirim':'s-siap','Selesai':'s-selesai','Batal':'s-batal'};
+const H = {'Content-Type':'application/json','apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}`,'Prefer':'return=representation'};
+
+let orders = [];
+let currentOrderId = null;
+let itemRowCount = 0;
+let itemRows = [];
+
+function fmtRp(v){ return 'Rp'+(v||0).toLocaleString('id-ID'); }
+function genId(){ return 'o_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,5); }
+function showRes(id,ok,msg){ const el=document.getElementById(id); el.className='rbox '+(ok?'rv':'re'); el.style.display='block'; el.textContent=msg; }
+function setSync(ok){ document.getElementById('syncDot').className='sync-dot'+(ok?' ok':' loading'); document.getElementById('syncText').textContent=ok?'tersambung':'menghubungkan...'; }
+
+// SUPABASE
+async function loadOrders(){
+  showLoading(true);
+  try {
+    const res = await fetch(`${SUPA_URL}/rest/v1/orders?order=created_at.desc`, {headers:H});
+    const data = await res.json();
+    orders = data.map(o => ({
+      id: o.id, invNo: o.inv_no, cust: o.cust, wa: o.wa,
+      date: o.date, deliver: o.deliver, note: o.note,
+      items: o.items || [], ongkir: o.ongkir||0, final: o.final||0,
+      status: o.status, createdAt: new Date(o.created_at).getTime()
+    }));
+    setSync(true);
+    renderOrders();
+    renderMetrics();
+  } catch(e) {
+    setSync(false);
+    console.error(e);
+  }
+  showLoading(false);
+}
+
+async function saveOrderToDB(order){
+  const payload = {
+    id: order.id, inv_no: order.invNo, cust: order.cust, wa: order.wa||'',
+    date: order.date||'', deliver: order.deliver||'', note: order.note||'',
+    items: order.items||[], ongkir: order.ongkir||0, final: order.final||0,
+    status: order.status
+  };
+  const res = await fetch(`${SUPA_URL}/rest/v1/orders`, {
+    method:'POST',
+    headers:{...H,'Prefer':'resolution=merge-duplicates,return=representation'},
+    body: JSON.stringify(payload)
+  });
+  if(!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+async function updateOrderInDB(id, patch){
+  const res = await fetch(`${SUPA_URL}/rest/v1/orders?id=eq.${id}`, {
+    method:'PATCH', headers:H, body: JSON.stringify(patch)
+  });
+  if(!res.ok) throw new Error(await res.text());
+}
+
+async function deleteOrderFromDB(id){
+  const res = await fetch(`${SUPA_URL}/rest/v1/orders?id=eq.${id}`, {
+    method:'DELETE', headers:H
+  });
+  if(!res.ok) throw new Error(await res.text());
+}
+
+// REALTIME
+function initRealtime(){
+  const ws = new WebSocket(`wss://cehiusuaipanuynmizdf.supabase.co/realtime/v1/websocket?apikey=${SUPA_KEY}&vsn=1.0.0`);
+  ws.onopen = () => {
+    ws.send(JSON.stringify({topic:'realtime:public:orders',event:'phx_join',payload:{config:{broadcast:{self:false},presence:{key:''},postgres_changes:[{event:'*',schema:'public',table:'orders'}]}},ref:'1'}));
+  };
+  ws.onmessage = (e) => {
+    const msg = JSON.parse(e.data);
+    if(msg.event === 'postgres_changes') {
+      loadOrders(); // reload on any change
+    }
+  };
+  ws.onclose = () => { setSync(false); setTimeout(initRealtime, 3000); };
+}
+
+// METRICS
+function renderMetrics(){
+  const total = orders.length;
+  const aktif = orders.filter(o=>!['Selesai','Batal'].includes(o.status)).length;
+  const selesai = orders.filter(o=>o.status==='Selesai').length;
+  const revenue = orders.filter(o=>o.status==='Selesai').reduce((s,o)=>s+(o.final||0),0);
+  document.getElementById('metricGrid').innerHTML = `
+    <div class="metric"><div class="metric-lbl">Total order</div><div class="metric-val">${total}</div></div>
+    <div class="metric"><div class="metric-lbl">Sedang aktif</div><div class="metric-val">${aktif}</div></div>
+    <div class="metric"><div class="metric-lbl">Selesai</div><div class="metric-val">${selesai}</div></div>
+    <div class="metric"><div class="metric-lbl">Total revenue</div><div class="metric-val" style="font-size:16px;">${fmtRp(revenue)}</div></div>
+  `;
+}
+
+// ORDER LIST
+function renderOrders(){
+  const q = (document.getElementById('searchOrder')?.value||'').toLowerCase();
+  const sf = document.getElementById('statusFilter')?.value||'all';
+  let filtered = orders.filter(o => {
+    const mq = !q || (o.cust||'').toLowerCase().includes(q) || (o.invNo||'').toLowerCase().includes(q);
+    const ms = sf==='all' || o.status===sf;
+    return mq && ms;
+  });
+  const tbody = document.getElementById('orderBody');
+  const empty = document.getElementById('orderEmpty');
+  document.getElementById('orderFooter').textContent = `${filtered.length} dari ${orders.length} order`;
+  if(!filtered.length){ tbody.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display='none';
+  tbody.innerHTML = filtered.map(o => `<tr>
+    <td style="font-family:'DM Mono',monospace;font-size:12px;">${o.invNo||'—'}</td>
+    <td><div style="font-weight:500;">${o.cust}</div>${o.wa?`<div style="font-size:11px;color:var(--ink-muted);">${o.wa}</div>`:''}</td>
+    <td style="font-size:12px;color:var(--ink-muted);">${o.date||'—'}</td>
+    <td style="text-align:right;font-family:'DM Mono',monospace;font-weight:500;">${fmtRp(o.final)}</td>
+    <td><span class="badge ${STATUS_CLASS[o.status]||'s-quotation'}">${o.status}</span></td>
+    <td><div style="display:flex;gap:5px;flex-wrap:wrap;">
+      <button class="btn-sec btn-sm" onclick="openDetail('${o.id}')">Detail</button>
+      <button class="btn-gold btn-sm" onclick="openDetailInvoice('${o.id}')">Invoice</button>
+      <button class="btn-danger" onclick="deleteOrder('${o.id}')">✕</button>
+    </div></td>
+  </tr>`).join('');
+}
+
+async function deleteOrder(id){
+  if(!confirm('Hapus order ini?')) return;
+  try { await deleteOrderFromDB(id); await loadOrders(); } catch(e) { alert('Gagal hapus: '+e.message); }
+}
+
+// NEW ORDER FORM
+function showNewOrderForm(){
+  itemRows=[]; itemRowCount=0;
+  document.getElementById('itemRows').innerHTML='';
+  ['n-cust','n-wa','n-deliver','n-note'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  document.getElementById('n-ongkir').value=0;
+  const now=new Date();
+  document.getElementById('n-date').value=`${now.getDate()} ${MONTHS[now.getMonth()]} ${now.getFullYear()}`;
+  addItemRow();
+  recalc();
+  document.getElementById('newOrderModal').classList.add('open');
+}
+function closeNewOrder(){ document.getElementById('newOrderModal').classList.remove('open'); }
+
+function addItemRow(){
+  const id='ir_'+itemRowCount++;
+  itemRows.push(id);
+  const div=document.createElement('div');
+  div.className='item-row'; div.id=id;
+  div.innerHTML=`
+    <input type="text" placeholder="Deskripsi item" id="${id}-desc" oninput="recalc()" />
+    <input type="number" placeholder="1" min="1" value="1" style="text-align:center;" id="${id}-qty" oninput="recalc()" />
+    <input type="number" placeholder="Harga" min="0" style="text-align:right;" id="${id}-price" oninput="recalc()" />
+    <span style="font-family:'DM Mono',monospace;font-size:12px;text-align:right;display:block;" id="${id}-sub">Rp0</span>
+    <button onclick="removeRow('${id}')" style="background:none;border:none;cursor:pointer;color:var(--ink-muted);font-size:18px;">×</button>
+  `;
+  document.getElementById('itemRows').appendChild(div);
+}
+
+function removeRow(id){ const el=document.getElementById(id); if(el) el.remove(); itemRows=itemRows.filter(r=>r!==id); recalc(); }
+
+function recalc(){
+  let sub=0;
+  itemRows.forEach(id=>{
+    const qty=parseInt(document.getElementById(id+'-qty')?.value)||1;
+    const price=parseInt(document.getElementById(id+'-price')?.value)||0;
+    const s=qty*price;
+    const el=document.getElementById(id+'-sub');
+    if(el) el.textContent='Rp'+s.toLocaleString('id-ID');
+    sub+=s;
+  });
+  const ongkir=parseInt(document.getElementById('n-ongkir')?.value)||0;
+  document.getElementById('n-subtotal').textContent='Rp'+sub.toLocaleString('id-ID');
+  document.getElementById('n-total').textContent='Rp'+(sub+ongkir).toLocaleString('id-ID');
+}
+
+const INV_COUNTER_KEY='wg88_inv_counter';
+function nextInvNo(){
+  let n=parseInt(localStorage.getItem(INV_COUNTER_KEY)||'0')+1;
+  localStorage.setItem(INV_COUNTER_KEY,n);
+  const yr=new Date().getFullYear().toString().slice(-2);
+  return `WG-INV-${yr}/${String(n).padStart(2,'0')}`;
+}
+
+async function saveNewOrder(){
+  const cust=document.getElementById('n-cust')?.value.trim();
+  if(!cust){ showRes('newOrderResult',false,'Nama customer wajib diisi.'); return; }
+  const inputVal=itemRows.map(id=>document.getElementById(id+'-desc')?.value.trim()).filter(Boolean);
+  if(!inputVal.length){ showRes('newOrderResult',false,'Tambahkan minimal satu item.'); return; }
+  const items=itemRows.map(id=>({
+    desc:document.getElementById(id+'-desc')?.value||'',
+    detail:'',
+    qty:parseInt(document.getElementById(id+'-qty')?.value)||1,
+    price:parseInt(document.getElementById(id+'-price')?.value)||0,
+  })).filter(i=>i.desc);
+  const ongkir=parseInt(document.getElementById('n-ongkir')?.value)||0;
+  const sub=items.reduce((s,i)=>s+(i.price*i.qty),0);
+  const order={
+    id:genId(), invNo:nextInvNo(), cust,
+    wa:document.getElementById('n-wa')?.value.trim()||'',
+    date:document.getElementById('n-date')?.value||'',
+    deliver:document.getElementById('n-deliver')?.value.trim()||'',
+    note:document.getElementById('n-note')?.value.trim()||'',
+    items, ongkir, final:sub+ongkir, status:'Confirmed'
+  };
+  try {
+    await saveOrderToDB(order);
+    closeNewOrder();
+    await loadOrders();
+  } catch(e) { showRes('newOrderResult',false,'Gagal simpan: '+e.message); }
+}
+
+// DETAIL
+function openDetail(id){
+  const o=orders.find(x=>x.id===id); if(!o) return;
+  currentOrderId=id;
+  document.getElementById('detailTitle').textContent=o.invNo||'Order';
+  const sel=document.getElementById('statusSelect');
+  sel.innerHTML=STATUS_LIST.map(s=>`<option value="${s}"${s===o.status?' selected':''}>${s}</option>`).join('');
+  const items=(o.items||[]).map(i=>`
+    <div style="padding:8px 0;border-bottom:0.5px solid var(--border-soft);">
+      <div style="display:flex;justify-content:space-between;font-size:13px;">
+        <span style="font-weight:500;">${i.desc}</span>
+        <span style="font-family:'DM Mono',monospace;">${fmtRp((i.price||0)*(i.qty||1))}</span>
+      </div>
+      ${i.detail?`<div style="font-size:11px;color:var(--ink-muted);white-space:pre-line;">${i.detail}</div>`:''}
+      <div style="font-size:11px;color:var(--ink-muted);">${fmtRp(i.price)} × ${i.qty||1}</div>
+    </div>`).join('');
+  document.getElementById('detailBody').innerHTML=`
+    <div class="row3" style="margin-bottom:1rem;">
+      <div><div class="lbl">Customer</div><div style="font-size:13px;font-weight:500;">${o.cust}</div></div>
+      <div><div class="lbl">No. WA</div><div style="font-size:13px;">${o.wa||'—'}</div></div>
+      <div><div class="lbl">Tanggal</div><div style="font-size:13px;">${o.date||'—'}</div></div>
+    </div>
+    <div class="row2" style="margin-bottom:1rem;">
+      <div><div class="lbl">Target kirim</div><div style="font-size:13px;">${o.deliver||'—'}</div></div>
+      <div><div class="lbl">Catatan</div><div style="font-size:13px;">${o.note||'—'}</div></div>
+    </div>
+    ${items}
+    <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:13px;border-top:0.5px solid var(--border);margin-top:4px;">
+      <span>Ongkir</span><span style="font-family:'DM Mono',monospace;">${fmtRp(o.ongkir)}</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:15px;font-weight:500;border-top:0.5px solid var(--border);">
+      <span>Total</span><span style="font-family:'DM Mono',monospace;color:var(--wine);">${fmtRp(o.final)}</span>
+    </div>
+  `;
+  document.getElementById('detailModal').classList.add('open');
+}
+
+function closeDetail(){ document.getElementById('detailModal').classList.remove('open'); currentOrderId=null; }
+
+async function updateStatus(){
+  if(!currentOrderId) return;
+  const newStatus=document.getElementById('statusSelect').value;
+  try {
+    await updateOrderInDB(currentOrderId, {status:newStatus});
+    await loadOrders();
+  } catch(e) { alert('Gagal update: '+e.message); }
+}
+
+function openDetailInvoice(id){ currentOrderId=id; openInvoice(); }
+
+// INVOICE
+function openInvoice(){
+  const o=orders.find(x=>x.id===currentOrderId); if(!o) return;
+  document.getElementById('invModalNo').textContent=o.invNo||'Invoice';
+  buildInvoicePreview(o);
+  document.getElementById('invoiceModal').classList.add('open');
+}
+function closeInvoice(){ document.getElementById('invoiceModal').classList.remove('open'); }
+
+function buildInvoicePreview(o){
+  const isPaid=o.status==='Selesai';
+  const rows=(o.items||[]).map((item,i)=>`
+    <tr>
+      <td style="width:5%;text-align:center;">${i+1}.</td>
+      <td><div style="font-weight:500;font-size:13px;">${item.desc}</div>${item.detail?`<div style="font-size:11px;color:var(--ink-muted);line-height:1.7;">${item.detail.split('\n').map(l=>`• ${l}`).join('<br>')}</div>`:''}</td>
+      <td style="text-align:right;font-family:'DM Mono',monospace;white-space:nowrap;">${fmtRp(item.price)}</td>
+      <td style="text-align:center;">${item.qty||1}</td>
+      <td style="text-align:right;font-family:'DM Mono',monospace;white-space:nowrap;">${fmtRp((item.price||0)*(item.qty||1))}</td>
+    </tr>`).join('');
+  const ongkirRow=(o.ongkir||0)>0?`<tr><td></td><td style="color:var(--ink-muted);font-size:12px;">Ongkir</td><td></td><td></td><td style="text-align:right;font-family:'DM Mono',monospace;font-size:12px;">${fmtRp(o.ongkir)}</td></tr>`:'';
+  document.getElementById('invoicePreview').innerHTML=`
+    <div style="position:relative;">
+      <div style="border:0.5px solid var(--border);border-radius:4px;overflow:hidden;">
+        <div class="inv-head">
+          <div style="width:70px;height:70px;border-radius:50%;background:rgba(255,255,255,0.15);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+            <span style="font-family:'Cormorant Garamond',serif;font-size:22px;color:#fff;font-weight:600;">W</span>
+          </div>
+          <div class="inv-brand">WONDERGIFT88.CO</div>
+          <div class="inv-word">INVOICE</div>
+        </div>
+        <div class="inv-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+            <div>
+              <div style="font-size:10px;color:var(--ink-muted);font-family:'DM Mono',monospace;margin-bottom:3px;">TO</div>
+              <div style="font-weight:500;font-size:14px;color:var(--wine);letter-spacing:0.05em;">${(o.cust||'').toUpperCase()}</div>
+              ${o.wa?`<div style="font-size:12px;color:var(--ink-muted);margin-top:2px;">${o.wa}</div>`:''}
+            </div>
+            <div style="text-align:right;">
+              <div style="margin-bottom:6px;"><div style="font-size:10px;color:var(--ink-muted);font-family:'DM Mono',monospace;">DATE</div><div style="font-size:12px;">${o.date||'—'}</div></div>
+              <div><div style="font-size:10px;color:var(--ink-muted);font-family:'DM Mono',monospace;">NO. INVOICE</div><div style="font-size:12px;font-family:'DM Mono',monospace;font-weight:500;">${o.invNo||'—'}</div></div>
+            </div>
+          </div>
+          <table class="inv-tbl">
+            <thead><tr>
+              <th style="width:5%;">NO.</th><th>DESCRIPTION</th>
+              <th style="width:14%;text-align:right;">PRICE</th>
+              <th style="width:8%;text-align:center;">QTY</th>
+              <th style="width:16%;text-align:right;">AMOUNT</th>
+            </tr></thead>
+            <tbody>${rows}${ongkirRow}</tbody>
+            <tfoot><tr class="inv-total-row">
+              <td colspan="3"></td>
+              <td style="text-align:right;font-size:13px;letter-spacing:0.06em;">Total</td>
+              <td style="text-align:right;font-size:15px;">${fmtRp(o.final)}</td>
+            </tr></tfoot>
+          </table>
+        </div>
+        <div class="inv-foot">
+          <div style="text-align:center;"><div style="height:50px;"></div><div class="inv-sig-line"></div><div style="font-family:'Cormorant Garamond',serif;font-size:14px;color:var(--ink-muted);">Wondergift88.co</div></div>
+          <div style="font-size:12px;line-height:2;"><strong>Payment:</strong><br>Account Name &nbsp;: Wonder Tech Nusantara<br>Bank Account/No : BANK BCA / 248-070-1391</div>
+        </div>
+        <div class="inv-contact"><span>+62 838-4933-4830</span><span>wonderwine88@gmail.com</span><span>Pakubuwono Business Center — Jakarta Selatan</span></div>
+      </div>
+      ${isPaid?`<div class="paid-stamp">PAID</div>`:''}
+    </div>`;
+}
+
+function printInvoice(){
+  const o=orders.find(x=>x.id===currentOrderId); if(!o) return;
+  const content=document.getElementById('invoicePreview').innerHTML;
+  const w=window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${o.invNo}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'DM Sans',sans-serif;font-weight:300;}:root{--cream:#F7F4EE;--ink:#1A1714;--ink-muted:#9A948E;--wine:#72243E;--wine-light:#FBEAF0;--border:rgba(26,23,20,0.1);--border-soft:rgba(26,23,20,0.06);}
+  .inv-head{background:var(--wine);padding:1.5rem;text-align:center;}.inv-brand{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:#fff;letter-spacing:0.08em;margin-top:8px;}.inv-word{font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:700;color:rgba(255,255,255,0.15);letter-spacing:0.1em;line-height:1;margin-top:4px;}.inv-body{padding:1.25rem 1.5rem;}.inv-tbl{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:1.25rem;}.inv-tbl th{background:var(--wine);color:#fff;padding:8px 10px;text-align:left;font-size:10px;letter-spacing:0.06em;font-weight:500;}.inv-tbl td{padding:8px 10px;border-bottom:0.5px solid var(--border-soft);vertical-align:top;}.inv-total-row td{background:var(--wine-light);color:var(--wine);font-family:'DM Mono',monospace;font-weight:500;padding:10px;}.inv-foot{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;padding:1.25rem 1.5rem;border-top:0.5px solid var(--border);}.inv-sig-line{border-top:0.5px solid var(--border);width:130px;margin:36px auto 6px;}.inv-contact{padding:0.75rem 1.5rem;background:var(--cream);font-size:10px;color:var(--ink-muted);display:flex;gap:1.25rem;flex-wrap:wrap;}.paid-stamp{position:fixed;bottom:60px;right:40px;border:3px solid #D94040;border-radius:4px;padding:6px 16px;color:#D94040;font-size:20px;font-weight:700;letter-spacing:0.1em;transform:rotate(-8deg);opacity:0.7;font-family:'DM Mono',monospace;}
+  @media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}</style></head><body>${content}<script>window.onload=function(){window.print();}<\/script></body></html>`);
+  w.document.close();
+}
+
+function editInvoiceItems(){
+  const o=orders.find(x=>x.id===currentOrderId); if(!o) return;
+  document.getElementById('editInvItems').innerHTML=(o.items||[]).map((item,i)=>`
+    <div style="margin-bottom:1rem;padding-bottom:1rem;border-bottom:0.5px solid var(--border-soft);">
+      <div style="font-size:11px;color:var(--ink-muted);font-family:'DM Mono',monospace;margin-bottom:6px;">ITEM ${i+1} · ${fmtRp(item.price)} × ${item.qty||1}</div>
+      <div style="margin-bottom:8px;"><span class="lbl">Nama item</span><input type="text" id="ei-name-${i}" value="${item.desc||''}" /></div>
+      <div><span class="lbl">Detail (satu per baris)</span><textarea id="ei-detail-${i}" rows="3" style="resize:vertical;">${item.detail||''}</textarea></div>
+    </div>`).join('');
+  document.getElementById('editInvModal').classList.add('open');
+}
+
+function closeEditInv(){ document.getElementById('editInvModal').classList.remove('open'); }
+
+async function saveInvEdits(){
+  const o=orders.find(x=>x.id===currentOrderId); if(!o) return;
+  const newItems=(o.items||[]).map((item,i)=>({
+    ...item,
+    desc:document.getElementById('ei-name-'+i)?.value||item.desc,
+    detail:document.getElementById('ei-detail-'+i)?.value||item.detail
+  }));
+  try {
+    await updateOrderInDB(currentOrderId,{items:newItems});
+    await loadOrders();
+    closeEditInv();
+    openInvoice();
+  } catch(e){ alert('Gagal simpan: '+e.message); }
+}
+
+function exportCSV(){
+  const rows=[['Invoice','Customer','WA','Tanggal','Total','Status','Catatan']];
+  orders.forEach(o=>rows.push([o.invNo,o.cust,o.wa||'',o.date||'',o.final||0,o.status,o.note||'']));
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(rows.map(r=>r.map(v=>`"${v}"`).join(',')).join('\n'));
+  a.download='wg88-orders.csv'; a.click();
+}
+
+function showLoading(v){ document.getElementById('loadingOverlay').classList.toggle('show',v); }
+
+// INIT
+loadOrders();
+initRealtime();
+</script>
+</body>
+</html>
