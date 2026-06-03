@@ -89,7 +89,28 @@ footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:cent
 <div class="container">
 
   <!-- ORDER DATA -->
-    <!-- PAGE: BUNDLE -->
+  <div class="order-panel">
+    <div class="order-panel-title">Data order — isi dulu atau auto-load dari kalkulator</div>
+    <div class="row3">
+      <div><span class="lbl">Nama pemesan</span><input type="text" id="dNama" placeholder="Kak Sari" oninput="refreshAll()" /></div>
+      <div><span class="lbl">Nama penerima</span><input type="text" id="dPenerima" placeholder="Kak Ifony" oninput="refreshAll()" /></div>
+      <div><span class="lbl">No. WA penerima</span><input type="text" id="dWAPenerima" placeholder="08xx..." oninput="refreshAll()" /></div>
+    </div>
+    <div class="row3">
+      <div><span class="lbl">No. invoice</span><input type="text" id="dInv" placeholder="WG-INV-26/07" oninput="refreshAll()" /></div>
+      <div><span class="lbl">Total harga</span><input type="text" id="dTotal" placeholder="Rp1.589.000" oninput="refreshAll()" /></div>
+      <div><span class="lbl">Estimasi kirim</span><input type="text" id="dKirim" placeholder="25 Mei 2026" oninput="refreshAll()" /></div>
+    </div>
+    <div class="row2">
+      <div><span class="lbl">Acara / momen</span><input type="text" id="dAcara" placeholder="ultah, anniversary, dll" oninput="refreshAll()" /></div>
+      <div><span class="lbl">Catatan</span><input type="text" id="dNote" placeholder="tema, custom request, dll" oninput="refreshAll()" /></div>
+    </div>
+    <div><span class="lbl">Detail item (dari kalkulator — satu per baris)</span>
+      <textarea id="dItems" rows="4" placeholder="🍷 Sababay Wine 750ml (×1) — Rp450.000&#10;📦 Box Wine Single (×1) — Rp65.000&#10;✨ Acc Decor Basic (×1) — Rp200.000&#10;🥂 Couple Glass Set (×1) — Rp250.000" oninput="refreshAll()"></textarea>
+    </div>
+  </div>
+
+  <!-- PAGE: BUNDLE -->
   <div id="page-bundle" class="page active">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px;">
       <div style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;">Semua step — dari greeting sampai delivery</div>
