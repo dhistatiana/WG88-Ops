@@ -89,28 +89,7 @@ footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:cent
 <div class="container">
 
   <!-- ORDER DATA -->
-  <div class="order-panel">
-    <div class="order-panel-title">Data order — isi dulu atau auto-load dari kalkulator</div>
-    <div class="row3">
-      <div><span class="lbl">Nama pemesan</span><input type="text" id="dNama" placeholder="Kak Sari" oninput="refreshAll()" /></div>
-      <div><span class="lbl">Nama penerima</span><input type="text" id="dPenerima" placeholder="Kak Ifony" oninput="refreshAll()" /></div>
-      <div><span class="lbl">No. WA penerima</span><input type="text" id="dWAPenerima" placeholder="08xx..." oninput="refreshAll()" /></div>
-    </div>
-    <div class="row3">
-      <div><span class="lbl">No. invoice</span><input type="text" id="dInv" placeholder="WG-INV-26/07" oninput="refreshAll()" /></div>
-      <div><span class="lbl">Total harga</span><input type="text" id="dTotal" placeholder="Rp1.589.000" oninput="refreshAll()" /></div>
-      <div><span class="lbl">Estimasi kirim</span><input type="text" id="dKirim" placeholder="25 Mei 2026" oninput="refreshAll()" /></div>
-    </div>
-    <div class="row2">
-      <div><span class="lbl">Acara / momen</span><input type="text" id="dAcara" placeholder="ultah, anniversary, dll" oninput="refreshAll()" /></div>
-      <div><span class="lbl">Catatan</span><input type="text" id="dNote" placeholder="tema, custom request, dll" oninput="refreshAll()" /></div>
-    </div>
-    <div><span class="lbl">Detail item (dari kalkulator — satu per baris)</span>
-      <textarea id="dItems" rows="4" placeholder="🍷 Sababay Wine 750ml (×1) — Rp450.000&#10;📦 Box Wine Single (×1) — Rp65.000&#10;✨ Acc Decor Basic (×1) — Rp200.000&#10;🥂 Couple Glass Set (×1) — Rp250.000" oninput="refreshAll()"></textarea>
-    </div>
-  </div>
-
-  <!-- PAGE: BUNDLE -->
+    <!-- PAGE: BUNDLE -->
   <div id="page-bundle" class="page active">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px;">
       <div style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;">Semua step — dari greeting sampai delivery</div>
@@ -241,7 +220,7 @@ const timeStr = `${now.getHours().toString().padStart(2,'0')}.${now.getMinutes()
 
 const DEFAULT_TEMPLATES = {
   1:{name:'Greeting & assessment',desc:'Customer baru — pertama kali contact',
-    text:`Halo Kak {nama}, selamat datang di Wondergift88 🌸
+    text:`Halo Kak selamat datang di Wondergift88 🌸
 
 Agar memudahkan proses order, boleh info dulu ya Kak:
 
@@ -257,7 +236,7 @@ Agar memudahkan proses order, boleh info dulu ya Kak:
 
 5️⃣ Rencananya kapan?
 
-Sambil nunggu, kami kirim katalognya dulu ya Kak 🍾`},
+Sambil menunggu kk isi, kami kirim katalognya ya Kak 🙏`},
   2:{name:'Order form',desc:'Semua customer — setelah harga dan pilihan fix',
     text:`Wondergift88 Order Form:
 
@@ -268,80 +247,47 @@ Sambil nunggu, kami kirim katalognya dulu ya Kak 🍾`},
 5. Detail Gift yang Dipilih:
 6. Jumlah Pesanan:
 7. To & From (Greeting Card):
-8. Catatan Tambahan (opsional):
+8. Catatan Tambahan (dikirim jam/hari tertentu dll.)
 
 Pembayaran:
 • BCA 248-070-1391 a.n Wonder Tech
 • Mohon kirimkan bukti transfer supaya dapat segera kami proses 🙏`},
-  3:{name:'Rincian order + payment',desc:'Opsional — untuk repeat customer, langsung tanpa form',
-    text:`Terimakasih sudah menunggu Kak, berikut detail rincian ordernya:
+  3:{name:'Rincian order + payment',desc:'Opsional — setelah order form diisi',
+    text:`Catatan: Pastikan invoice sudah dikirim dan customer sudah bukti transfer`},
+  4:{name:'Konfirmasi payment + mulai proses',desc:'Setelah transfer masuk',
+    text:`Terimakasih Kak, pembayarannya sudah kami terima dan akan langsung kami proses sekarang 🙏`},
+  5:{name:'Order selesai + foto & video',desc:'Setelah produksi selesai',
+    text:`Halo Kak Kakak, izin menginformasikan bahwa gift-nya sudah selesai kami proses.
 
-{items}
-
-Total: *{total}*
-Estimasi pengiriman: {kirim}
-
-Pembayaran:
-• BCA 248-070-1391 a.n Wonder Tech
-• Mohon kirimkan bukti transfer supaya dapat segera kami proses 🙏`},
-  4:{name:'Konfirmasi payment + mulai proses',desc:'Setelah bukti transfer masuk',
-    text:`Terimakasih Kak, pembayarannya sudah kami terima ya 🙏
-
-Order *{invoice}* langsung kami proses sekarang.
-Estimasi selesai: {kirim}`},
-  5:{name:'Order selesai + foto & video',desc:'Gift jadi — lampirkan dokumentasi',
-    text:`Halo Kak {nama}, izin menginformasikan bahwa gift-nya sudah selesai kami proses 🎁
-
-Berikut kami lampirkan foto & video dokumentasinya ya Kak.
-
-[foto/video]`},
-  6:{name:'Foto driver + link tracking',desc:'Gift sudah di tangan driver',
-    text:`Baik Kak, gift-nya sudah kami serahkan ke driver dan siap dikirimkan ya 🚗
-
-Berikut link tracking serta dokumentasinya:
-[foto driver + hampers]
+Berikut kami lampirkan foto & video dokumentasinya ya Kak 🙏`},
+  6:{name:'Foto driver + link tracking',desc:'Saat driver sudah pick up',
+    text:`Baik Kak, gift-nya sudah kami serahkan ke driver dan dalam proses pengiriman ya,
+Berikut link tracking serta foto drivernya.
 [link tracking]
 
-Terimakasih sudah order di Wondergift88 ya Kak, semoga suka 🍾`},
-  7:{name:'Pesan ke penerima',desc:'Dikirim ke nomor penerima hadiah',
-    text_id:`Halo Kak {penerima},
+Kirim foto driver
 
+Terimakasih sudah order di Wondergift88 ya Kak, semoga suka 🙏`},
+  7:{name:'Pesan ke penerima',desc:'Dikirim ke nomor penerima',
+    text_id:`Halo Kak Kakak,
 Kami dari Wondergift88 ingin menginformasikan bahwa ada hadiah yang sedang dalam perjalanan menuju rumah Kakak via Bluebird Send.
-
 Berikut link tracking-nya:
 [link tracking]
 
-Hadiah ini disiapkan oleh Kak {nama} untuk merayakan momen spesial Kakak hari ini.
-
-Semoga senang ya Kak 🌸
-
-Salam,
-The Wondergift Team`,
-    text_en:`Hello Kak {penerima},
-
-This is a message from Wondergift88 to inform you that a gift is currently on its way to your home via Bluebird Send.
-
-Here's the live tracking:
-[link tracking]
-
-The gift was specially arranged by Kak {nama} to celebrate your special day.
-
-We hope it brings joy 🍾
+Hadiah ini disiapkan oleh Kak Kakak untuk merayakan momen spesial Kakak.
+Semoga senang ya Kak
 
 Cheers,
 The Wondergift Team`,
-    text:`Halo Kak {penerima},
-
-Kami dari Wondergift88 ingin menginformasikan bahwa ada hadiah yang sedang dalam perjalanan menuju rumah Kakak via Bluebird Send.
-
-Berikut link tracking-nya:
+    text_en:`Dear,
+We're Wondergift88, and we'd like to let you know that a special gift is on its way to you via Bluebird Send.
+Here's your tracking link:
 [link tracking]
 
-Hadiah ini disiapkan oleh Kak {nama} untuk merayakan momen spesial Kakak hari ini.
+This gift was prepared by Kak to celebrate your special moment.
+We hope you love it
 
-Semoga senang ya Kak 🌸
-
-Salam,
+Cheers,
 The Wondergift Team`}
 };
 
@@ -352,15 +298,16 @@ let activeLangPilih = 'id';
 function getTemplates(){ return ls(TMPL_KEY, DEFAULT_TEMPLATES); }
 
 function getData(){
+  const g = (id, def) => { const el = document.getElementById(id); return el ? el.value.trim() || def : def; };
   return {
-    nama: document.getElementById('dNama').value.trim() || 'Kakak',
-    penerima: document.getElementById('dPenerima').value.trim() || 'Kakak',
-    inv: document.getElementById('dInv').value.trim() || '—',
-    kirim: document.getElementById('dKirim').value.trim() || '—',
-    note: document.getElementById('dNote').value.trim(),
-    total: document.getElementById('dTotal').value.trim() || '—',
-    acara: document.getElementById('dAcara').value.trim() || '—',
-    items: document.getElementById('dItems').value.trim() || '_(belum ada item)_',
+    nama: g('dNama', 'Kakak'),
+    penerima: g('dPenerima', 'Kakak'),
+    inv: g('dInv', '—'),
+    kirim: g('dKirim', '—'),
+    note: g('dNote', ''),
+    total: g('dTotal', '—'),
+    acara: g('dAcara', '—'),
+    items: g('dItems', '_(belum ada item)_'),
   };
 }
 

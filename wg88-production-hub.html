@@ -567,7 +567,7 @@ function switchTab(tab, el) {
   document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
   document.getElementById('tab-'+tab).classList.add('active');
   el.classList.add('active');
-  if(tab==='kalku') buildChips();
+  if(tab==='kalku') loadPresets();
 }
 
 // ── DEFAULT MODELS ────────────────────────────────────────
@@ -1240,7 +1240,7 @@ async function pm_loadAll(){
       fetch(SUPA_URL+'/rest/v1/presets?order=created_at.desc', {headers:H}).then(function(r){return r.json();}),
       fetch(SUPA_URL+'/rest/v1/inventory?order=added_at.desc', {headers:H}).then(function(r){return r.json();})
     ]);
-    presets = pr || [];
+    pmPresets = pr || [];
     inventory = inv || [];
     setSync(true);
     pm_renderMetrics();
@@ -1273,7 +1273,7 @@ function pm_renderMetrics(){
 // ── CAT FILTER ────────────────────────────────────────────
 function pm_buildCatFilter(){
   var cats = ['all', ...new Set(pmPresets.map(function(p){return p.kategori;}).filter(Boolean))];
-  document.getElementById('pmCatFilter').innerHTML = cats.map(function(c){
+  document.getElementById('catFilter').innerHTML = cats.map(function(c){
     return '<button class="cf-btn'+(c===pmCatFilter?' on':'')+'" onclick="pm_setCat(\''+c+'\')">'+(c==='all'?'Semua':c)+'</button>';
   }).join('');
 }
@@ -1545,7 +1545,7 @@ function pm_initRealtime(){
 }
 
 document.addEventListener('click',function(e){if(!e.target.closest('.ac-wrap'))document.querySelectorAll('.ac-dd').forEach(function(d){d.classList.remove('open');});});
-document.getElementById('f-nama').addEventListener('input',updateNamaPrefix);
+document.getElementById('f-nama').addEventListener('input',pm_updateNamaPrefix);
 
 // pm init called on tab switch
 

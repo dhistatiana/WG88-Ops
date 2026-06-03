@@ -125,8 +125,6 @@ footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:cent
         <button class="nav-item active" onclick="goTo('home')"><span class="icon">⌂</span> Home</button>
         <button class="nav-item" onclick="window.open('wg88-production-hub.html','_blank')"><span class="icon">◉</span> Production Hub</button>
         <button class="nav-item" onclick="window.open('wondergift_qc_checklist.html','_blank')"><span class="icon">✓</span> QC Checklist</button>
-        <button class="nav-item" onclick="window.open('wg88-preset-manager.html','_blank')"><span class="icon">◈</span> Preset Manager</button>
-        <button class="nav-item" onclick="goTo('kalkulator')"><span class="icon">◈</span> Kalkulator</button>
         <button class="nav-item" onclick="goTo('order')"><span class="icon">◻</span> Order <span class="nav-badge" id="badge-order">0</span></button>
         <button class="nav-item" onclick="goTo('templatewa')"><span class="icon">◁</span> Template WA</button>
       </div>
@@ -145,7 +143,6 @@ footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:cent
       </div>
       <div class="nav-section">
         <div class="nav-section-label">Pengaturan</div>
-        <button class="nav-item" onclick="goTo('preset')"><span class="icon">◈</span> Preset & pricing</button>
         <button class="nav-item" onclick="goTo('sync')"><span class="icon">↻</span> Sheets & sync</button>
         <button class="nav-item" onclick="window.open('wg88-manual.html','_blank')"><span class="icon">📖</span> Panduan</button>
       </div>
@@ -165,7 +162,7 @@ footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:cent
       </div>
       <div class="topbar-right">
         <span style="font-size:11px;font-family:'DM Mono',monospace;color:var(--ink-muted);" id="topbarDate"></span>
-        <button class="btn-sm btn-wine" onclick="goTo('kalkulator')">+ Kalkulator</button>
+        <button class="btn-sm btn-wine" onclick="window.open('wg88-production-hub.html','_blank')">+ Production Hub</button>
       </div>
     </div>
 
@@ -187,10 +184,10 @@ footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:cent
         <!-- MODULES -->
         <div style="font-size:11px;font-weight:500;color:var(--ink-muted);letter-spacing:0.1em;text-transform:uppercase;font-family:'DM Mono',monospace;margin-bottom:10px;">Semua modul</div>
         <div class="module-grid">
-          <div class="module-card" onclick="window.open('wg88-preset-manager.html','_blank')"><div class="module-card-icon">◈</div><div class="module-card-name">Preset Manager</div><div class="module-card-desc">Bundling item inventory jadi preset harga</div><span class="module-status ms-live">live</span></div>
+          <div class="module-card-name">Preset Manager</div><div class="module-card-desc">Bundling item inventory jadi preset harga</div><span class="module-status ms-live">live</span></div>
           <div class="module-card" onclick="window.open('wg88-production-hub.html','_blank')"><div class="module-card-icon">◉</div><div class="module-card-name">Production Hub</div><div class="module-card-desc">Plan model, kalkulator harga, fix order</div><span class="module-status ms-live">live</span></div>
           <div class="module-card" onclick="window.open('wondergift_qc_checklist.html','_blank')"><div class="module-card-icon">✓</div><div class="module-card-name">QC Checklist</div><div class="module-card-desc">Quality control standar produksi</div><span class="module-status ms-live">live</span></div>
-          <div class="module-card" onclick="goTo('kalkulator')"><div class="module-card-icon">◈</div><div class="module-card-name">Kalkulator</div><div class="module-card-desc">Hitung harga order, preset item, template WA</div><span class="module-status ms-live">live</span></div>
+          <div class="module-card-name">Kalkulator</div><div class="module-card-desc">Hitung harga order, preset item, template WA</div><span class="module-status ms-live">live</span></div>
           <div class="module-card" onclick="goTo('order')"><div class="module-card-icon">◻</div><div class="module-card-name">Order</div><div class="module-card-desc">Daftar order, status, invoice PDF</div><span class="module-status ms-live">live</span></div>
           <div class="module-card" onclick="goTo('customer')"><div class="module-card-icon">◎</div><div class="module-card-name">Customer</div><div class="module-card-desc">Database pelanggan, riwayat, preferensi</div><span class="module-status ms-live">live</span></div>
           <div class="module-card" onclick="goTo('inventory')"><div class="module-card-icon">◑</div><div class="module-card-name">Inventory & belanja</div><div class="module-card-desc">Input belanja baru, daftar aset & bahan</div><span class="module-status ms-live">live</span></div>
@@ -198,7 +195,7 @@ footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:cent
           <div class="module-card" onclick="goTo('voucher')"><div class="module-card-icon">◇</div><div class="module-card-name">Voucher</div><div class="module-card-desc">Generate, cek, klaim voucher</div><span class="module-status ms-live">live</span></div>
           <div class="module-card" onclick="goTo('dashboard')"><div class="module-card-icon">▦</div><div class="module-card-name">Dashboard</div><div class="module-card-desc">Revenue, pipeline order, alert kondisi</div><span class="module-status ms-live">live</span></div>
           <div class="module-card" onclick="goTo('rekap')"><div class="module-card-icon">▤</div><div class="module-card-name">Rekap & laporan</div><div class="module-card-desc">Revenue, profit, export CSV/PDF</div><span class="module-status ms-live">live</span></div>
-          <div class="module-card" onclick="goTo('preset')"><div class="module-card-icon">◈</div><div class="module-card-name">Preset & pricing</div><div class="module-card-desc">Kelola item preset, biaya operasional</div><span class="module-status ms-live">live</span></div>
+          <div class="module-card-name">Preset & pricing</div><div class="module-card-desc">Kelola item preset, biaya operasional</div><span class="module-status ms-live">live</span></div>
           <div class="module-card" onclick="goTo('supplier')"><div class="module-card-icon">◉</div><div class="module-card-name">Supplier</div><div class="module-card-desc">Contact list supplier, item, lokasi, pickup</div><span class="module-status ms-live">live</span></div>
           <div class="module-card" onclick="goTo('templatewa')"><div class="module-card-icon">◁</div><div class="module-card-name">Template WA</div><div class="module-card-desc">7 step — greeting sampai delivery ke penerima</div><span class="module-status ms-live">live</span></div>
           <div class="module-card" onclick="goTo('sync')"><div class="module-card-icon">↻</div><div class="module-card-name">Sheets & sync</div><div class="module-card-desc">Sambungkan Google Sheets & Calendar</div><span class="module-status ms-sync">setup</span></div>
