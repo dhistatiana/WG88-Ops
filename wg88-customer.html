@@ -238,7 +238,7 @@ function renderMetrics(){
   document.getElementById('metricGrid').innerHTML=metrics.map(function(m){
     const isActive=m.filter&&(tf===m.filter||(m.filter==='all'&&tf==='all'));
     const cls='metric'+(isActive?' active':'');
-    const oc=m.filter?'onclick="setTipeFilter(''+m.filter+'')"':'';
+    const oc=m.filter?'onclick="setTipeFilter(\''+m.filter+'\')"':'';
     return '<div class="'+cls+'" '+oc+'><div class="metric-lbl">'+m.lbl+'</div><div class="metric-val" style="font-size:'+(m.lbl==='Revenue'?'16px':'26px')+';">'+m.val+'</div></div>';
   }).join('');
 }
