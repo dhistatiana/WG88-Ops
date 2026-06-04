@@ -295,6 +295,12 @@ body{font-family:'Jost',sans-serif;font-weight:300;background:var(--cream);color
 <div class="toast" id="toast"></div>
 
 <script>
+// SUPABASE CONFIG
+var SUPA_URL='https://cehiusuaipanuynmizdf.supabase.co';
+var SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlaGl1c3VhaXBhbnV5bm1pemRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MDY4NjQsImV4cCI6MjA5NTE4Mjg2NH0.PA9xrDmqzlRfuPGd73p2YSa8cfLOpxcTbyKczVKQZQQ';
+var BHDR={'Content-Type':'application/json','apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Prefer':'return=representation'};
+var HIST=[];  // local cache of brief_history
+
 // ── COLLECTION HINTS ──────────────────────────────────────────
 const COL_HINTS = {
   'Essential Collection':'Thoughtful gifting made accessible.',
@@ -459,13 +465,9 @@ Bring your gift to the next level of art.
   document.getElementById('outputWrap').classList.add('show');
   document.getElementById('outputWrap').scrollIntoView({behavior:'smooth',block:'start'});
 
-  // save to history
-  const hist=getHistory();
-  const label=`${event!=='—'?event:'Event'} · ${product!=='—'?product:'Product'} · ${collection!=='—'?collection:'Collection'}`;
-  hist.unshift({id:Date.now(),label,date:new Date().toLocaleString('id-ID',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}),prompt});
-  if(hist.length>30)hist.pop();
-  putHistory(hist);
-  updateHistBadge();
+  // save to history (Supabase)
+  const label=`${event!=='\u2014'?event:'Event'} \u00B7 ${product!=='\u2014'?product:'Product'} \u00B7 ${collection!=='\u2014'?collection:'Collection'}`;
+  saveBriefToSupabase(label, prompt);
   autoSave();
 }
 
@@ -475,38 +477,60 @@ function copyPrompt(){
   navigator.clipboard.writeText(text).then(()=>showToast('Prompt copied successfully'));
 }
 
-// ── HISTORY ──────────────────────────────────────────────────
-function getHistory(){try{return JSON.parse(localStorage.getItem('wg_v2_hist')||'[]');}catch(e){return[];}}
-function putHistory(arr){localStorage.setItem('wg_v2_hist',JSON.stringify(arr));}
+// ── HISTORY (Supabase) ─────────────────────────
+async function saveBriefToSupabase(label, prompt){
+  var body={label:label,prompt:prompt,created_by:getUserName()};
+  try{
+    var r=await fetch(SUPA_URL+'/rest/v1/brief_history',{method:'POST',headers:BHDR,body:JSON.stringify(body)});
+    if(r.ok){var res=await r.json();if(res&&res[0])HIST.unshift(res[0]);}
+  }catch(e){}
+  updateHistBadge();renderHistory();
+}
+function getUserName(){
+  var n=localStorage.getItem('wg_brief_user');
+  if(!n){n=window.prompt('Nama kamu (untuk catatan siapa yang generate):','')||'tim';localStorage.setItem('wg_brief_user',n);}
+  return n;
+}
+async function loadHistory(){
+  try{
+    var r=await fetch(SUPA_URL+'/rest/v1/brief_history?order=created_at.desc&limit=50',{headers:BHDR});
+    HIST=r.ok?await r.json():[];
+  }catch(e){HIST=[];}
+  updateHistBadge();
+  renderHistory();
+}
 function updateHistBadge(){
-  const n=getHistory().length;
+  const n=HIST.length;
   const badge=document.getElementById('histBadge');
+  if(!badge)return;
   badge.textContent=n;
   badge.style.display=n?'inline-flex':'none';
 }
+function fmtDate(iso){
+  try{return new Date(iso).toLocaleString('id-ID',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});}catch(e){return iso;}
+}
 function renderHistory(){
-  const hist=getHistory();
   const el=document.getElementById('histContent');
-  if(!hist.length){
+  if(!HIST.length){
     el.innerHTML='<div class="hist-empty">No history yet.<br>Generate a prompt to see it here.</div>';
     return;
   }
   let html=`<div class="hist-clear-row"><button class="btn btn-danger" style="font-size:10px;padding:7px 18px" onclick="clearHistory()">Clear All History</button></div>`;
-  hist.forEach(h=>{
+  HIST.forEach(h=>{
     html+=`
     <div class="hist-item" id="hi-${h.id}">
       <div class="hist-item-head">
         <div class="hist-meta">
-          <div class="hist-title">${escHtml(h.label)}</div>
-          <div class="hist-date">${h.date}</div>
+          <div class="hist-title">${escHtml(h.label||'')}</div>
+          <div class="hist-date">${fmtDate(h.created_at)}${h.created_by?' · '+escHtml(h.created_by):''}</div>
         </div>
         <div class="hist-actions">
-          <button class="hist-btn" onclick="copyHistPrompt(${h.id})">Copy</button>
-          <button class="hist-btn del" onclick="deleteHist(${h.id})">Delete</button>
+          <button class="hist-btn" onclick="copyHistPrompt('${h.id}')">Copy</button>
+          <button class="hist-btn del" onclick="deleteHist('${h.id}')">Delete</button>
         </div>
       </div>
-      <div class="hist-body" id="hb-${h.id}">${escHtml(h.prompt)}<div class="hist-fade"></div></div>
-      <button class="hist-expand" onclick="toggleHistExpand(${h.id})">Show more ▾</button>
+      <div class="hist-body" id="hb-${h.id}">${escHtml(h.prompt||'')}<div class="hist-fade"></div></div>
+      <button class="hist-expand" onclick="toggleHistExpand('${h.id}')">Show more ▾</button>
     </div>`;
   });
   el.innerHTML=html;
@@ -518,23 +542,25 @@ function toggleHistExpand(id){
   btn.textContent=expanded?'Show less ▴':'Show more ▾';
 }
 function copyHistPrompt(id){
-  const hist=getHistory();
-  const item=hist.find(h=>h.id===id);
+  const item=HIST.find(h=>String(h.id)===String(id));
   if(!item)return;
   navigator.clipboard.writeText(item.prompt).then(()=>showToast('Prompt copied successfully'));
 }
-function deleteHist(id){
-  const hist=getHistory().filter(h=>h.id!==id);
-  putHistory(hist);
-  updateHistBadge();
-  renderHistory();
+async function deleteHist(id){
+  try{
+    await fetch(SUPA_URL+'/rest/v1/brief_history?id=eq.'+id,{method:'DELETE',headers:BHDR});
+  }catch(e){}
+  HIST=HIST.filter(h=>String(h.id)!==String(id));
+  updateHistBadge();renderHistory();
   showToast('Entry deleted');
 }
-function clearHistory(){
+async function clearHistory(){
   if(!confirm('Clear all history?'))return;
-  localStorage.removeItem('wg_v2_hist');
-  updateHistBadge();
-  renderHistory();
+  try{
+    await fetch(SUPA_URL+'/rest/v1/brief_history?id=neq.00000000-0000-0000-0000-000000000000',{method:'DELETE',headers:BHDR});
+  }catch(e){}
+  HIST=[];
+  updateHistBadge();renderHistory();
   showToast('History cleared');
 }
 
@@ -607,7 +633,7 @@ if(!heroes.length)heroes=['','',''];
 if(!slides.length)slides=['','','','','','','',''];
 renderHeroes();
 renderSlides();
-updateHistBadge();
+loadHistory();
 </script>
 </body>
 </html>

@@ -199,6 +199,23 @@ textarea{resize:vertical;min-height:60px;line-height:1.5}
 .loading-bar{position:fixed;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--gold));z-index:300;display:none;animation:lb 1.2s ease-in-out infinite}
 @keyframes lb{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
 .loading-bar.show{display:block}
+
+/* TASK SECTIONS & DRAG */
+.task-section-title{font-size:11px;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:0.06em;margin:.6rem 0 .3rem;padding-bottom:.25rem;border-bottom:1px solid var(--border)}
+.task-dnd{min-height:8px}
+.task-drag{cursor:grab;color:var(--muted);font-size:13px;line-height:1.4;user-select:none;padding-top:1px}
+.task-drag:active{cursor:grabbing}
+.task-item.dragging{opacity:0.4;background:var(--surface3);border-radius:6px}
+.task-item{transition:background 0.12s}
+.task-item[draggable=true]:hover{background:var(--surface2);border-radius:6px}
+
+/* TEAM */
+.team-row{display:flex;align-items:center;gap:.7rem;padding:.6rem 0;border-bottom:1px solid var(--border2)}
+.team-row:last-child{border-bottom:none}
+.team-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--gold2));display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--cream);font-size:15px;flex-shrink:0}
+.team-info{flex:1;min-width:0}
+.team-name{font-size:13px;color:var(--cream);font-weight:500}
+.team-role{font-size:11px;color:var(--muted);text-transform:capitalize}
 </style>
 </head>
 <body>
@@ -225,6 +242,7 @@ textarea{resize:vertical;min-height:60px;line-height:1.5}
       <div class="ni" onclick="goPage('insight')" id="ni-insight"><span class="ni-ic">◈</span> Insight</div>
       <div class="ni" onclick="goPage('calendar')" id="ni-calendar"><span class="ni-ic">◻</span> Calendar</div>
       <div class="ni" onclick="goPage('summary')" id="ni-summary"><span class="ni-ic">◑</span> Summary</div>
+      <div class="ni" onclick="goPage('team')" id="ni-team"><span class="ni-ic">◉</span> Team</div>
     </nav>
     <div class="sb-clock">
       <div class="sb-time" id="sb-time">00:00</div>
@@ -296,6 +314,10 @@ textarea{resize:vertical;min-height:60px;line-height:1.5}
         <div class="card">
           <div class="task-add-row">
             <input type="text" id="task-input" placeholder="Nama task...">
+            <select id="task-category">
+              <option value="administrative">Administrative</option>
+              <option value="production">Production</option>
+            </select>
             <select id="task-priority">
               <option value="normal">Normal</option>
               <option value="penting">Penting</option>
@@ -305,7 +327,10 @@ textarea{resize:vertical;min-height:60px;line-height:1.5}
             <input type="time" id="task-end" placeholder="Selesai">
             <button class="btn btn-p btn-sm" onclick="addTask()">+ Tambah</button>
           </div>
-          <div id="task-list"></div>
+          <div class="task-section-title">📋 Administrative</div>
+          <div id="task-list-administrative" class="task-dnd"></div>
+          <div class="task-section-title" style="margin-top:1rem;">🏭 Production</div>
+          <div id="task-list-production" class="task-dnd"></div>
         </div>
       </div>
 
@@ -371,6 +396,17 @@ textarea{resize:vertical;min-height:60px;line-height:1.5}
         <div id="sum-list"></div>
       </div>
 
+      <!-- TEAM -->
+      <div class="page" id="page-team">
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem">
+            <div class="card-title" style="margin:0">Anggota Tim</div>
+            <button class="btn btn-p btn-sm" onclick="openAddTeam()">+ Tambah Anggota</button>
+          </div>
+          <div id="team-list"></div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -381,7 +417,7 @@ textarea{resize:vertical;min-height:60px;line-height:1.5}
   <div class="bn-item" onclick="goPage('activity')" id="bn-activity"><div class="bn-ic">✦</div>Activity</div>
   <div class="bn-item" onclick="goPage('insight')" id="bn-insight"><div class="bn-ic">◈</div>Insight</div>
   <div class="bn-item" onclick="goPage('calendar')" id="bn-calendar"><div class="bn-ic">◻</div>Calendar</div>
-  <div class="bn-item" onclick="goPage('summary')" id="bn-summary"><div class="bn-ic">◑</div>Summary</div>
+  <div class="bn-item" onclick="goPage('summary')" id="bn-summary"><div class="bn-ic">◑</div>Summary</div><div class="bn-item" onclick="goPage('team')" id="bn-team"><div class="bn-ic">◉</div>Team</div>
 </div>
 
 <!-- MODAL: ADD EVENT -->
@@ -439,6 +475,9 @@ textarea{resize:vertical;min-height:60px;line-height:1.5}
   <div class="modal">
     <div class="modal-title">Edit Task</div>
     <div class="modal-row"><div class="modal-lbl">Nama Task</div><input type="text" id="te-title"></div>
+    <div class="modal-row"><div class="modal-lbl">Kategori</div>
+      <select id="te-category"><option value="administrative">Administrative</option><option value="production">Production</option></select>
+    </div>
     <div class="modal-row"><div class="modal-lbl">Prioritas</div>
       <select id="te-priority"><option value="normal">Normal</option><option value="penting">Penting</option><option value="urgent">Urgent</option></select>
     </div>
@@ -454,11 +493,26 @@ textarea{resize:vertical;min-height:60px;line-height:1.5}
   </div>
 </div>
 
+<!-- MODAL: ADD TEAM -->
+<div class="modal-bg" id="modal-add-team">
+  <div class="modal">
+    <div class="modal-title">Tambah Anggota Tim</div>
+    <div class="modal-row"><div class="modal-lbl">Nama</div><input type="text" id="at-name" placeholder="Nama lengkap"></div>
+    <div class="modal-row"><div class="modal-lbl">Role</div>
+      <select id="at-role"><option value="staff">Staff</option><option value="production">Production</option><option value="admin">Admin</option><option value="cs">Customer Service</option></select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-sm" onclick="closeModal('modal-add-team')">Batal</button>
+      <button class="btn btn-p btn-sm" onclick="saveTeamMember()">Simpan</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
-var SUPA_URL='https://myaiyznpstjxnbkqccrw.supabase.co';
-var SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15YWl5em5wc3RqeG5ia3FjY3J3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5NDcxMjksImV4cCI6MjA5NTUyMzEyOX0.7a4Oufr532rkD-xc6X4Vaspu185Rc6RH8HPSgSEuPfs';
+var SUPA_URL='https://cehiusuaipanuynmizdf.supabase.co';
+var SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlaGl1c3VhaXBhbnV5bm1pemRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MDY4NjQsImV4cCI6MjA5NTE4Mjg2NH0.PA9xrDmqzlRfuPGd73p2YSa8cfLOpxcTbyKczVKQZQQ';
 var HDR={'Content-Type':'application/json','apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Prefer':'return=representation'};
 
 var DB={
@@ -468,7 +522,7 @@ var DB={
   del:async function(t,q){await fetch(SUPA_URL+'/rest/v1/'+t+'?'+q,{method:'DELETE',headers:HDR});}
 };
 
-var S={userId:null,clockedIn:false,inTime:null,outTime:null,attendanceId:null,sopO:[],sopC:{},sopOLog:{},sopCLog:{},tasks:[],attendance:[],events:[],summaries:[],sumTab:'daily'};
+var S={userId:null,clockedIn:false,inTime:null,outTime:null,attendanceId:null,sopO:[],sopC:{},sopOLog:{},sopCLog:{},tasks:[],attendance:[],events:[],summaries:[],team:[],sumTab:'daily'};
 
 function todayStr(){return new Date().toISOString().slice(0,10);}
 function fmtTime(d){return d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});}
@@ -491,18 +545,19 @@ function tickClock(){
 setInterval(tickClock,1000);tickClock();
 
 // NAV
-var PAGES=['absensi','activity','insight','calendar','summary'];
+var PAGES=['absensi','activity','insight','calendar','summary','team'];
 function goPage(name){
   PAGES.forEach(function(p){
     document.getElementById('page-'+p).classList.toggle('active',p===name);
     var ni=document.getElementById('ni-'+p);if(ni)ni.classList.toggle('active',p===name);
     var bn=document.getElementById('bn-'+p);if(bn)bn.classList.toggle('active',p===name);
   });
-  var titles={absensi:'Absensi',activity:'Daily Activity',insight:'Insight',calendar:'Calendar',summary:'Summary'};
+  var titles={team:'Team',absensi:'Absensi',activity:'Daily Activity',insight:'Insight',calendar:'Calendar',summary:'Summary'};
   document.getElementById('tb-title').textContent=titles[name]||name;
   if(name==='insight')renderInsight();
   if(name==='calendar')renderCalendar();
   if(name==='summary')renderSummaryList();
+  if(name==='team')renderTeam();
 }
 
 // ABSENSI
@@ -685,15 +740,56 @@ async function loadTasks(){
 }
 
 function renderTasks(){
-  var list=document.getElementById('task-list');
-  if(!S.tasks.length){list.innerHTML='<div style="font-size:11px;color:var(--muted);font-style:italic;padding:.4rem 0">Belum ada task hari ini</div>';return;}
-  var priColor={normal:'var(--muted)',penting:'var(--gold)',urgent:'var(--red2)'};
-  list.innerHTML=S.tasks.map(function(t,i){
-    var meta=[];
-    if(t.priority&&t.priority!=='normal')meta.push('<span style="color:'+priColor[t.priority]+'">'+t.priority+'</span>');
-    if(t.start_time)meta.push('⏱ '+t.start_time.slice(0,5)+(t.end_time?' – '+t.end_time.slice(0,5):''));
-    return '<div class="task-item"><input type="checkbox" class="sop-chk" '+(t.status==='done'?'checked':'')+' onchange="toggleTask('+i+',this.checked)"><div class="task-body"><div class="task-title'+(t.status==='done'?' done':'')+'">'+t.title+'</div>'+(meta.length?'<div class="task-meta">'+meta.join(' · ')+'</div>':'')+'</div><div class="task-actions"><button class="btn-icon" onclick="openTaskEdit('+i+')" title="Edit">✎</button><button class="btn-icon del" onclick="deleteTask('+i+')" title="Hapus">×</button></div></div>';
-  }).join('');
+  ['administrative','production'].forEach(function(cat){
+    var list=document.getElementById('task-list-'+cat);
+    if(!list)return;
+    var items=S.tasks.filter(function(t){return (t.category||'administrative')===cat;});
+    items.sort(function(a,b){return (a.sort_order||0)-(b.sort_order||0);});
+    if(!items.length){list.innerHTML='<div style="font-size:11px;color:var(--muted);font-style:italic;padding:.4rem 0">Belum ada task</div>';return;}
+    var priColor={normal:'var(--muted)',penting:'var(--gold)',urgent:'var(--red2)'};
+    list.innerHTML=items.map(function(t){
+      var i=S.tasks.indexOf(t);
+      var meta=[];
+      if(t.priority&&t.priority!=='normal')meta.push('<span style="color:'+priColor[t.priority]+'">'+t.priority+'</span>');
+      if(t.start_time)meta.push('\u23F1 '+t.start_time.slice(0,5)+(t.end_time?' \u2013 '+t.end_time.slice(0,5):''));
+      return '<div class="task-item" draggable="true" data-idx="'+i+'" data-cat="'+cat+'"><span class="task-drag" title="Geser untuk atur prioritas">\u2630</span><input type="checkbox" class="sop-chk" '+(t.status==='done'?'checked':'')+' onchange="toggleTask('+i+',this.checked)"><div class="task-body"><div class="task-title'+(t.status==='done'?' done':'')+'">'+t.title+'</div>'+(meta.length?'<div class="task-meta">'+meta.join(' \u00B7 ')+'</div>':'')+'</div><div class="task-actions"><button class="btn-icon" onclick="openTaskEdit('+i+')" title="Edit">\u270E</button><button class="btn-icon del" onclick="deleteTask('+i+')" title="Hapus">\u00D7</button></div></div>';
+    }).join('');
+    setupDragForList(list,cat);
+  });
+}
+
+function setupDragForList(list,cat){
+  var dragEl=null;
+  list.querySelectorAll('.task-item').forEach(function(item){
+    item.addEventListener('dragstart',function(e){dragEl=item;item.classList.add('dragging');});
+    item.addEventListener('dragend',function(e){item.classList.remove('dragging');saveTaskOrder(cat);});
+    item.addEventListener('dragover',function(e){
+      e.preventDefault();
+      var after=getDragAfter(list,e.clientY);
+      if(after==null)list.appendChild(dragEl);
+      else list.insertBefore(dragEl,after);
+    });
+  });
+}
+
+function getDragAfter(list,y){
+  var els=[].slice.call(list.querySelectorAll('.task-item:not(.dragging)'));
+  return els.reduce(function(closest,child){
+    var box=child.getBoundingClientRect();
+    var offset=y-box.top-box.height/2;
+    if(offset<0&&offset>closest.offset)return{offset:offset,element:child};
+    return closest;
+  },{offset:-Infinity}).element;
+}
+
+async function saveTaskOrder(cat){
+  var list=document.getElementById('task-list-'+cat);
+  var ids=[].slice.call(list.querySelectorAll('.task-item')).map(function(el){return parseInt(el.getAttribute('data-idx'));});
+  for(var order=0;order<ids.length;order++){
+    var t=S.tasks[ids[order]];
+    if(t){t.sort_order=order;if(t.id)await DB.patch('daily_tasks',{sort_order:order},'id=eq.'+t.id);}
+  }
+  toast('Urutan prioritas disimpan \u2726');
 }
 
 async function addTask(){
@@ -705,7 +801,9 @@ async function addTask(){
   document.getElementById('task-input').value='';
   document.getElementById('task-start').value='';
   document.getElementById('task-end').value='';
-  var body={title:txt,status:'todo',priority:pri,date:todayStr(),employee_id:S.userId,start_time:st?st+':00':null,end_time:en?en+':00':null};
+  var cat=document.getElementById('task-category').value;
+  var maxSort=S.tasks.filter(function(t){return t.category===cat;}).length;
+  var body={title:txt,status:'todo',priority:pri,category:cat,sort_order:maxSort,date:todayStr(),employee_id:S.userId,start_time:st?st+':00':null,end_time:en?en+':00':null};
   var res=await DB.post('daily_tasks',body);
   S.tasks.push(res&&res[0]?res[0]:body);
   renderTasks();
@@ -727,6 +825,7 @@ function openTaskEdit(i){
   var t=S.tasks[i];
   document.getElementById('te-idx').value=i;
   document.getElementById('te-title').value=t.title||'';
+  document.getElementById('te-category').value=t.category||'administrative';
   document.getElementById('te-priority').value=t.priority||'normal';
   document.getElementById('te-start').value=t.start_time?t.start_time.slice(0,5):'';
   document.getElementById('te-end').value=t.end_time?t.end_time.slice(0,5):'';
@@ -740,7 +839,7 @@ async function saveTaskEdit(){
   if(!txt){toast('Nama task tidak boleh kosong');return;}
   var st=document.getElementById('te-start').value;
   var en=document.getElementById('te-end').value;
-  var upd={title:txt,priority:document.getElementById('te-priority').value,start_time:st?st+':00':null,end_time:en?en+':00':null};
+  var upd={title:txt,priority:document.getElementById('te-priority').value,start_time:st?st+':00':null,end_time:en?en+':00':null,category:document.getElementById('te-category').value};
   Object.assign(t,upd);
   if(t.id)await DB.patch('daily_tasks',upd,'id=eq.'+t.id);
   closeModal('modal-task-edit');renderTasks();toast('Task diperbarui ✦');
@@ -984,13 +1083,56 @@ async function deleteSummary(id){
   document.getElementById(id).addEventListener('click',function(e){if(e.target===this)closeModal(id);});
 });
 
+// TEAM MANAGEMENT
+async function loadTeam(){
+  var emps=await DB.get('employees','order=created_at.asc');
+  S.team=emps||[];
+  renderTeam();
+}
+
+function renderTeam(){
+  var list=document.getElementById('team-list');
+  if(!list)return;
+  if(!S.team||!S.team.length){list.innerHTML='<div style="font-size:11px;color:var(--muted);font-style:italic;padding:.4rem 0">Belum ada anggota tim</div>';return;}
+  var roleLabel={staff:'Staff',production:'Production',admin:'Admin',cs:'Customer Service'};
+  list.innerHTML=S.team.map(function(m){
+    var initial=(m.name||'?').charAt(0).toUpperCase();
+    return '<div class="team-row"><div class="team-avatar">'+initial+'</div><div class="team-info"><div class="team-name">'+(m.name||'-')+'</div><div class="team-role">'+(roleLabel[m.role]||m.role||'staff')+'</div></div><button class="btn-icon del" onclick="deleteTeamMember(\''+m.id+'\')" title="Hapus">\u00D7</button></div>';
+  }).join('');
+}
+
+function openAddTeam(){
+  document.getElementById('at-name').value='';
+  document.getElementById('at-role').value='staff';
+  document.getElementById('modal-add-team').classList.add('show');
+}
+
+async function saveTeamMember(){
+  var name=document.getElementById('at-name').value.trim();
+  if(!name){toast('Nama wajib diisi');return;}
+  var role=document.getElementById('at-role').value;
+  var res=await DB.post('employees',{name:name,role:role,active:true});
+  if(res&&res[0])S.team.push(res[0]);
+  closeModal('modal-add-team');
+  renderTeam();
+  toast('Anggota tim ditambahkan \u2726');
+}
+
+async function deleteTeamMember(id){
+  if(!confirm('Hapus anggota tim ini?'))return;
+  await DB.del('employees','id=eq.'+id);
+  S.team=S.team.filter(function(m){return m.id!==id;});
+  renderTeam();
+  toast('Anggota dihapus');
+}
+
 // INIT
 async function init(){
   loading(true);
   try{
     var emps=await DB.get('employees','name=eq.Dhista');
     if(emps&&emps.length)S.userId=emps[0].id;
-    await Promise.all([loadSOPItems(),loadAttendance(),loadCalendarEvents(),loadSummaries()]);
+    await Promise.all([loadSOPItems(),loadAttendance(),loadCalendarEvents(),loadSummaries(),loadTeam()]);
     if(S.userId){await loadSOPLogs();await loadTasks();}
   }catch(e){console.error(e);toast('Gagal memuat data. Cek koneksi.');}
   loading(false);
