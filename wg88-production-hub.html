@@ -148,6 +148,90 @@ footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:cent
   .kalku-wrap{grid-template-columns:1fr;}
   .bahan-hdr,.bahan-row{grid-template-columns:1fr 55px 80px 80px 60px 24px;font-size:11px;}
 }
+
+/* PRESET MANAGER */
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --cream:#F7F4EE;--ink:#1A1714;--ink-soft:#4A4540;--ink-muted:#9A948E;
+  --gold:#B8975A;--gold-pale:#F5EED8;--wine:#72243E;--wine-light:#FBEAF0;
+  --border:rgba(26,23,20,0.1);--border-soft:rgba(26,23,20,0.06);
+  --ok-bg:#EAF3E0;--ok-text:#27500A;--warn-bg:#FAEEDA;--warn-text:#633806;
+  --low-bg:#FCEBEB;--low-text:#791F1F;
+}
+body{background:var(--cream);color:var(--ink);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;}
+header{border-bottom:0.5px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:var(--cream);position:sticky;top:0;z-index:100;}
+.logo{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:500;letter-spacing:0.04em;}
+.logo sup{font-size:10px;color:var(--gold);font-family:'DM Mono',monospace;}
+.sync-pill{display:flex;align-items:center;gap:6px;font-size:11px;font-family:'DM Mono',monospace;color:var(--ink-muted);background:#fff;border:0.5px solid var(--border);border-radius:20px;padding:4px 10px;}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:#B4B2A9;flex-shrink:0;}
+.sync-dot.ok{background:#63B543;}
+.container{max-width:1000px;margin:0 auto;padding:2rem;}
+.card{background:#fff;border:0.5px solid var(--border);border-radius:4px;padding:1.5rem;margin-bottom:1rem;}
+.card-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;margin-bottom:1.25rem;}
+.lbl{font-size:10px;color:var(--ink-muted);display:block;margin-bottom:5px;letter-spacing:0.1em;text-transform:uppercase;font-family:'DM Mono',monospace;}
+input,select,textarea{width:100%;background:var(--cream);border:0.5px solid var(--border);border-radius:3px;padding:8px 10px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--ink);outline:none;transition:border-color 0.2s;}
+input:focus,select:focus,textarea:focus{border-color:var(--gold);}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239A948E' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;-webkit-appearance:none;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;}
+.divider{border:none;border-top:0.5px solid var(--border-soft);margin:1.25rem 0;}
+.btn{background:var(--ink);color:var(--cream);border:none;border-radius:3px;padding:9px 18px;font-size:13px;cursor:pointer;}
+.btn:hover{background:#2d2926;}
+.btn-sec{background:transparent;color:var(--ink-soft);border:0.5px solid var(--border);border-radius:3px;padding:7px 13px;font-size:12px;cursor:pointer;}
+.btn-sec:hover{background:var(--cream);}
+.btn-wine{background:var(--wine);color:#fff;border:none;border-radius:3px;padding:9px 18px;font-size:13px;cursor:pointer;}
+.btn-danger{background:transparent;color:var(--low-text);border:0.5px solid rgba(121,31,31,0.25);border-radius:3px;padding:4px 8px;font-size:11px;cursor:pointer;}
+.btn-sm{padding:5px 10px;font-size:11px;}
+
+/* CAT FILTER */
+.cat-filter{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:1rem;}
+.cf-btn{font-size:10px;padding:3px 10px;border-radius:2px;border:0.5px solid var(--border);background:transparent;color:var(--ink-muted);cursor:pointer;font-family:'DM Mono',monospace;}
+.cf-btn.on{background:var(--ink);color:var(--cream);border-color:var(--ink);}
+
+/* TABLE */
+table.tbl{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed;}
+table.tbl th{text-align:left;font-size:10px;color:var(--ink-muted);padding:6px 10px;border-bottom:0.5px solid var(--border);font-weight:400;font-family:'DM Mono',monospace;letter-spacing:0.06em;}
+table.tbl td{padding:9px 10px;border-bottom:0.5px solid var(--border-soft);vertical-align:middle;}
+table.tbl tr:last-child td{border-bottom:none;}
+table.tbl tr:hover td{background:#fafaf8;}
+
+/* CAT BADGE */
+.cat-badge{display:inline-block;font-size:10px;padding:2px 8px;border-radius:2px;font-family:'DM Mono',monospace;font-weight:500;}
+.cat-packaging{background:#E6F1FB;color:#0C447C;}
+.cat-isi{background:#EAF3DE;color:#27500A;}
+.cat-botol{background:#EEEDFE;color:#3C3489;}
+.cat-addon{background:#FAEEDA;color:#633806;}
+.cat-lainnya{background:#F1EFE8;color:#5A5550;}
+
+/* AUTOCOMPLETE */
+.ac-wrap{position:relative;}
+.ac-dd{position:absolute;top:100%;left:0;right:0;background:#fff;border:0.5px solid var(--gold);border-radius:3px;z-index:200;max-height:200px;overflow-y:auto;display:none;box-shadow:0 4px 12px rgba(26,23,20,0.1);}
+.ac-dd.open{display:block;}
+.ac-opt{padding:8px 12px;font-size:12px;cursor:pointer;display:flex;justify-content:space-between;border-bottom:0.5px solid var(--border-soft);}
+.ac-opt:last-child{border-bottom:none;}
+.ac-opt:hover{background:var(--gold-pale);}
+
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(26,23,20,0.45);z-index:300;align-items:flex-start;justify-content:center;padding:2rem 1rem;overflow-y:auto;}
+.modal-bg.open{display:flex;}
+.modal{background:#fff;border-radius:6px;padding:1.5rem;width:640px;max-width:96vw;border:0.5px solid var(--border);}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;margin-bottom:1.25rem;}
+.modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:1.25rem;flex-wrap:wrap;}
+
+/* MATERIAL ROWS */
+.mat-row{display:grid;grid-template-columns:1fr 60px 90px 28px;gap:8px;align-items:center;padding:6px 0;border-bottom:0.5px solid var(--border-soft);font-size:12px;}
+.mat-row:last-child{border-bottom:none;}
+.mat-hdr{display:grid;grid-template-columns:1fr 60px 90px 28px;gap:8px;font-size:10px;color:var(--ink-muted);font-family:'DM Mono',monospace;padding:4px 0;border-bottom:0.5px solid var(--border);margin-bottom:4px;}
+
+/* DETAIL PANEL */
+.detail-mat-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid var(--border-soft);font-size:13px;}
+.detail-mat-row:last-child{border-bottom:none;}
+
+.empty{text-align:center;padding:3rem;color:var(--ink-muted);font-size:13px;font-family:'DM Mono',monospace;}
+footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:center;font-size:11px;color:var(--ink-muted);font-family:'DM Mono',monospace;margin-top:2rem;}
+@media(max-width:640px){.container{padding:1.25rem;}.row2,.row3{grid-template-columns:1fr;}}
+
 </style>
 </head>
 <body>
@@ -182,59 +266,52 @@ footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:cent
 <div class="container">
   <div class="kalku-wrap">
     <div>
-      <div class="card" style="padding:1rem 1.25rem;margin-bottom:1rem;">
-        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-          <span style="font-size:12px;font-weight:500;">Mode input:</span>
-          <div class="mode-tabs">
-            <button class="mode-tab on" id="mode-btn-preset" onclick="setMode('preset',this)">Dari preset</button>
-            <button class="mode-tab" id="mode-btn-inventory" onclick="setMode('inventory',this)">Dari inventory</button>
-          </div>
-          <span style="font-size:11px;color:var(--ink-muted);font-family:'DM Mono',monospace;" id="kFromModel"></span>
+      <!-- KOLOM PRESET -->
+      <div class="card" style="margin-bottom:1rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <p class="card-title" style="margin:0;">Dari preset</p>
+          <span style="font-size:11px;font-family:'DM Mono',monospace;color:var(--ink-muted);" id="sub-preset">Rp0</span>
         </div>
+        <div style="display:grid;grid-template-columns:1fr 55px auto;gap:8px;align-items:start;">
+          <div class="ac-wrap">
+            <input type="text" id="pAcInput" placeholder="Cari preset..." oninput="pAcSearch()" autocomplete="off">
+            <div class="ac-dd" id="pAcDd"></div>
+          </div>
+          <input type="number" id="pAcQty" value="1" min="1" style="text-align:center;">
+          <button class="btn btn-sm" onclick="pAcAdd()">+ Tambah</button>
+        </div>
+        <div id="pLines" style="margin-top:10px;"></div>
       </div>
 
-      <!-- PRESET MODE -->
-      <div id="k-mode-preset" class="k-mode active">
-        <div class="card">
-          <p class="card-title">Cari & tambah dari preset</p>
-          <p style="font-size:12px;color:var(--ink-muted);margin-bottom:1rem;">Ketik nama atau kategori — mis. "Packaging", "Box", "Botol"</p>
-          <div style="display:grid;grid-template-columns:1fr 55px auto;gap:8px;align-items:start;margin-bottom:1rem;">
-            <div class="ac-wrap">
-              <input type="text" id="pAcInput" placeholder="Cari preset..." oninput="pAcSearch()" autocomplete="off">
-              <div class="ac-dd" id="pAcDd"></div>
-            </div>
-            <input type="number" id="pAcQty" value="1" min="1" style="text-align:center;">
-            <button class="btn btn-sm" onclick="pAcAdd()">+ Tambah</button>
-          </div>
-          <div id="pLines"></div>
+      <!-- KOLOM INVENTORY -->
+      <div class="card" style="margin-bottom:1rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <p class="card-title" style="margin:0;">Dari inventory</p>
+          <span style="font-size:11px;font-family:'DM Mono',monospace;color:var(--ink-muted);" id="sub-inv">Rp0</span>
         </div>
+        <div style="display:grid;grid-template-columns:1fr 55px 100px auto;gap:8px;align-items:start;">
+          <div class="ac-wrap">
+            <input type="text" id="kAcInput" placeholder="Ketik nama item..." oninput="kAcSearch()" autocomplete="off">
+            <div class="ac-dd" id="kAcDd"></div>
+          </div>
+          <input type="number" id="kAcQty" value="1" min="1" style="text-align:center;">
+          <input type="number" id="kAcPrice" placeholder="Harga" style="text-align:right;">
+          <button class="btn btn-sm" onclick="kAcAdd()">+ Tambah</button>
+        </div>
+        <div id="kInvLines" style="margin-top:10px;"></div>
       </div>
 
-      <!-- INVENTORY MODE -->
-      <div id="k-mode-inventory" class="k-mode">
-        <div class="card">
-          <p class="card-title">Cari & tambah dari inventory</p>
-          <div style="display:grid;grid-template-columns:1fr 55px 100px auto;gap:8px;align-items:start;margin-bottom:1rem;">
-            <div class="ac-wrap">
-              <input type="text" id="kAcInput" placeholder="Ketik nama item..." oninput="kAcSearch()" autocomplete="off">
-              <div class="ac-dd" id="kAcDd"></div>
-            </div>
-            <input type="number" id="kAcQty" value="1" min="1" style="text-align:center;">
-            <input type="number" id="kAcPrice" placeholder="Harga" style="text-align:right;">
-            <button class="btn btn-sm" onclick="kAcAdd()">+ Tambah</button>
-          </div>
-          <div id="kInvLines"></div>
-        </div>
-      </div>
-
-      <button class="btn-sec btn-sm" onclick="resetKalku()" style="margin-top:4px;">Reset semua</button>
+      <span style="font-size:11px;color:var(--ink-muted);font-family:'DM Mono',monospace;" id="kFromModel"></span>
+      <div style="margin-top:8px;"><button class="btn-sec btn-sm" onclick="resetKalku()">Reset semua</button></div>
     </div>
 
     <!-- SUMMARY CARD -->
     <div>
       <div class="sum-card">
         <div style="font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:500;margin-bottom:1rem;">Ringkasan harga</div>
-        <div class="sum-row"><span style="color:var(--ink-muted);">HPP Material</span><span style="font-family:'DM Mono',monospace;" id="k-hpp">Rp0</span></div>
+        <div class="sum-row"><span style="color:var(--ink-muted);">HPP Preset</span><span style="font-family:'DM Mono',monospace;font-size:11px;" id="k-hpp-preset">Rp0</span></div>
+        <div class="sum-row"><span style="color:var(--ink-muted);">HPP Inventory</span><span style="font-family:'DM Mono',monospace;font-size:11px;" id="k-hpp-inv">Rp0</span></div>
+        <div class="sum-row" style="border-top:0.5px solid var(--border);padding-top:6px;"><span style="font-weight:500;">Total HPP</span><span style="font-family:'DM Mono',monospace;font-weight:500;" id="k-hpp">Rp0</span></div>
         <div class="sum-row">
           <span style="color:var(--ink-muted);">Ops kios</span>
           <input type="number" id="k-ops" value="300000" style="width:90px;text-align:right;padding:3px 6px;font-size:11px;font-family:'DM Mono',monospace;" oninput="recalc()">
@@ -276,7 +353,6 @@ footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:cent
 <!-- ═══ TAB 3: PRESET MANAGER ═══ -->
 <div id="tab-preset" class="tab-page">
 <div class="container">
-<div class="container">
 
   <!-- METRICS -->
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:1.5rem;" id="metrics"></div>
@@ -285,19 +361,22 @@ footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:cent
   <div class="card">
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:1rem;">
       <p class="card-title" style="margin:0;">Daftar preset</p>
-      <button class="btn-sec btn-sm" onclick="pm_exportCSV()">Export CSV</button>
+      <div style="display:flex;gap:8px;">
+      <button class="btn btn-sm" onclick="pm2_openForm()">+ Preset baru</button>
+      <button class="btn-sec btn-sm" onclick="pm2_exportCSV()">Export CSV</button>
+      </div>
     </div>
 
     <!-- Search + filter -->
     <div style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;">
-      <input type="text" id="searchInput" placeholder="Cari preset..." oninput="pm_renderList()" style="flex:1;min-width:180px;">
+      <input type="text" id="searchInput" placeholder="Cari preset..." oninput="pm2_renderList()" style="flex:1;min-width:180px;">
     </div>
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;">
       <span style="font-size:10px;color:var(--ink-muted);font-family:'DM Mono',monospace;">Urutkan:</span>
-      <button class="cf-btn on" id="sort-nama" onclick="pm_setSort('nama',this)">Nama</button>
-      <button class="cf-btn" id="sort-kategori" onclick="pm_setSort('kategori',this)">Kategori</button>
-      <button class="cf-btn" id="sort-harga" onclick="pm_setSort('harga',this)">Harga ↑</button>
-      <button class="cf-btn" id="sort-hpp" onclick="pm_setSort('hpp',this)">HPP ↑</button>
+      <button class="cf-btn on" id="sort-nama" onclick="pm2_setSort('nama',this)">Nama</button>
+      <button class="cf-btn" id="sort-kategori" onclick="pm2_setSort('kategori',this)">Kategori</button>
+      <button class="cf-btn" id="sort-harga" onclick="pm2_setSort('harga',this)">Harga ↑</button>
+      <button class="cf-btn" id="sort-hpp" onclick="pm2_setSort('hpp',this)">HPP ↑</button>
     </div>
     <div class="cat-filter" id="catFilter"></div>
 
@@ -325,13 +404,13 @@ footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:cent
   <div class="modal">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
       <div class="modal-title" style="margin:0;" id="formTitle">Preset baru</div>
-      <button class="btn-sec btn-sm" onclick="pm_closeForm()">Tutup</button>
+      <button class="btn-sec btn-sm" onclick="pm2_closeForm()">Tutup</button>
     </div>
 
     <div class="row2">
       <div>
         <span class="lbl">Kategori</span>
-        <select id="f-cat" onchange="pm_updateNamaPrefix()">
+        <select id="f-cat" onchange="pm2_updateNamaPrefix()">
           <option value="Packaging">Packaging</option>
           <option value="Isi">Isi</option>
           <option value="Botol">Botol</option>
@@ -361,11 +440,11 @@ footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:cent
     <!-- Autocomplete search -->
     <div style="display:grid;grid-template-columns:1fr 58px auto;gap:8px;margin-bottom:10px;align-items:start;">
       <div class="ac-wrap">
-        <input type="text" id="matInput" placeholder="Cari dari inventory..." oninput="pm_matSearch()" autocomplete="off">
+        <input type="text" id="matInput" placeholder="Cari dari inventory..." oninput="pm2_matSearch()" autocomplete="off">
         <div class="ac-dd" id="matDd"></div>
       </div>
       <input type="number" id="matQty" value="1" min="1" style="text-align:center;">
-      <button class="btn btn-sm" onclick="pm_addMat()">+ Tambah</button>
+      <button class="btn btn-sm" onclick="pm2_addMat()">+ Tambah</button>
     </div>
 
     <!-- Material rows -->
@@ -383,14 +462,14 @@ footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:cent
       </div>
       <div>
         <span class="lbl">Harga preset final (Rp)</span>
-        <input type="number" id="f-harga" placeholder="0" min="0" oninput="pm_updateMargin()">
+        <input type="number" id="f-harga" placeholder="0" min="0" oninput="pm2_updateMargin()">
         <div style="font-size:10px;color:var(--ink-muted);margin-top:3px;font-family:'DM Mono',monospace;" id="marginDisplay"></div>
       </div>
     </div>
 
     <div class="modal-footer">
-      <button class="btn-sec" onclick="pm_closeForm()">Batal</button>
-      <button class="btn-wine" onclick="pm_savePreset()">Simpan preset</button>
+      <button class="btn-sec" onclick="pm2_closeForm()">Batal</button>
+      <button class="btn-wine" onclick="pm2_savePreset()">Simpan preset</button>
     </div>
     <div id="formResult" style="font-size:12px;display:none;padding:8px 12px;border-radius:3px;margin-top:8px;"></div>
     <input type="hidden" id="f-id">
@@ -406,8 +485,8 @@ footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:cent
         <div style="font-size:11px;color:var(--ink-muted);margin-top:3px;" id="dtSub"></div>
       </div>
       <div style="display:flex;gap:6px;">
-        <button class="btn-sec btn-sm" onclick="pm_editFromDetail()">Edit</button>
-        <button class="btn-sec btn-sm" onclick="pm_closeDetail()">Tutup</button>
+        <button class="btn-sec btn-sm" onclick="pm2_editFromDetail()">Edit</button>
+        <button class="btn-sec btn-sm" onclick="pm2_closeDetail()">Tutup</button>
       </div>
     </div>
     <div id="dtMats"></div>
@@ -421,7 +500,7 @@ footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:cent
     </div>
     <div style="font-size:11px;color:var(--ink-muted);text-align:right;font-family:'DM Mono',monospace;" id="dtMargin"></div>
     <div class="modal-footer">
-      <button class="btn-danger btn-sm" onclick="pm_deletePreset(pmCurrentDetailId)">Hapus preset</button>
+      <button class="btn-danger btn-sm" onclick="pm2_deletePreset(currentDetailId)">Hapus preset</button>
     </div>
   </div>
 </div>
@@ -568,6 +647,7 @@ function switchTab(tab, el) {
   document.getElementById('tab-'+tab).classList.add('active');
   el.classList.add('active');
   if(tab==='kalku') loadPresets();
+  if(tab==='preset') pm2_loadAll();
 }
 
 // ── DEFAULT MODELS ────────────────────────────────────────
@@ -1100,12 +1180,13 @@ function renderInvLines() {
 }
 
 function recalc() {
-  var hpp=0;
-  if(kMode==='preset'){
-    hpp=kLines.reduce(function(a,l){return a+(l.p*l.q);},0);
-  } else {
-    hpp=kInvLines.reduce(function(a,l){return a+(l.p*l.q);},0);
-  }
+  var hppPreset=kLines.reduce(function(a,l){return a+(l.p*l.q);},0);
+  var hppInv=kInvLines.reduce(function(a,l){return a+(l.p*l.q);},0);
+  var hpp=hppPreset+hppInv;
+  var ep=document.getElementById('k-hpp-preset');if(ep)ep.textContent=fmtRp(hppPreset);
+  var ei=document.getElementById('k-hpp-inv');if(ei)ei.textContent=fmtRp(hppInv);
+  var sp=document.getElementById('sub-preset');if(sp)sp.textContent=fmtRp(hppPreset);
+  var si=document.getElementById('sub-inv');if(si)si.textContent=fmtRp(hppInv);
   document.getElementById('k-hpp').textContent=fmtRp(hpp);
   var ops=parseInt(document.getElementById('k-ops').value)||0;
   var kar=parseInt(document.getElementById('k-kar').value)||0;
@@ -1114,8 +1195,8 @@ function recalc() {
   var base=hpp+ops+kar;
   var marginAmt=Math.round(base*(margin/(100-margin))||0);
   var total=base+marginAmt+ongkir-voucherDiscount;
-  document.getElementById('k-final').textContent=fmtRp(Math.max(0,total));
-  document.getElementById('k-margin-amt').textContent='Margin: '+fmtRp(marginAmt);
+  var fe=document.getElementById('k-final');if(fe)fe.textContent=fmtRp(Math.max(0,total));
+  var ma=document.getElementById('k-margin-amt');if(ma)ma.textContent='Margin: '+fmtRp(marginAmt);
 }
 
 function applyVoucher() {
@@ -1213,39 +1294,43 @@ renderPlan();
 loadPresets();
 initKSearch();
 
-// ── PRESET MANAGER ───────────────────────────────────────
+
+// ── PRESET MANAGER (pm2) ──
 
 
-function fmtRp(v){return 'Rp'+(parseInt(v)||0).toLocaleString('id-ID');}
-function gid(){return 'pr'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);}
-function setSync(ok){document.getElementById('syncDot').className='sync-dot'+(ok?' ok':'');document.getElementById('syncText').textContent=ok?'tersambung':'memuat...';}
 
-var pmPresets = [];
-var pmSortBy = 'nama';
-var inventory = [];
-var pmCatFilter = 'all';
-var pmMatRows = [];
-var pmMatMatches = [];
-var pmCurrentDetailId = null;
 
-var CAT_COLORS = {
+
+
+
+
+
+var pm2_presets = [];
+var pm2_sortBy = 'nama';
+var pm2_inventory = [];
+var pm2_catFilter = 'all';
+var pm2_matRows = [];
+var pm2_matMatches = [];
+var pm2_currentDetailId = null;
+
+var pm2_CAT_COLORS = {
   'Packaging':'cat-packaging','Isi':'cat-isi','Botol':'cat-botol',
   'Add-on':'cat-addon','Lainnya':'cat-lainnya'
 };
 
 // ── LOAD ──────────────────────────────────────────────────
-async function pm_loadAll(){
+async function pm2_loadAll(){
   try {
     var [pr, inv] = await Promise.all([
-      fetch(SUPA_URL+'/rest/v1/presets?order=created_at.desc', {headers:H}).then(function(r){return r.json();}),
-      fetch(SUPA_URL+'/rest/v1/inventory?order=added_at.desc', {headers:H}).then(function(r){return r.json();})
+      fetch(SUPA_URL+'/rest/v1/pm2_presets?order=created_at.desc', {headers:H}).then(function(r){return r.json();}),
+      fetch(SUPA_URL+'/rest/v1/pm2_inventory?order=added_at.desc', {headers:H}).then(function(r){return r.json();})
     ]);
-    pmPresets = pr || [];
-    inventory = inv || [];
+    pm2_presets = pr || [];
+    pm2_inventory = inv || [];
     setSync(true);
-    pm_renderMetrics();
-    pm_buildCatFilter();
-    pm_renderList();
+    pm2_renderMetrics();
+    pm2_buildCatFilter();
+    pm2_renderList();
   } catch(e) {
     setSync(false);
     console.error(e);
@@ -1253,13 +1338,13 @@ async function pm_loadAll(){
 }
 
 // ── METRICS ───────────────────────────────────────────────
-function pm_renderMetrics(){
-  var cats = new Set(pmPresets.map(function(p){return p.kategori;})).size;
-  var avgMargin = pmPresets.length ? Math.round(pmPresets.reduce(function(s,p){
+function pm2_renderMetrics(){
+  var cats = new Set(pm2_presets.map(function(p){return p.kategori;})).size;
+  var avgMargin = pm2_presets.length ? Math.round(pm2_presets.reduce(function(s,p){
     return s + (p.hpp && p.harga ? (p.harga-p.hpp)/p.harga*100 : 0);
-  }, 0) / pmPresets.length) : 0;
+  }, 0) / pm2_presets.length) : 0;
   document.getElementById('metrics').innerHTML = [
-    {l:'Total preset', v:pmPresets.length},
+    {l:'Total preset', v:pm2_presets.length},
     {l:'Kategori', v:cats},
     {l:'Rata-rata margin', v:avgMargin+'%'},
   ].map(function(m){
@@ -1271,42 +1356,42 @@ function pm_renderMetrics(){
 }
 
 // ── CAT FILTER ────────────────────────────────────────────
-function pm_buildCatFilter(){
-  var cats = ['all', ...new Set(pmPresets.map(function(p){return p.kategori;}).filter(Boolean))];
-  document.getElementById('catFilter').innerHTML = cats.map(function(c){
-    return '<button class="cf-btn'+(c===pmCatFilter?' on':'')+'" onclick="pm_setCat(\''+c+'\')">'+(c==='all'?'Semua':c)+'</button>';
+function pm2_buildCatFilter(){
+  var cats = ['all', ...new Set(pm2_presets.map(function(p){return p.kategori;}).filter(Boolean))];
+  document.getElementById('pm2_catFilter').innerHTML = cats.map(function(c){
+    return '<button class="cf-btn'+(c===pm2_catFilter?' on':'')+'" onclick="pm2_setCat(\''+c+'\')">'+(c==='all'?'Semua':c)+'</button>';
   }).join('');
 }
-function pm_setCat(c){pmCatFilter=c;pm_buildCatFilter();pm_renderList();}
-function pm_setSort(by,btn){
-  pmSortBy=by;
+function pm2_setCat(c){pm2_catFilter=c;pm2_buildCatFilter();pm2_renderList();}
+function pm2_setSort(by,btn){
+  pm2_sortBy=by;
   document.querySelectorAll('#sort-nama,#sort-kategori,#sort-harga,#sort-hpp').forEach(function(b){b.classList.remove('on');});
   btn.classList.add('on');
-  pm_renderList();
+  pm2_renderList();
 }
 
 // ── LIST ──────────────────────────────────────────────────
-function pm_renderList(){
+function pm2_renderList(){
   var q = (document.getElementById('searchInput').value||'').toLowerCase();
-  var filtered = pmPresets.filter(function(p){
+  var filtered = pm2_presets.filter(function(p){
     var mq = !q || (p.nama||'').toLowerCase().indexOf(q)>=0 || (p.kategori||'').toLowerCase().indexOf(q)>=0;
-    var mc = pmCatFilter==='all' || p.kategori===pmCatFilter;
+    var mc = pm2_catFilter==='all' || p.kategori===pm2_catFilter;
     return mq && mc;
   });
   filtered = filtered.slice().sort(function(a,b){
-    if(pmSortBy==='kategori') return (a.kategori||'').localeCompare(b.kategori||'');
-    if(pmSortBy==='harga') return (a.harga||0)-(b.harga||0);
-    if(pmSortBy==='hpp') return (a.hpp||0)-(b.hpp||0);
+    if(pm2_sortBy==='kategori') return (a.kategori||'').localeCompare(b.kategori||'');
+    if(pm2_sortBy==='harga') return (a.harga||0)-(b.harga||0);
+    if(pm2_sortBy==='hpp') return (a.hpp||0)-(b.hpp||0);
     return (a.nama||'').localeCompare(b.nama||'');
   });
   var tbody = document.getElementById('presetBody');
   var empty = document.getElementById('presetEmpty');
-  document.getElementById('listFooter').textContent = filtered.length+' dari '+pmPresets.length+' preset';
+  document.getElementById('listFooter').textContent = filtered.length+' dari '+pm2_presets.length+' preset';
   if(!filtered.length){tbody.innerHTML='';empty.style.display='block';return;}
   empty.style.display='none';
   tbody.innerHTML = filtered.map(function(p){
     var margin = p.hpp && p.harga ? Math.round((p.harga-p.hpp)/p.harga*100) : 0;
-    var catCls = CAT_COLORS[p.kategori] || 'cat-lainnya';
+    var catCls = pm2_CAT_COLORS[p.kategori] || 'cat-lainnya';
     var mats = p.items ? p.items.length : 0;
     return '<tr>'
       +'<td><div style="font-weight:500;font-size:12px;">'+p.nama+'</div>'
@@ -1318,17 +1403,17 @@ function pm_renderList(){
       +'<td style="text-align:right;font-family:\'DM Mono\',monospace;font-size:12px;font-weight:500;">'+fmtRp(p.harga)
       +(margin?'<div style="font-size:9px;color:var(--ink-muted);">+'+margin+'%</div>':'')+'</td>'
       +'<td><div style="display:flex;gap:5px;">'
-      +'<button class="btn-sec btn-sm" onclick="pm_openDetail(\''+p.id+'\')">Detail</button>'
-      +'<button class="btn-sec btn-sm" onclick="pm_editPreset(\''+p.id+'\')">Edit</button>'
-      +'<button class="btn-danger" onclick="pm_deletePreset(\''+p.id+'\')">✕</button>'
+      +'<button class="btn-sec btn-sm" onclick="pm2_openDetail(\''+p.id+'\')">Detail</button>'
+      +'<button class="btn-sec btn-sm" onclick="pm2_editPreset(\''+p.id+'\')">Edit</button>'
+      +'<button class="btn-danger" onclick="pm2_deletePreset(\''+p.id+'\')">✕</button>'
       +'</div></td>'
       +'</tr>';
   }).join('');
 }
 
 // ── FORM ──────────────────────────────────────────────────
-function pm_openForm(){
-  pmMatRows=[];
+function pm2_openForm(){
+  pm2_matRows=[];
   document.getElementById('formTitle').textContent='Preset baru';
   document.getElementById('f-id').value='';
   document.getElementById('f-nama').value='';
@@ -1339,27 +1424,27 @@ function pm_openForm(){
   document.getElementById('matEmpty').style.display='block';
   document.getElementById('hppDisplay').textContent='Rp0';
   document.getElementById('marginDisplay').textContent='';
-  pm_updateNamaPrefix();
+  pm2_updateNamaPrefix();
   document.getElementById('formResult').style.display='none';
   document.getElementById('formModal').classList.add('open');
 }
-function pm_closeForm(){document.getElementById('formModal').classList.remove('open');}
+function pm2_closeForm(){document.getElementById('formModal').classList.remove('open');}
 
-function pm_updateNamaPrefix(){
+function pm2_updateNamaPrefix(){
   var cat = document.getElementById('f-cat').value;
   var nama = document.getElementById('f-nama').value;
   var baseName = nama.replace(/^.*?-\s*/,'');
   document.getElementById('namaPreview').textContent = cat+' - '+(baseName||'...');
 }
 
-function pm_matSearch(){
+function pm2_matSearch(){
   var q = (document.getElementById('matInput').value||'').toLowerCase();
   var dd = document.getElementById('matDd');
   if(!q||q.length<2){dd.classList.remove('open');return;}
-  pmMatMatches = inventory.filter(function(i){return (i.produk||'').toLowerCase().indexOf(q)>=0;}).slice(0,8);
-  if(!pmMatMatches.length){dd.classList.remove('open');return;}
-  dd.innerHTML = pmMatMatches.map(function(i,idx){
-    return '<div class="ac-opt" onclick="pm_matPick('+idx+')">'
+  pm2_matMatches = pm2_inventory.filter(function(i){return (i.produk||'').toLowerCase().indexOf(q)>=0;}).slice(0,8);
+  if(!pm2_matMatches.length){dd.classList.remove('open');return;}
+  dd.innerHTML = pm2_matMatches.map(function(i,idx){
+    return '<div class="ac-opt" onclick="pm2_matPick('+idx+')">'
       +'<span style="font-weight:500;font-size:12px;">'+i.produk+'</span>'
       +'<span style="font-size:10px;color:var(--ink-muted);font-family:\'DM Mono\',monospace;">'+fmtRp(i.harga)+' · stok '+(i.qty||0)+'</span>'
       +'</div>';
@@ -1367,60 +1452,60 @@ function pm_matSearch(){
   dd.classList.add('open');
 }
 
-function pm_matPick(idx){
-  var i = pmMatMatches[idx]; if(!i)return;
+function pm2_matPick(idx){
+  var i = pm2_matMatches[idx]; if(!i)return;
   document.getElementById('matInput').value=i.produk;
   document.getElementById('matDd').classList.remove('open');
   document.getElementById('matInput').dataset.harga = i.harga||0;
 }
 
-function pm_addMat(){
+function pm2_addMat(){
   var nama = (document.getElementById('matInput').value||'').trim();
   var qty = parseInt(document.getElementById('matQty').value)||1;
   var harga = parseInt(document.getElementById('matInput').dataset.harga||0);
   if(!nama)return;
   var id = 'mr'+Date.now();
-  pmMatRows.push({id:id,nama:nama,qty:qty,harga:harga});
+  pm2_matRows.push({id:id,nama:nama,qty:qty,harga:harga});
   document.getElementById('matInput').value='';
   document.getElementById('matInput').dataset.harga=0;
   document.getElementById('matQty').value=1;
-  pm_renderMatList();
-  pm_recalcHpp();
+  pm2_renderMatList();
+  pm2_recalcHpp();
 }
 
-function pm_removeMat(id){
-  pmMatRows=pmMatRows.filter(function(r){return r.id!==id;});
-  pm_renderMatList();pm_recalcHpp();
+function pm2_removeMat(id){
+  pm2_matRows=pm2_matRows.filter(function(r){return r.id!==id;});
+  pm2_renderMatList();pm2_recalcHpp();
 }
 
-function pm_updateMatQty(id,val){
-  var r=pmMatRows.find(function(x){return x.id===id;});
-  if(r){r.qty=parseInt(val)||1;pm_recalcHpp();}
+function pm2_updateMatQty(id,val){
+  var r=pm2_matRows.find(function(x){return x.id===id;});
+  if(r){r.qty=parseInt(val)||1;pm2_recalcHpp();}
 }
 
-function pm_renderMatList(){
+function pm2_renderMatList(){
   var el=document.getElementById('matList');
   var empty=document.getElementById('matEmpty');
-  if(!pmMatRows.length){el.innerHTML='';empty.style.display='block';return;}
+  if(!pm2_matRows.length){el.innerHTML='';empty.style.display='block';return;}
   empty.style.display='none';
-  el.innerHTML=pmMatRows.map(function(r){
+  el.innerHTML=pm2_matRows.map(function(r){
     return '<div class="mat-row">'
       +'<div style="font-size:12px;">'+r.nama+'</div>'
-      +'<input type="number" value="'+r.qty+'" min="1" style="text-align:center;padding:4px;font-size:11px;font-family:\'DM Mono\',monospace;" onchange="pm_updateMatQty(\''+r.id+'\',this.value)">'
+      +'<input type="number" value="'+r.qty+'" min="1" style="text-align:center;padding:4px;font-size:11px;font-family:\'DM Mono\',monospace;" onchange="pm2_updateMatQty(\''+r.id+'\',this.value)">'
       +'<span style="text-align:right;font-family:\'DM Mono\',monospace;font-size:11px;">'+fmtRp(r.harga*r.qty)+'</span>'
-      +'<button onclick="pm_removeMat(\''+r.id+'\')" style="background:none;border:none;cursor:pointer;color:var(--ink-muted);font-size:15px;padding:0;">×</button>'
+      +'<button onclick="pm2_removeMat(\''+r.id+'\')" style="background:none;border:none;cursor:pointer;color:var(--ink-muted);font-size:15px;padding:0;">×</button>'
       +'</div>';
   }).join('');
 }
 
-function pm_recalcHpp(){
-  var hpp=pmMatRows.reduce(function(s,r){return s+(r.harga*r.qty);},0);
+function pm2_recalcHpp(){
+  var hpp=pm2_matRows.reduce(function(s,r){return s+(r.harga*r.qty);},0);
   document.getElementById('hppDisplay').textContent=fmtRp(hpp);
-  pm_updateMargin();
+  pm2_updateMargin();
 }
 
-function pm_updateMargin(){
-  var hpp=pmMatRows.reduce(function(s,r){return s+(r.harga*r.qty);},0);
+function pm2_updateMargin(){
+  var hpp=pm2_matRows.reduce(function(s,r){return s+(r.harga*r.qty);},0);
   var harga=parseInt(document.getElementById('f-harga').value)||0;
   if(harga&&hpp){
     var margin=Math.round((harga-hpp)/harga*100);
@@ -1430,12 +1515,12 @@ function pm_updateMargin(){
   }
 }
 
-async function pm_savePreset(){
+async function pm2_savePreset(){
   var cat=document.getElementById('f-cat').value;
   var namaBase=(document.getElementById('f-nama').value||'').trim();
   if(!namaBase){alert('Nama preset wajib diisi.');return;}
-  if(!pmMatRows.length){alert('Tambahkan minimal satu material.');return;}
-  var hpp=pmMatRows.reduce(function(s,r){return s+(r.harga*r.qty);},0);
+  if(!pm2_matRows.length){alert('Tambahkan minimal satu material.');return;}
+  var hpp=pm2_matRows.reduce(function(s,r){return s+(r.harga*r.qty);},0);
   var harga=parseInt(document.getElementById('f-harga').value)||0;
   var namaFull=cat+' - '+namaBase;
   var editId=document.getElementById('f-id').value;
@@ -1443,7 +1528,7 @@ async function pm_savePreset(){
     id:editId||gid(),
     nama:namaFull,
     kategori:cat,
-    items:pmMatRows.map(function(r){return{nama:r.nama,qty:r.qty,harga:r.harga};}),
+    items:pm2_matRows.map(function(r){return{nama:r.nama,qty:r.qty,harga:r.harga};}),
     hpp:hpp,
     harga:harga,
     catatan:(document.getElementById('f-catatan').value||'').trim()
@@ -1452,20 +1537,20 @@ async function pm_savePreset(){
   res.style.display='block';res.style.background='var(--warn-bg)';res.style.color='var(--warn-text)';res.textContent='Menyimpan...';
   try{
     if(editId){
-      await fetch(SUPA_URL+'/rest/v1/presets?id=eq.'+editId,{method:'PATCH',headers:H,body:JSON.stringify(payload)});
+      await fetch(SUPA_URL+'/rest/v1/pm2_presets?id=eq.'+editId,{method:'PATCH',headers:H,body:JSON.stringify(payload)});
     } else {
-      await fetch(SUPA_URL+'/rest/v1/presets',{method:'POST',headers:H,body:JSON.stringify(payload)});
+      await fetch(SUPA_URL+'/rest/v1/pm2_presets',{method:'POST',headers:H,body:JSON.stringify(payload)});
     }
     res.style.background='var(--ok-bg)';res.style.color='var(--ok-text)';res.textContent='✓ Preset berhasil disimpan.';
-    setTimeout(function(){pm_closeForm();pm_loadAll();},1000);
+    setTimeout(function(){pm2_closeForm();},1000);
   } catch(e){
     res.style.background='var(--low-bg)';res.style.color='var(--low-text)';res.textContent='Gagal: '+e.message;
   }
 }
 
-function pm_editPreset(id){
-  var p=pmPresets.find(function(x){return x.id===id;});if(!p)return;
-  pmMatRows=(p.items||[]).map(function(i){return{id:'mr'+Date.now()+Math.random(),nama:i.nama,qty:i.qty,harga:i.harga};});
+function pm2_editPreset(id){
+  var p=pm2_presets.find(function(x){return x.id===id;});if(!p)return;
+  pm2_matRows=(p.items||[]).map(function(i){return{id:'mr'+Date.now()+Math.random(),nama:i.nama,qty:i.qty,harga:i.harga};});
   document.getElementById('formTitle').textContent='Edit preset';
   document.getElementById('f-id').value=id;
   var parts=p.nama.split(' - ');
@@ -1473,14 +1558,14 @@ function pm_editPreset(id){
   document.getElementById('f-nama').value=parts.slice(1).join(' - ')||p.nama;
   document.getElementById('f-catatan').value=p.catatan||'';
   document.getElementById('f-harga').value=p.harga||'';
-  pm_renderMatList();pm_recalcHpp();pm_updateNamaPrefix();
+  pm2_renderMatList();pm2_recalcHpp();pm2_updateNamaPrefix();
   document.getElementById('formResult').style.display='none';
   document.getElementById('formModal').classList.add('open');
 }
 
-function pm_dupPreset(id){
-  var p=pmPresets.find(function(x){return x.id===id;});if(!p)return;
-  pmMatRows=JSON.parse(JSON.stringify(p.items||[])).map(function(i){return{id:'mr'+Date.now()+Math.random(),nama:i.nama,qty:i.qty,harga:i.harga};});
+function pm2_dupPreset(id){
+  var p=pm2_presets.find(function(x){return x.id===id;});if(!p)return;
+  pm2_matRows=JSON.parse(JSON.stringify(p.items||[])).map(function(i){return{id:'mr'+Date.now()+Math.random(),nama:i.nama,qty:i.qty,harga:i.harga};});
   document.getElementById('formTitle').textContent='Copy preset';
   document.getElementById('f-id').value='';
   var parts=p.nama.split(' - ');
@@ -1488,25 +1573,25 @@ function pm_dupPreset(id){
   document.getElementById('f-nama').value=(parts.slice(1).join(' - ')||p.nama)+' (copy)';
   document.getElementById('f-catatan').value=p.catatan||'';
   document.getElementById('f-harga').value=p.harga||'';
-  pm_renderMatList();pm_recalcHpp();pm_updateNamaPrefix();
+  pm2_renderMatList();pm2_recalcHpp();pm2_updateNamaPrefix();
   document.getElementById('formResult').style.display='none';
   document.getElementById('formModal').classList.add('open');
 }
-async function pm_deletePreset(id){
+async function pm2_deletePreset(id){
   if(!confirm('Hapus preset ini?'))return;
   try{
-    await fetch(SUPA_URL+'/rest/v1/presets?id=eq.'+id,{method:'DELETE',headers:H});
-    pm_closeDetail();
-    pm_loadAll();
+    await fetch(SUPA_URL+'/rest/v1/pm2_presets?id=eq.'+id,{method:'DELETE',headers:H});
+    pm2_closeDetail();
+    
   }catch(e){alert('Gagal hapus: '+e.message);}
 }
 
 // ── DETAIL ────────────────────────────────────────────────
-function pm_openDetail(id){
-  var p=pmPresets.find(function(x){return x.id===id;});if(!p)return;
-  pmCurrentDetailId=id;
+function pm2_openDetail(id){
+  var p=pm2_presets.find(function(x){return x.id===id;});if(!p)return;
+  pm2_currentDetailId=id;
   document.getElementById('dtTitle').textContent=p.nama;
-  var catCls=CAT_COLORS[p.kategori]||'cat-lainnya';
+  var catCls=pm2_CAT_COLORS[p.kategori]||'cat-lainnya';
   document.getElementById('dtSub').innerHTML='<span class="cat-badge '+catCls+'">'+p.kategori+'</span>'+(p.catatan?' · '+p.catatan:'');
   document.getElementById('dtMats').innerHTML=(p.items||[]).map(function(i){
     return '<div class="detail-mat-row">'
@@ -1520,34 +1605,25 @@ function pm_openDetail(id){
   document.getElementById('dtMargin').textContent=margin?'Margin '+margin+'% ('+fmtRp(p.harga-p.hpp)+')':'';
   document.getElementById('detailModal').classList.add('open');
 }
-function pm_closeDetail(){document.getElementById('detailModal').classList.remove('open');pmCurrentDetailId=null;}
-function pm_editFromDetail(){pm_closeDetail();if(pmCurrentDetailId)pm_editPreset(pmCurrentDetailId);}
+function pm2_closeDetail(){document.getElementById('detailModal').classList.remove('open');pm2_currentDetailId=null;}
+function pm2_editFromDetail(){pm2_closeDetail();if(pm2_currentDetailId)pm2_editPreset(pm2_currentDetailId);}
 
 // ── EXPORT ────────────────────────────────────────────────
-function pm_exportCSV(){
+function pm2_exportCSV(){
   var rows=[['ID','Nama','Kategori','HPP','Harga','Material','Catatan']];
-  pmPresets.forEach(function(p){
+  pm2_presets.forEach(function(p){
     rows.push([p.id,p.nama,p.kategori,p.hpp||0,p.harga||0,(p.items||[]).map(function(i){return i.nama+'×'+i.qty;}).join(' | '),p.catatan||'']);
   });
   var a=document.createElement('a');
   a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(rows.map(function(r){return r.map(function(v){return'"'+v+'"';}).join(',');}).join('\n'));
-  a.download='wg88-pmPresets.csv';a.click();
+  a.download='wg88-pm2_presets.csv';a.click();
 }
 
-// ── REALTIME ──────────────────────────────────────────────
-function pm_initRealtime(){
-  var ws=new WebSocket('wss://cehiusuaipanuynmizdf.supabase.co/realtime/v1/websocket?apikey='+SUPA_KEY+'&vsn=1.0.0');
-  ws.onopen=function(){
-    ws.send(JSON.stringify({topic:'realtime:public:presets',event:'phx_join',payload:{config:{broadcast:{self:false},presence:{key:''},postgres_changes:[{event:'*',schema:'public',table:'presets'}]}},ref:'1'}));
-  };
-  ws.onmessage=function(e){var msg=JSON.parse(e.data);if(msg.event==='postgres_changes')pm_loadAll();};
-  ws.onclose=function(){setSync(false);setTimeout(initRealtime,3000);};
-}
 
-document.addEventListener('click',function(e){if(!e.target.closest('.ac-wrap'))document.querySelectorAll('.ac-dd').forEach(function(d){d.classList.remove('open');});});
-document.getElementById('f-nama').addEventListener('input',pm_updateNamaPrefix);
 
-// pm init called on tab switch
+
+
+
 
 </script>
 </body>
