@@ -251,7 +251,7 @@ footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:cent
   <button class="tab-btn" id="btn-kalku" onclick="switchTab('kalku',this)">
     <span class="tab-num">2</span>Kalkulator
   </button>
-  <button class="tab-btn" id="btn-preset" onclick="switchTab('preset',this);pm_loadAll();">
+  <button class="tab-btn" id="btn-preset" onclick="switchTab('preset',this);pm2_loadAll();">
     <span class="tab-num">3</span>Preset Manager
   </button>
 </div>
@@ -1322,8 +1322,8 @@ var pm2_CAT_COLORS = {
 async function pm2_loadAll(){
   try {
     var [pr, inv] = await Promise.all([
-      fetch(SUPA_URL+'/rest/v1/pm2_presets?order=created_at.desc', {headers:H}).then(function(r){return r.json();}),
-      fetch(SUPA_URL+'/rest/v1/pm2_inventory?order=added_at.desc', {headers:H}).then(function(r){return r.json();})
+      fetch(SUPA_URL+'/rest/v1/presets?order=created_at.desc', {headers:H}).then(function(r){return r.json();}),
+      fetch(SUPA_URL+'/rest/v1/inventory?order=added_at.desc', {headers:H}).then(function(r){return r.json();})
     ]);
     pm2_presets = pr || [];
     pm2_inventory = inv || [];
@@ -1537,9 +1537,9 @@ async function pm2_savePreset(){
   res.style.display='block';res.style.background='var(--warn-bg)';res.style.color='var(--warn-text)';res.textContent='Menyimpan...';
   try{
     if(editId){
-      await fetch(SUPA_URL+'/rest/v1/pm2_presets?id=eq.'+editId,{method:'PATCH',headers:H,body:JSON.stringify(payload)});
+      await fetch(SUPA_URL+'/rest/v1/presets?id=eq.'+editId,{method:'PATCH',headers:H,body:JSON.stringify(payload)});
     } else {
-      await fetch(SUPA_URL+'/rest/v1/pm2_presets',{method:'POST',headers:H,body:JSON.stringify(payload)});
+      await fetch(SUPA_URL+'/rest/v1/presets',{method:'POST',headers:H,body:JSON.stringify(payload)});
     }
     res.style.background='var(--ok-bg)';res.style.color='var(--ok-text)';res.textContent='✓ Preset berhasil disimpan.';
     setTimeout(function(){pm2_closeForm();},1000);
@@ -1580,7 +1580,7 @@ function pm2_dupPreset(id){
 async function pm2_deletePreset(id){
   if(!confirm('Hapus preset ini?'))return;
   try{
-    await fetch(SUPA_URL+'/rest/v1/pm2_presets?id=eq.'+id,{method:'DELETE',headers:H});
+    await fetch(SUPA_URL+'/rest/v1/presets?id=eq.'+id,{method:'DELETE',headers:H});
     pm2_closeDetail();
     
   }catch(e){alert('Gagal hapus: '+e.message);}
