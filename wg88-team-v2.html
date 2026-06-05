@@ -216,10 +216,35 @@ textarea{resize:vertical;min-height:60px;line-height:1.5}
 .team-info{flex:1;min-width:0}
 .team-name{font-size:13px;color:var(--cream);font-weight:500}
 .team-role{font-size:11px;color:var(--muted);text-transform:capitalize}
+
+/* PROFILE PICKER */
+.profile-overlay{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1.5rem}
+.profile-overlay.hide{display:none}
+.profile-box{text-align:center;max-width:560px;width:100%}
+.profile-brand{font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--cream);margin-bottom:.3rem}
+.profile-sub{font-size:13px;color:var(--muted);margin-bottom:2rem}
+.profile-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:1rem;margin-bottom:1.5rem}
+.profile-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:1.3rem .8rem;cursor:pointer;transition:all .15s}
+.profile-card:hover{border-color:var(--gold);background:var(--surface2);transform:translateY(-2px)}
+.profile-card-av{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--gold2));display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:600;color:var(--cream);margin:0 auto .6rem}
+.profile-card-nm{font-size:13px;color:var(--cream);font-weight:500}
+.profile-card-rl{font-size:10px;color:var(--muted);text-transform:capitalize;margin-top:2px}
+.profile-add-btn{background:transparent;border:1px dashed var(--border);color:var(--muted);padding:.7rem 1.5rem;border-radius:var(--r);cursor:pointer;font-size:12px;font-family:inherit}
+.profile-add-btn:hover{border-color:var(--gold);color:var(--gold)}
 </style>
 </head>
 <body>
 <div class="loading-bar" id="loadBar"></div>
+<!-- PROFILE PICKER -->
+<div class="profile-overlay" id="profileOverlay">
+  <div class="profile-box">
+    <div class="profile-brand">Wondergift88</div>
+    <div class="profile-sub">Pilih profil untuk mulai</div>
+    <div class="profile-grid" id="profileGrid"></div>
+    <button class="profile-add-btn" onclick="openAddTeam()">+ Tambah Anggota Baru</button>
+  </div>
+</div>
+
 <div class="app">
 
   <!-- SIDEBAR -->
@@ -228,12 +253,13 @@ textarea{resize:vertical;min-height:60px;line-height:1.5}
       <div class="sb-brand">Wondergift88</div>
       <div class="sb-sub">Team Operations</div>
     </div>
-    <div class="sb-user">
-      <div class="sb-av">D</div>
-      <div>
-        <div class="sb-nm">Dhista</div>
-        <div class="sb-rl">Admin</div>
+    <div class="sb-user" onclick="switchProfile()" style="cursor:pointer" title="Klik untuk ganti profil">
+      <div class="sb-av" id="sbAvatar">?</div>
+      <div style="flex:1">
+        <div class="sb-nm" id="sbName">-</div>
+        <div class="sb-rl" id="sbRole">pilih profil</div>
       </div>
+      <span style="font-size:11px;color:var(--muted)">\u21C4</span>
     </div>
     <nav class="nav">
       <div class="nav-s">Menu</div>
@@ -522,7 +548,7 @@ var DB={
   del:async function(t,q){await fetch(SUPA_URL+'/rest/v1/'+t+'?'+q,{method:'DELETE',headers:HDR});}
 };
 
-var S={userId:null,clockedIn:false,inTime:null,outTime:null,attendanceId:null,sopO:[],sopC:{},sopOLog:{},sopCLog:{},tasks:[],attendance:[],events:[],summaries:[],team:[],sumTab:'daily'};
+var S={userId:null,userName:null,userRole:null,clockedIn:false,inTime:null,outTime:null,attendanceId:null,sopO:[],sopC:{},sopOLog:{},sopCLog:{},tasks:[],attendance:[],events:[],summaries:[],team:[],sumTab:'daily'};
 
 function todayStr(){return new Date().toISOString().slice(0,10);}
 function fmtTime(d){return d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});}
@@ -1115,6 +1141,7 @@ async function saveTeamMember(){
   if(res&&res[0])S.team.push(res[0]);
   closeModal('modal-add-team');
   renderTeam();
+  renderProfilePicker();
   toast('Anggota tim ditambahkan \u2726');
 }
 
@@ -1130,13 +1157,61 @@ async function deleteTeamMember(id){
 async function init(){
   loading(true);
   try{
-    var emps=await DB.get('employees','name=eq.Dhista');
-    if(emps&&emps.length)S.userId=emps[0].id;
     await Promise.all([loadSOPItems(),loadAttendance(),loadCalendarEvents(),loadSummaries(),loadTeam()]);
-    if(S.userId){await loadSOPLogs();await loadTasks();}
+    renderProfilePicker();
+    // Auto-select last used profile if exists
+    var lastId=localStorage.getItem('wg_team_profile');
+    if(lastId&&S.team.find(function(m){return m.id===lastId;})){
+      await selectProfile(lastId,true);
+    }
   }catch(e){console.error(e);toast('Gagal memuat data. Cek koneksi.');}
   loading(false);
-  renderSOPs();renderTasks();renderCalendar();
+  renderSOPs();renderCalendar();
+}
+
+function renderProfilePicker(){
+  var grid=document.getElementById('profileGrid');
+  if(!grid)return;
+  if(!S.team||!S.team.length){
+    grid.innerHTML='<div style="grid-column:1/-1;color:var(--muted);font-size:12px">Belum ada anggota. Tambah dulu di bawah.</div>';
+    return;
+  }
+  var roleLabel={staff:'Staff',production:'Production',admin:'Admin',cs:'Customer Service'};
+  grid.innerHTML=S.team.map(function(m){
+    var initial=(m.name||'?').charAt(0).toUpperCase();
+    return '<div class="profile-card" onclick="selectProfile(\''+m.id+'\')"><div class="profile-card-av">'+initial+'</div><div class="profile-card-nm">'+(m.name||'-')+'</div><div class="profile-card-rl">'+(roleLabel[m.role]||m.role||'staff')+'</div></div>';
+  }).join('');
+}
+
+async function selectProfile(id,silent){
+  var m=S.team.find(function(x){return x.id===id;});
+  if(!m)return;
+  S.userId=id;
+  S.userName=m.name;
+  S.userRole=m.role;
+  localStorage.setItem('wg_team_profile',id);
+  // Update sidebar
+  document.getElementById('sbAvatar').textContent=(m.name||'?').charAt(0).toUpperCase();
+  document.getElementById('sbName').textContent=m.name||'-';
+  var roleLabel={staff:'Staff',production:'Production',admin:'Admin',cs:'Customer Service'};
+  document.getElementById('sbRole').textContent=roleLabel[m.role]||m.role||'staff';
+  // Hide overlay
+  document.getElementById('profileOverlay').classList.add('hide');
+  // Load user-specific data
+  loading(true);
+  try{
+    await loadSOPLogs();
+    await loadTasks();
+    await loadAttendance();
+  }catch(e){console.error(e);}
+  loading(false);
+  renderSOPs();renderTasks();
+  if(!silent)toast('Halo, '+m.name+' \u2726');
+}
+
+function switchProfile(){
+  renderProfilePicker();
+  document.getElementById('profileOverlay').classList.remove('hide');
 }
 init();
 </script>
