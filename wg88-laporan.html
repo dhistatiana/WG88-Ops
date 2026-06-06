@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laporan Keuangan — Wondergift88</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--cream:#F7F4EE;--ink:#1A1714;--ink-soft:#4A4540;--ink-muted:#9A948E;--gold:#B8975A;--wine:#72243E;--wine-light:#FBEAF0;--border:rgba(26,23,20,0.1);--border-soft:rgba(26,23,20,0.06);--ok-bg:#EAF3E0;--ok-text:#27500A;--warn-bg:#FAEEDA;--warn-text:#633806;--low-bg:#FCEBEB;--low-text:#791F1F;--info-bg:#E6F1FB;--info-text:#0C447C;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);line-height:1.5;padding:1.5rem;font-weight:300;}
+.container{max-width:1100px;margin:0 auto;}
+header{margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1rem;}
+h1{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:500;}
+.sub{font-size:12px;color:var(--ink-muted);font-family:'DM Mono',monospace;}
+.card{background:#fff;border:0.5px solid var(--border);border-radius:6px;padding:1.25rem;margin-bottom:1rem;}
+.card-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;margin-bottom:1rem;}
+.lbl{font-size:11px;color:var(--ink-muted);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:4px;}
+input,select,textarea{font-family:'DM Sans',sans-serif;font-size:13px;padding:7px 10px;border:0.5px solid var(--border);border-radius:4px;background:#fff;color:var(--ink);width:100%;}
+input:focus,select:focus{outline:none;border-color:var(--gold);}
+.btn{background:var(--wine);color:#fff;border:none;padding:8px 16px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:13px;}
+.btn:hover{opacity:0.9;}
+.btn-sec{background:transparent;border:0.5px solid var(--border);color:var(--ink-soft);padding:8px 16px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:13px;}
+.btn-sm{padding:5px 10px;font-size:12px;}
+.btn-gold{background:var(--gold);color:#fff;border:none;padding:8px 16px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:13px;}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:1rem;}
+.metric{background:#fff;border:0.5px solid var(--border);border-radius:6px;padding:1rem;}
+.metric-lbl{font-size:10px;color:var(--ink-muted);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;}
+.metric-val{font-family:'DM Mono',monospace;font-size:20px;font-weight:500;}
+.metric-sub{font-size:11px;color:var(--ink-muted);margin-top:3px;}
+.row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;font-size:13px;border-bottom:0.5px solid var(--border-soft);}
+.row:last-child{border-bottom:none;}
+.mono{font-family:'DM Mono',monospace;}
+.wine{color:var(--wine);}
+.gold{color:var(--gold);}
+table{width:100%;border-collapse:collapse;}
+th{font-size:10px;color:var(--ink-muted);font-family:'DM Mono',monospace;text-transform:uppercase;text-align:left;padding:6px 8px;border-bottom:0.5px solid var(--border);font-weight:500;}
+td{font-size:13px;padding:8px;border-bottom:0.5px solid var(--border-soft);}
+.cost-row{display:grid;grid-template-columns:1fr 130px 30px;gap:8px;align-items:center;margin-bottom:6px;}
+.note{background:var(--info-bg);color:var(--info-text);font-size:11px;padding:8px 12px;border-radius:4px;line-height:1.5;}
+.tax-note{background:var(--warn-bg);color:var(--warn-text);font-size:11px;padding:10px 12px;border-radius:4px;line-height:1.6;margin-top:10px;}
+footer{text-align:center;font-size:11px;color:var(--ink-muted);font-family:'DM Mono',monospace;margin-top:2rem;padding-top:1rem;}
+.del-btn{background:none;border:none;cursor:pointer;color:var(--ink-muted);font-size:16px;}
+.del-btn:hover{color:var(--low-text);}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div>
+      <h1>Laporan Keuangan</h1>
+      <div class="sub">Wondergift88 · PT Wonder Tech Indonesia</div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;">
+      <div>
+        <span class="lbl">Periode</span>
+        <input type="month" id="periodPick" style="width:160px;">
+      </div>
+      <button class="btn-gold btn-sm" onclick="exportCSV()">⬇ Download CSV</button>
+    </div>
+  </header>
+
+  <!-- RINGKASAN PROFIT -->
+  <div class="metrics" id="profitMetrics"></div>
+
+  <!-- STRUKTUR -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;" id="mainGrid">
+    <!-- BIAYA TETAP -->
+    <div class="card">
+      <div class="card-title">Biaya tetap bulanan</div>
+      <div class="note" style="margin-bottom:12px;">Biaya yang keluar tiap bulan tanpa peduli jumlah order (sewa kios, gaji, internet). Dicatat penuh per bulan — bukan dialokasi per order.</div>
+      <div id="costList"></div>
+      <div class="cost-row" style="margin-top:10px;">
+        <input type="text" id="newCostName" placeholder="Nama biaya (mis. Sewa kios)">
+        <input type="number" id="newCostNom" placeholder="Nominal">
+        <button class="btn btn-sm" onclick="addCost()" style="padding:5px 8px;">+</button>
+      </div>
+      <div class="row" style="margin-top:10px;font-weight:500;">
+        <span>Total biaya tetap</span><span class="mono wine" id="totalFixed">Rp0</span>
+      </div>
+    </div>
+
+    <!-- PROFIT BREAKDOWN -->
+    <div class="card">
+      <div class="card-title">Rincian laba-rugi (periode ini)</div>
+      <div class="row"><span>Revenue gifting (dari order)</span><span class="mono" id="lrRevenue">Rp0</span></div>
+      <div class="row"><span>HPP (modal bahan)</span><span class="mono" id="lrHpp">−Rp0</span></div>
+      <div class="row"><span>Ongkir</span><span class="mono" id="lrOngkir">−Rp0</span></div>
+      <div class="row"><span>Biaya tetap bulanan</span><span class="mono" id="lrFixed">−Rp0</span></div>
+      <div class="row" style="font-weight:600;font-size:15px;border-top:1px solid var(--border);padding-top:10px;margin-top:4px;">
+        <span class="wine">Profit bersih</span><span class="mono wine" id="lrProfit">Rp0</span>
+      </div>
+      <div class="row" style="border:none;"><span style="font-size:11px;color:var(--ink-muted);">Margin bersih</span><span class="mono" style="font-size:12px;" id="lrMargin">0%</span></div>
+      <div class="note" style="margin-top:8px;">Ini untuk analisa bisnis — tahu untung sebenarnya. Bukan dasar perhitungan pajak.</div>
+    </div>
+  </div>
+
+  <!-- REKAP PAJAK -->
+  <div class="card">
+    <div class="card-title">Rekap pajak — PPh Final 0,5%</div>
+    <div class="note" style="margin-bottom:12px;">PPh Final dihitung dari <strong>omzet bruto</strong> (bukan profit). Karena satu PT Perorangan, omzet semua KBLI (gifting + tech) digabung.</div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+      <div>
+        <span class="lbl">Omzet gifting (auto dari order)</span>
+        <div class="mono" style="font-size:18px;padding:7px 0;" id="taxGifting">Rp0</div>
+      </div>
+      <div>
+        <span class="lbl">Omzet WTN / tech (input manual)</span>
+        <div id="extRevList"></div>
+        <div class="cost-row" style="margin-top:6px;">
+          <input type="text" id="newExtName" placeholder="Sumber (mis. Tech consulting)">
+          <input type="number" id="newExtNom" placeholder="Nominal">
+          <button class="btn btn-sm" onclick="addExtRev()" style="padding:5px 8px;">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="metrics">
+      <div class="metric">
+        <div class="metric-lbl">Omzet bruto gabungan (bulan ini)</div>
+        <div class="metric-val" id="taxTotal">Rp0</div>
+      </div>
+      <div class="metric" style="border-color:var(--wine);">
+        <div class="metric-lbl">Estimasi PPh Final (0,5%)</div>
+        <div class="metric-val wine" id="taxDue">Rp0</div>
+        <div class="metric-sub">setor masa pajak bulan ini</div>
+      </div>
+      <div class="metric">
+        <div class="metric-lbl">Omzet kumulatif tahun ini</div>
+        <div class="metric-val" id="taxCumulative">Rp0</div>
+        <div class="metric-sub" id="taxCumNote">batas 0,5%: Rp4,8 M/tahun</div>
+      </div>
+    </div>
+
+    <div class="tax-note">
+      <strong>Catatan:</strong> Angka ini estimasi untuk gambaran, mengikuti aturan terbaru PP 20/2026 (PT Perorangan dapat tarif 0,5% tanpa batas waktu). Sebelum setor/lapor, konfirmasikan ke konsultan pajak atau Account Representative di KPP — ini bukan nasihat pajak resmi.
+    </div>
+  </div>
+
+  <!-- GRAFIK TREN -->
+  <div class="card">
+    <div class="card-title">Tren revenue vs profit per bulan</div>
+    <div style="height:300px;"><canvas id="trendChart"></canvas></div>
+  </div>
+
+  <footer>wondergift88.com · laporan keuangan</footer>
+</div>
+
+<script>
+const SUPA_URL='https://cehiusuaipanuynmizdf.supabase.co';
+const SUPA_KEY='sb_publishable_eCQxemaN5Wm70442OsUV6Q_wxaReN_f';
+const H={'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=representation'};
+const MONTHS=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agt','Sep','Okt','Nov','Des'];
+
+var allOrders=[], fixedCosts=[], extRevenue=[], trendChart=null;
+
+function fmtRp(n){return 'Rp'+(n||0).toLocaleString('id-ID');}
+function gid(){return 'lap'+Date.now()+Math.random().toString(36).slice(2,6);}
+function curPeriod(){return document.getElementById('periodPick').value;}
+
+// Parse order date "5 Jun 2026" -> period "2026-06"
+function orderPeriod(o){
+  var d=o.date||'';
+  var parts=d.split(' ');
+  if(parts.length>=3){
+    var mi=MONTHS.indexOf(parts[1]);
+    if(mi>=0)return parts[2]+'-'+String(mi+1).padStart(2,'0');
+  }
+  // fallback created_at
+  if(o.created_at)return o.created_at.slice(0,7);
+  return '';
+}
+
+async function loadAll(){
+  try{
+    var [ord,fc,er]=await Promise.all([
+      fetch(SUPA_URL+'/rest/v1/orders?order=created_at.desc',{headers:H}).then(function(r){return r.json();}),
+      fetch(SUPA_URL+'/rest/v1/fixed_costs',{headers:H}).then(function(r){return r.json();}),
+      fetch(SUPA_URL+'/rest/v1/external_revenue',{headers:H}).then(function(r){return r.json();})
+    ]);
+    allOrders=Array.isArray(ord)?ord:[];
+    fixedCosts=Array.isArray(fc)?fc:[];
+    extRevenue=Array.isArray(er)?er:[];
+    renderAll();
+  }catch(e){console.error(e);}
+}
+
+function ordersInPeriod(p){return allOrders.filter(function(o){return orderPeriod(o)===p;});}
+function costsInPeriod(p){return fixedCosts.filter(function(c){return c.period===p;});}
+function extInPeriod(p){return extRevenue.filter(function(e){return e.period===p;});}
+
+function renderAll(){
+  var p=curPeriod();
+  var ords=ordersInPeriod(p);
+  // Gifting revenue & costs
+  var revenue=ords.reduce(function(a,o){return a+(o.final||0);},0);
+  var hpp=ords.reduce(function(a,o){return a+(o.hpp||0);},0);
+  var ongkir=ords.reduce(function(a,o){return a+(o.ongkir||0);},0);
+  var fixed=costsInPeriod(p).reduce(function(a,c){return a+(c.nominal||0);},0);
+  var profit=revenue-hpp-ongkir-fixed;
+  var marginPct=revenue>0?Math.round((profit/revenue)*100):0;
+
+  // Profit metrics cards
+  document.getElementById('profitMetrics').innerHTML=
+    metric('Revenue gifting',fmtRp(revenue),ords.length+' order')+
+    metric('HPP',fmtRp(hpp),'')+
+    metric('Biaya tetap',fmtRp(fixed),'')+
+    metric('Profit bersih',fmtRp(profit),marginPct+'% margin',true);
+
+  // L/R breakdown
+  document.getElementById('lrRevenue').textContent=fmtRp(revenue);
+  document.getElementById('lrHpp').textContent='−'+fmtRp(hpp);
+  document.getElementById('lrOngkir').textContent='−'+fmtRp(ongkir);
+  document.getElementById('lrFixed').textContent='−'+fmtRp(fixed);
+  document.getElementById('lrProfit').textContent=fmtRp(profit);
+  document.getElementById('lrMargin').textContent=marginPct+'%';
+
+  // Fixed costs list
+  renderCostList(p);
+  document.getElementById('totalFixed').textContent=fmtRp(fixed);
+
+  // Tax
+  var extList=extInPeriod(p);
+  var extTotal=extList.reduce(function(a,e){return a+(e.nominal||0);},0);
+  var taxBruto=revenue+extTotal;
+  var taxDue=Math.round(taxBruto*0.005);
+  document.getElementById('taxGifting').textContent=fmtRp(revenue);
+  document.getElementById('taxTotal').textContent=fmtRp(taxBruto);
+  document.getElementById('taxDue').textContent=fmtRp(taxDue);
+  renderExtList(p);
+
+  // Cumulative this year
+  var yr=p?p.slice(0,4):'';
+  var cumGifting=allOrders.filter(function(o){return orderPeriod(o).slice(0,4)===yr;}).reduce(function(a,o){return a+(o.final||0);},0);
+  var cumExt=extRevenue.filter(function(e){return e.period.slice(0,4)===yr;}).reduce(function(a,e){return a+(e.nominal||0);},0);
+  var cum=cumGifting+cumExt;
+  document.getElementById('taxCumulative').textContent=fmtRp(cum);
+  var pct48=Math.round((cum/4800000000)*100);
+  document.getElementById('taxCumNote').textContent=pct48+'% dari batas Rp4,8 M';
+
+  renderTrend();
+}
+
+function metric(lbl,val,sub,hl){
+  return '<div class="metric"'+(hl?' style="border-color:var(--wine);"':'')+'><div class="metric-lbl">'+lbl+'</div><div class="metric-val'+(hl?' wine':'')+'">'+val+'</div>'+(sub?'<div class="metric-sub">'+sub+'</div>':'')+'</div>';
+}
+
+function renderCostList(p){
+  var list=costsInPeriod(p);
+  var el=document.getElementById('costList');
+  if(!list.length){el.innerHTML='<div style="font-size:12px;color:var(--ink-muted);padding:6px 0;">Belum ada biaya tetap untuk bulan ini.</div>';return;}
+  el.innerHTML=list.map(function(c){
+    return '<div class="cost-row"><span style="font-size:13px;">'+c.nama+'</span><span class="mono" style="text-align:right;font-size:13px;">'+fmtRp(c.nominal)+'</span><button class="del-btn" onclick="delCost(\''+c.id+'\')">×</button></div>';
+  }).join('');
+}
+
+function renderExtList(p){
+  var list=extInPeriod(p);
+  var el=document.getElementById('extRevList');
+  if(!list.length){el.innerHTML='';return;}
+  el.innerHTML=list.map(function(e){
+    return '<div class="cost-row" style="margin-bottom:5px;"><span style="font-size:12px;">'+e.sumber+'</span><span class="mono" style="text-align:right;font-size:12px;">'+fmtRp(e.nominal)+'</span><button class="del-btn" onclick="delExtRev(\''+e.id+'\')">×</button></div>';
+  }).join('');
+}
+
+async function addCost(){
+  var p=curPeriod();if(!p){alert('Pilih periode dulu');return;}
+  var nama=(document.getElementById('newCostName').value||'').trim();
+  var nom=parseInt(document.getElementById('newCostNom').value)||0;
+  if(!nama){alert('Nama biaya wajib diisi');return;}
+  var payload={id:gid(),period:p,nama:nama,nominal:nom};
+  var res=await fetch(SUPA_URL+'/rest/v1/fixed_costs',{method:'POST',headers:H,body:JSON.stringify(payload)}).then(function(r){return r.json();});
+  if(res&&res[0])fixedCosts.push(res[0]);
+  document.getElementById('newCostName').value='';
+  document.getElementById('newCostNom').value='';
+  renderAll();
+}
+
+async function delCost(id){
+  await fetch(SUPA_URL+'/rest/v1/fixed_costs?id=eq.'+id,{method:'DELETE',headers:H});
+  fixedCosts=fixedCosts.filter(function(c){return c.id!==id;});
+  renderAll();
+}
+
+async function addExtRev(){
+  var p=curPeriod();if(!p){alert('Pilih periode dulu');return;}
+  var sumber=(document.getElementById('newExtName').value||'').trim();
+  var nom=parseInt(document.getElementById('newExtNom').value)||0;
+  if(!sumber){alert('Sumber wajib diisi');return;}
+  var payload={id:gid(),period:p,sumber:sumber,nominal:nom};
+  var res=await fetch(SUPA_URL+'/rest/v1/external_revenue',{method:'POST',headers:H,body:JSON.stringify(payload)}).then(function(r){return r.json();});
+  if(res&&res[0])extRevenue.push(res[0]);
+  document.getElementById('newExtName').value='';
+  document.getElementById('newExtNom').value='';
+  renderAll();
+}
+
+async function delExtRev(id){
+  await fetch(SUPA_URL+'/rest/v1/external_revenue?id=eq.'+id,{method:'DELETE',headers:H});
+  extRevenue=extRevenue.filter(function(e){return e.id!==id;});
+  renderAll();
+}
+
+function renderTrend(){
+  var yr=(curPeriod()||'2026-01').slice(0,4);
+  var labels=[],revData=[],profData=[];
+  for(var m=1;m<=12;m++){
+    var p=yr+'-'+String(m).padStart(2,'0');
+    var ords=ordersInPeriod(p);
+    var rev=ords.reduce(function(a,o){return a+(o.final||0);},0);
+    var hpp=ords.reduce(function(a,o){return a+(o.hpp||0);},0);
+    var ong=ords.reduce(function(a,o){return a+(o.ongkir||0);},0);
+    var fix=costsInPeriod(p).reduce(function(a,c){return a+(c.nominal||0);},0);
+    labels.push(MONTHS[m-1]);
+    revData.push(rev);
+    profData.push(rev-hpp-ong-fix);
+  }
+  var ctx=document.getElementById('trendChart');
+  if(trendChart)trendChart.destroy();
+  trendChart=new Chart(ctx,{
+    type:'line',
+    data:{labels:labels,datasets:[
+      {label:'Revenue',data:revData,borderColor:'#B8975A',backgroundColor:'rgba(184,151,90,0.1)',tension:0.3,fill:true},
+      {label:'Profit',data:profData,borderColor:'#72243E',backgroundColor:'rgba(114,36,62,0.1)',tension:0.3,fill:true}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{family:'DM Sans'}}}},scales:{y:{ticks:{callback:function(v){return 'Rp'+(v/1000000)+'jt';}}}}}
+  });
+}
+
+function exportCSV(){
+  var p=curPeriod();
+  var ords=ordersInPeriod(p);
+  var revenue=ords.reduce(function(a,o){return a+(o.final||0);},0);
+  var hpp=ords.reduce(function(a,o){return a+(o.hpp||0);},0);
+  var ongkir=ords.reduce(function(a,o){return a+(o.ongkir||0);},0);
+  var fixed=costsInPeriod(p).reduce(function(a,c){return a+(c.nominal||0);},0);
+  var profit=revenue-hpp-ongkir-fixed;
+  var extList=extInPeriod(p);
+  var extTotal=extList.reduce(function(a,e){return a+(e.nominal||0);},0);
+  var taxBruto=revenue+extTotal;
+  var taxDue=Math.round(taxBruto*0.005);
+
+  var rows=[];
+  rows.push(['LAPORAN KEUANGAN WONDERGIFT88','']);
+  rows.push(['Periode',p]);
+  rows.push(['','']);
+  rows.push(['LABA-RUGI','']);
+  rows.push(['Revenue gifting',revenue]);
+  rows.push(['HPP',hpp]);
+  rows.push(['Ongkir',ongkir]);
+  rows.push(['Biaya tetap',fixed]);
+  costsInPeriod(p).forEach(function(c){rows.push(['  - '+c.nama,c.nominal]);});
+  rows.push(['Profit bersih',profit]);
+  rows.push(['','']);
+  rows.push(['REKAP PAJAK','']);
+  rows.push(['Omzet gifting',revenue]);
+  extList.forEach(function(e){rows.push(['Omzet '+e.sumber,e.nominal]);});
+  rows.push(['Omzet bruto gabungan',taxBruto]);
+  rows.push(['Estimasi PPh Final 0,5%',taxDue]);
+
+  var csv=rows.map(function(r){return r.map(function(c){return '"'+String(c).replace(/"/g,'""')+'"';}).join(',');}).join('\n');
+  var blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='laporan-wg88-'+p+'.csv';
+  a.click();
+}
+
+// Init
+(function(){
+  var now=new Date();
+  document.getElementById('periodPick').value=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+  document.getElementById('periodPick').addEventListener('change',renderAll);
+  loadAll();
+})();
+</script>
+</body>
+</html>
