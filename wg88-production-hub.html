@@ -615,6 +615,14 @@ footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:cent
       <div><span class="lbl">Target kirim</span><input type="text" id="fo-kirim" placeholder="mis. 30 Mei 2026"></div>
       <div><span class="lbl">Catatan</span><input type="text" id="fo-note" placeholder="opsional"></div>
     </div>
+    <div style="margin-bottom:10px;">
+      <span class="lbl">Nama di invoice</span>
+      <input type="text" id="fo-invname" placeholder="mis. SET Wedding Gift Hampers - The Macallan 12">
+    </div>
+    <div style="margin-bottom:1rem;">
+      <span class="lbl">Include (tampil di invoice) — bisa diedit</span>
+      <textarea id="fo-include" rows="6" style="width:100%;font-size:12px;padding:8px;font-family:inherit;resize:vertical;" placeholder="• Item 1&#10;• Item 2"></textarea>
+    </div>
     <div style="background:var(--cream);border-radius:3px;padding:10px 14px;margin-bottom:1rem;">
       <div style="font-size:11px;color:var(--ink-muted);font-family:'DM Mono',monospace;margin-bottom:4px;">TOTAL</div>
       <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--wine);" id="fo-total">Rp0</div>
@@ -1270,6 +1278,8 @@ function applyVoucher() {
 
 function resetKalku() {
   targetPrice=0;
+  var iv=document.getElementById('fo-invname');if(iv)iv.value='';
+  var ic=document.getElementById('fo-include');if(ic)ic.value='';
   kLines=[];kInvLines=[];voucherDiscount=0;
   renderPLines();renderInvLines();recalc();
   var vr=document.getElementById('k-voucher-res');if(vr)vr.style.display='none';
@@ -1297,6 +1307,21 @@ function goToKalku() {
 function fixOrder() {
   var total=document.getElementById('k-final').textContent;
   document.getElementById('fo-total').textContent=total;
+  // Auto-draft nama invoice + include dari komposisi
+  var allItems=kLines.concat(kInvLines);
+  var mainItem=allItems.length?allItems[0].n:'Gift Set';
+  var draftName=document.getElementById('fo-invname');
+  if(draftName&&!draftName.value){
+    var modelName=(document.getElementById('kFromModel').textContent||'').replace(/^.*dari model:\s*/,'').replace(/\(.*$/,'').trim();
+    draftName.value='SET '+(modelName||'Gift Hampers')+' - '+mainItem;
+  }
+  var draftInc=document.getElementById('fo-include');
+  if(draftInc&&!draftInc.value){
+    var lines=allItems.map(function(l){return '\u2022 '+l.n+(l.q>1?' (x'+l.q+')':'');});
+    lines.push('\u2022 Free Custom Greeting Card');
+    lines.push('\u2022 Include Ongkir Bluebird Delivery');
+    draftInc.value=lines.join('\n');
+  }
   document.getElementById('fixModal').classList.add('open');
 }
 function closeFixModal(){document.getElementById('fixModal').classList.remove('open');}
@@ -1309,8 +1334,18 @@ async function saveOrder() {
   var ctr=ls(INV_CTR,0)+1;ss(INV_CTR,ctr);
   var invNo='WG-INV-'+yr+'/'+String(ctr).padStart(2,'0');
   var date=now.getDate()+' '+MONTHS[now.getMonth()]+' '+now.getFullYear();
-  var items=kLines.map(function(l){return{desc:l.n,qty:l.q,price:l.p,detail:'preset'};})
-    .concat(kInvLines.map(function(l){return{desc:l.n,qty:l.q,price:l.p,detail:'inventory'};}));
+  var invName=(document.getElementById('fo-invname').value||'').trim();
+  var includeText=(document.getElementById('fo-include').value||'').trim();
+  var finalText0=document.getElementById('k-final').textContent||'';
+  var finalNum=parseInt(finalText0.replace(/[^0-9]/g,''))||0;
+  var items;
+  if(invName){
+    // satu baris: nama set + include, qty 1, harga total
+    items=[{desc:invName,include:includeText,qty:1,price:finalNum,detail:'set'}];
+  } else {
+    items=kLines.map(function(l){return{desc:l.n,qty:l.q,price:l.p,detail:'preset'};})
+      .concat(kInvLines.map(function(l){return{desc:l.n,qty:l.q,price:l.p,detail:'inventory'};}));
+  }
   var hpp=kLines.reduce(function(a,l){return a+(l.p*l.q);},0)+kInvLines.reduce(function(a,l){return a+(l.p*l.q);},0);
   var ops=parseInt(document.getElementById('k-ops').value)||0;
   var kar=parseInt(document.getElementById('k-kar').value)||0;

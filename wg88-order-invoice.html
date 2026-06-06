@@ -518,7 +518,7 @@ function buildInvoicePreview(o){
   const rows=(o.items||[]).map((item,i)=>`
     <tr>
       <td style="width:5%;text-align:center;">${i+1}.</td>
-      <td><div style="font-weight:500;font-size:13px;">${item.desc}</div>${item.detail?`<div style="font-size:11px;color:var(--ink-muted);line-height:1.7;">${item.detail.split('\n').map(l=>`• ${l}`).join('<br>')}</div>`:''}</td>
+      <td><div style="font-weight:500;font-size:13px;">${item.desc}</div>${item.include?`<div style="font-size:11px;color:var(--ink-muted);line-height:1.7;margin-top:3px;">Include:<br>${item.include.split('\n').map(l=>l.trim()).filter(Boolean).map(l=>l.startsWith('•')?l:('• '+l)).join('<br>')}</div>`:(item.detail&&item.detail!=='set'&&item.detail!=='preset'&&item.detail!=='inventory'?`<div style="font-size:11px;color:var(--ink-muted);line-height:1.7;">${item.detail}</div>`:'')}</td>
       <td style="text-align:right;font-family:'DM Mono',monospace;white-space:nowrap;">${fmtRp(item.price)}</td>
       <td style="text-align:center;">${item.qty||1}</td>
       <td style="text-align:right;font-family:'DM Mono',monospace;white-space:nowrap;">${fmtRp((item.price||0)*(item.qty||1))}</td>
@@ -587,7 +587,7 @@ function editInvoiceItems(){
     <div style="margin-bottom:1rem;padding-bottom:1rem;border-bottom:0.5px solid var(--border-soft);">
       <div style="font-size:11px;color:var(--ink-muted);font-family:'DM Mono',monospace;margin-bottom:6px;">ITEM ${i+1} · ${fmtRp(item.price)} × ${item.qty||1}</div>
       <div style="margin-bottom:8px;"><span class="lbl">Nama item</span><input type="text" id="ei-name-${i}" value="${item.desc||''}" /></div>
-      <div><span class="lbl">Detail (satu per baris)</span><textarea id="ei-detail-${i}" rows="3" style="resize:vertical;">${item.detail||''}</textarea></div>
+      <div><span class="lbl">Include / detail (satu per baris)</span><textarea id="ei-detail-${i}" rows="6" style="resize:vertical;">${item.include||item.detail||''}</textarea></div>
     </div>`).join('');
   document.getElementById('editInvModal').classList.add('open');
 }
@@ -596,11 +596,15 @@ function closeEditInv(){ document.getElementById('editInvModal').classList.remov
 
 async function saveInvEdits(){
   const o=orders.find(x=>x.id===currentOrderId); if(!o) return;
-  const newItems=(o.items||[]).map((item,i)=>({
-    ...item,
-    desc:document.getElementById('ei-name-'+i)?.value||item.desc,
-    detail:document.getElementById('ei-detail-'+i)?.value||item.detail
-  }));
+  const newItems=(o.items||[]).map((item,i)=>{
+    const nm=document.getElementById('ei-name-'+i)?.value||item.desc;
+    const dt=document.getElementById('ei-detail-'+i)?.value||'';
+    // jika item set (punya include) atau detail diisi multi-baris, simpan sebagai include
+    if(item.include!==undefined||item.detail==='set'){
+      return {...item,desc:nm,include:dt};
+    }
+    return {...item,desc:nm,detail:dt};
+  });
   try {
     await updateOrderInDB(currentOrderId,{items:newItems});
     await loadOrders();
