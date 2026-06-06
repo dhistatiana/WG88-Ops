@@ -983,7 +983,6 @@ function delModel(id) {
 // ── KALKULATOR ────────────────────────────────────────────
 var kLines = [];  // unified line list
 var kInvLines = [];
-var kMode = 'preset';
 var voucherDiscount = 0;
 var kSearchInv = [];
 var allPresets = [];
@@ -1064,14 +1063,7 @@ function delPLineD(btn){var id=btn.getAttribute('data-id');kLines=kLines.filter(
 
 function getPresets(){var s=ls(PRESETS_KEY,null);if(!s){ss(PRESETS_KEY,DEFAULT_PRESETS);return DEFAULT_PRESETS;}return s;}
 
-function setMode(mode,btn) {
-  kMode=mode;
-  document.querySelectorAll('.mode-tab').forEach(function(b){b.classList.remove('on');});
-  btn.classList.add('on');
-  document.querySelectorAll('.k-mode').forEach(function(el){el.classList.remove('active');});
-  document.getElementById('k-mode-'+mode).classList.add('active');
-  recalc();
-}
+
 
 function buildChips() {
   var cats=['packaging','isi','botol','addon'];
@@ -1237,7 +1229,6 @@ function goToKalku() {
   });
   document.getElementById('kFromModel').textContent='← dari: '+m.nama;
   switchTab('kalku',document.getElementById('btn-kalku'));
-  setMode('inventory',document.querySelectorAll('.mode-tab')[1]);
   renderInvLines();recalc();
 }
 
@@ -1358,7 +1349,7 @@ function pm2_renderMetrics(){
 // ── CAT FILTER ────────────────────────────────────────────
 function pm2_buildCatFilter(){
   var cats = ['all', ...new Set(pm2_presets.map(function(p){return p.kategori;}).filter(Boolean))];
-  document.getElementById('pm2_catFilter').innerHTML = cats.map(function(c){
+  document.getElementById('catFilter').innerHTML = cats.map(function(c){
     return '<button class="cf-btn'+(c===pm2_catFilter?' on':'')+'" onclick="pm2_setCat(\''+c+'\')">'+(c==='all'?'Semua':c)+'</button>';
   }).join('');
 }
