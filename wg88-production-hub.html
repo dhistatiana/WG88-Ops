@@ -325,7 +325,7 @@ footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:cent
             <span style="color:var(--ink-muted);">Margin</span>
             <span style="font-family:'DM Mono',monospace;font-size:12px;" id="k-margin-val">30%</span>
           </div>
-          <input type="range" id="k-margin" min="0" max="80" step="1" value="30" style="width:100%;height:3px;" oninput="recalc();document.getElementById('k-margin-val').textContent=this.value+'%'">
+          <input type="range" id="k-margin" min="0" max="80" step="1" value="30" style="width:100%;height:3px;" oninput="targetPrice=0;recalc();document.getElementById('k-margin-val').textContent=this.value+'%'">
         </div>
         <div class="sum-row">
           <span style="color:var(--ink-muted);">Ongkir</span>
@@ -1031,6 +1031,7 @@ function delModel(id) {
 // ── KALKULATOR ────────────────────────────────────────────
 var kLines = [];  // unified line list
 var kInvLines = [];
+var targetPrice=0;
 var voucherDiscount = 0;
 var kSearchInv = [];
 var allPresets = [];
@@ -1233,10 +1234,17 @@ function recalc() {
   var margin=parseInt(document.getElementById('k-margin').value)||0;
   var ongkir=parseInt(document.getElementById('k-ongkir').value)||0;
   var base=hpp+ops+kar;
-  var marginAmt=Math.round(base*(margin/(100-margin))||0);
-  var total=base+marginAmt+ongkir-voucherDiscount;
+  var total, marginAmt;
+  if(targetPrice>0){
+    // harga jual mengikuti harga model; ongkir nambah di atasnya
+    marginAmt=targetPrice-base;
+    total=targetPrice+ongkir-voucherDiscount;
+  } else {
+    marginAmt=Math.round(base*(margin/(100-margin))||0);
+    total=base+marginAmt+ongkir-voucherDiscount;
+  }
   var fe=document.getElementById('k-final');if(fe)fe.textContent=fmtRp(Math.max(0,total));
-  var ma=document.getElementById('k-margin-amt');if(ma)ma.textContent='Margin: '+fmtRp(marginAmt);
+  var ma=document.getElementById('k-margin-amt');if(ma)ma.textContent='Margin: '+fmtRp(marginAmt)+(targetPrice>0?' (dari harga model)':'');
 }
 
 function applyVoucher() {
@@ -1261,6 +1269,7 @@ function applyVoucher() {
 }
 
 function resetKalku() {
+  targetPrice=0;
   kLines=[];kInvLines=[];voucherDiscount=0;
   renderPLines();renderInvLines();recalc();
   var vr=document.getElementById('k-voucher-res');if(vr)vr.style.display='none';
@@ -1278,7 +1287,8 @@ function goToKalku() {
     if(b.src==='preset')kLines.push(line);
     else kInvLines.push(line);
   });
-  var km=document.getElementById('kFromModel');if(km)km.textContent='\u2190 dari model: '+m.nama;
+  targetPrice=m.harga||0;
+  var km=document.getElementById('kFromModel');if(km)km.textContent='\u2190 dari model: '+m.nama+' (harga jual '+fmtRp(targetPrice)+')';
   switchTab('kalku',document.getElementById('btn-kalku'));
   renderPLines();renderInvLines();recalc();
 }
