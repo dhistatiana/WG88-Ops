@@ -587,10 +587,14 @@ footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:cent
       <span style="font-size:13px;font-weight:500;">Daftar bahan</span>
       <button class="btn-sec btn-sm" onclick="addMmBahan()">+ Tambah bahan</button>
     </div>
-    <div style="font-size:10px;color:var(--ink-muted);font-family:'DM Mono',monospace;display:grid;grid-template-columns:1fr 58px 28px;gap:7px;padding:4px 0;border-bottom:0.5px solid var(--border);margin-bottom:6px;">
-      <span>Nama bahan</span><span style="text-align:center;">Qty/unit</span><span></span>
+    <div style="font-size:10px;color:var(--ink-muted);font-family:'DM Mono',monospace;display:grid;grid-template-columns:1fr 50px 95px 70px 26px;gap:6px;padding:4px 0;border-bottom:0.5px solid var(--border);margin-bottom:6px;">
+      <span>Nama (preset/inventory)</span><span style="text-align:center;">Qty</span><span style="text-align:right;">Harga</span><span style="text-align:center;">Sumber</span><span></span>
     </div>
     <div id="mmBahanList" style="max-height:200px;overflow-y:auto;"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0 0;border-top:0.5px solid var(--border);margin-top:6px;font-size:12px;">
+      <span style="color:var(--ink-muted);">Total HPP bahan (per unit)</span>
+      <span style="font-family:'DM Mono',monospace;font-weight:500;" id="mmHppTotal">Rp0</span>
+    </div>
     <div class="modal-footer">
       <button class="btn-sec" onclick="closeModelModal()">Batal</button>
       <button class="btn-wine" onclick="saveModel()">Simpan</button>
@@ -892,6 +896,7 @@ document.addEventListener('click', function(e){
 // MODEL MODAL
 var mmRows = [];
 function openAddModel(segId) {
+  if(!allPresets||!allPresets.length)loadPresets();
   mmRows=[];
   document.getElementById('mmTitle').textContent='Tambah model';
   document.getElementById('mm-id').value='';
@@ -903,16 +908,55 @@ function openAddModel(segId) {
 }
 function closeModelModal(){document.getElementById('modelModal').classList.remove('open');}
 
-function addMmBahan(n,q) {
+function addMmBahan(n,q,p,src) {
   var id = 'mr'+Date.now()+Math.random().toString(36).slice(2,4);
   mmRows.push(id);
   var div = document.createElement('div');
   div.id=id;
-  div.style.cssText='display:grid;grid-template-columns:1fr 58px 26px;gap:7px;align-items:center;margin-bottom:6px;';
-  div.innerHTML='<input type="text" placeholder="Nama bahan" id="'+id+'-n" value="'+(n||'')+'" style="font-size:12px;padding:6px 8px;">'
-    +'<input type="number" value="'+(q||1)+'" min="1" id="'+id+'-q" style="font-size:12px;padding:6px;text-align:center;">'
+  div.style.cssText='display:grid;grid-template-columns:1fr 50px 95px 70px 26px;gap:6px;align-items:center;margin-bottom:6px;';
+  div.innerHTML='<div class="ac-wrap" style="position:relative;">'
+    +'<input type="text" placeholder="Cari preset/inventory..." id="'+id+'-n" value="'+(n||'').replace(/"/g,"&quot;")+'" oninput="mmSearch(\''+id+'\')" autocomplete="off" style="font-size:12px;padding:6px 8px;width:100%;">'
+    +'<div class="ac-dd" id="'+id+'-dd"></div>'
+    +'</div>'
+    +'<input type="number" value="'+(q||1)+'" min="1" id="'+id+'-q" oninput="mmRecalc()" style="font-size:12px;padding:6px;text-align:center;">'
+    +'<input type="number" placeholder="Harga" value="'+(p||'')+'" id="'+id+'-p" oninput="mmRecalc()" style="font-size:12px;padding:6px;text-align:right;">'
+    +'<span id="'+id+'-src" style="font-size:9px;color:var(--ink-muted);font-family:\'DM Mono\',monospace;text-align:center;">'+(src||'')+'</span>'
     +'<button onclick="delMmBahan(\''+id+'\')" style="background:none;border:none;cursor:pointer;color:var(--ink-muted);font-size:16px;">×</button>';
   document.getElementById('mmBahanList').appendChild(div);
+  mmRecalc();
+}
+
+var mmMatches={};
+function mmSearch(rowId){
+  var q=(document.getElementById(rowId+'-n').value||'').toLowerCase();
+  var dd=document.getElementById(rowId+'-dd');
+  if(!q||q.length<1){dd.classList.remove('open');return;}
+  var presetHits=(allPresets||[]).filter(function(p){return (p.nama||'').toLowerCase().indexOf(q)>=0||(p.kategori||'').toLowerCase().indexOf(q)>=0;}).map(function(p){return{n:p.nama,price:p.harga||0,src:'preset'};});
+  var invHits=(planInventory||[]).filter(function(i){return (i.produk||'').toLowerCase().indexOf(q)>=0;}).map(function(i){return{n:i.produk,price:i.harga||0,src:'inventory'};});
+  var hits=presetHits.concat(invHits).slice(0,10);
+  mmMatches[rowId]=hits;
+  if(!hits.length){dd.classList.remove('open');return;}
+  dd.innerHTML=hits.map(function(h,idx){
+    return '<div class="ac-opt" onclick="mmPick(\''+rowId+'\','+idx+')"><span style="font-weight:500;font-size:12px;">'+h.n+'</span><span style="font-size:10px;color:var(--ink-muted);font-family:\'DM Mono\',monospace;">'+fmtRp(h.price)+' \u00B7 '+h.src+'</span></div>';
+  }).join('');
+  dd.classList.add('open');
+}
+function mmPick(rowId,idx){
+  var h=(mmMatches[rowId]||[])[idx];if(!h)return;
+  document.getElementById(rowId+'-n').value=h.n;
+  document.getElementById(rowId+'-p').value=h.price;
+  document.getElementById(rowId+'-src').textContent=h.src;
+  document.getElementById(rowId+'-dd').classList.remove('open');
+  mmRecalc();
+}
+function mmRecalc(){
+  var total=0;
+  mmRows.forEach(function(id){
+    var qEl=document.getElementById(id+'-q'),pEl=document.getElementById(id+'-p');
+    if(qEl&&pEl){total+=(parseInt(qEl.value)||0)*(parseInt(pEl.value)||0);}
+  });
+  var el=document.getElementById('mmHppTotal');
+  if(el)el.textContent=fmtRp(total);
 }
 function delMmBahan(id){document.getElementById(id)&&document.getElementById(id).remove();mmRows=mmRows.filter(function(r){return r!==id;});}
 
@@ -922,7 +966,10 @@ function saveModel() {
   var bahan = mmRows.map(function(id){
     var n=(document.getElementById(id+'-n').value||'').trim();
     var q=parseInt(document.getElementById(id+'-q').value)||1;
-    return n?{n:n,q:q}:null;
+    var p=parseInt(document.getElementById(id+'-p').value)||0;
+    var srcEl=document.getElementById(id+'-src');
+    var src=srcEl?srcEl.textContent:'';
+    return n?{n:n,q:q,p:p,src:src}:null;
   }).filter(Boolean);
   if(!bahan.length){alert('Tambahkan minimal satu bahan.');return;}
   var editId = document.getElementById('mm-id').value;
@@ -945,6 +992,7 @@ function saveModel() {
 }
 
 function editModel(id) {
+  if(!allPresets||!allPresets.length)loadPresets();
   var m = getModels().find(function(x){return x.id===id;});
   if(!m) return;
   mmRows=[];
@@ -956,7 +1004,7 @@ function editModel(id) {
   document.getElementById('mm-harga').value=m.harga||'';
   document.getElementById('mm-desc').value=m.desc||'';
   document.getElementById('mmBahanList').innerHTML='';
-  (m.bahan||[]).forEach(function(b){addMmBahan(b.n,b.q);});
+  (m.bahan||[]).forEach(function(b){addMmBahan(b.n,b.q,b.p,b.src);});
   document.getElementById('modelModal').classList.add('open');
 }
 
@@ -1223,13 +1271,16 @@ function resetKalku() {
 function goToKalku() {
   var m=getModels().find(function(x){return x.id===currentModelId;});if(!m)return;
   var units=parseInt(document.getElementById('stickyUnits').value)||1;
-  kInvLines=m.bahan.map(function(b){
-    var inv=planInventory.find(function(i){return (i.produk||'').toLowerCase().indexOf(b.n.toLowerCase())>=0;});
-    return{id:gid(),n:b.n,q:b.q*units,p:inv?inv.harga||0:0};
+  kLines=[];kInvLines=[];
+  (m.bahan||[]).forEach(function(b){
+    var price=b.p||0;
+    var line={id:gid(),n:b.n,q:(b.q||1)*units,p:price};
+    if(b.src==='preset')kLines.push(line);
+    else kInvLines.push(line);
   });
-  document.getElementById('kFromModel').textContent='← dari: '+m.nama;
+  var km=document.getElementById('kFromModel');if(km)km.textContent='\u2190 dari model: '+m.nama;
   switchTab('kalku',document.getElementById('btn-kalku'));
-  renderInvLines();recalc();
+  renderPLines();renderInvLines();recalc();
 }
 
 // FIX ORDER
