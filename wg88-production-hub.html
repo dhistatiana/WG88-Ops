@@ -1204,7 +1204,7 @@ function applyVoucher() {
     .then(function(data){
       if(!data||!data.length){el.style.color='var(--low-text)';el.textContent='Kode tidak ditemukan.';voucherDiscount=0;recalc();return;}
       var v=data[0];
-      var hpp=kMode==='preset'?kLines.reduce(function(a,l){return a+(l.p*l.q);},0):kInvLines.reduce(function(a,l){return a+(l.p*l.q);},0);
+      var hpp=kLines.reduce(function(a,l){return a+(l.p*l.q);},0)+kInvLines.reduce(function(a,l){return a+(l.p*l.q);},0);
       if(hpp<(v.minbuy||0)){el.style.color='var(--warn-text)';el.textContent='Min. pembelian '+fmtRp(v.minbuy)+' belum tercapai.';voucherDiscount=0;recalc();return;}
       voucherDiscount=v.dtype==='pct'?Math.round(hpp*v.dval/100):v.dval;
       el.style.color='var(--ok-text)';el.textContent='Voucher aktif — diskon '+fmtRp(voucherDiscount);
@@ -1248,10 +1248,9 @@ async function saveOrder() {
   var ctr=ls(INV_CTR,0)+1;ss(INV_CTR,ctr);
   var invNo='WG-INV-'+yr+'/'+String(ctr).padStart(2,'0');
   var date=now.getDate()+' '+MONTHS[now.getMonth()]+' '+now.getFullYear();
-  var items=kMode==='preset'
-    ?kLines.map(function(l){return{desc:l.n,qty:l.q,price:l.p,detail:''};})
-    :kInvLines.map(function(l){return{desc:l.n,qty:l.q,price:l.p,detail:''};});
-  var hpp=kMode==='preset'?kLines.reduce(function(a,l){return a+(l.p*l.q);},0):kInvLines.reduce(function(a,l){return a+(l.p*l.q);},0);
+  var items=kLines.map(function(l){return{desc:l.n,qty:l.q,price:l.p,detail:'preset'};})
+    .concat(kInvLines.map(function(l){return{desc:l.n,qty:l.q,price:l.p,detail:'inventory'};}));
+  var hpp=kLines.reduce(function(a,l){return a+(l.p*l.q);},0)+kInvLines.reduce(function(a,l){return a+(l.p*l.q);},0);
   var ops=parseInt(document.getElementById('k-ops').value)||0;
   var kar=parseInt(document.getElementById('k-kar').value)||0;
   var margin=parseInt(document.getElementById('k-margin').value)||0;
