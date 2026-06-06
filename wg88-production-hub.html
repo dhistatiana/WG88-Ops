@@ -1316,16 +1316,17 @@ async function saveOrder() {
   var kar=parseInt(document.getElementById('k-kar').value)||0;
   var margin=parseInt(document.getElementById('k-margin').value)||0;
   var ongkir=parseInt(document.getElementById('k-ongkir').value)||0;
-  var base=hpp+ops+kar;
-  var marginAmt=Math.round(base*(margin/(100-margin))||0);
-  var final=base+marginAmt+ongkir-voucherDiscount;
+  var finalText=document.getElementById('k-final').textContent||'';
+  var final=parseInt(finalText.replace(/[^0-9]/g,''))||0;
+  var opsCost=ops+kar;
+  var marginAmt=final-hpp-opsCost-ongkir+voucherDiscount;
   var payload={
     id:gid(),inv_no:invNo,cust:nama,
     wa:(document.getElementById('fo-wa').value||'').trim(),
     date:date,
     deliver:(document.getElementById('fo-kirim').value||'').trim(),
     note:(document.getElementById('fo-note').value||'').trim(),
-    items:items,ongkir:ongkir,final:final,status:'Confirmed'
+    items:items,hpp:hpp,ops_cost:opsCost,margin:marginAmt,ongkir:ongkir,final:final,status:'Confirmed'
   };
   var res=document.getElementById('fo-result');
   res.style.display='block';res.style.background='var(--warn-bg)';res.style.color='var(--warn-text)';res.textContent='Menyimpan...';
