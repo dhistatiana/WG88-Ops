@@ -527,7 +527,7 @@ function goTo(page){
   });
   document.getElementById('topbarTitle').textContent = PAGES[page]||page;
   closeSidebar();
-  if(page==='home') renderHome();
+  if(page==='home') 
   if(page==='sync') buildScript();
 }
 
@@ -541,44 +541,7 @@ function closeSidebar(){
 }
 
 // HOME
-function renderHome(){
-  const now=new Date();
-  const hr=now.getHours();
-  const g=hr<12?'Selamat pagi':hr<15?'Selamat siang':hr<18?'Selamat sore':'Selamat malam';
-  document.getElementById('homeGreeting').textContent=g+' — Wondergift88';
 
-  const orders=ls('wg88_orders',[]);
-  const custs=ls('wg88_customers',[]);
-  const invItems=ls('wg88_inventory',[]);
-  const aktif=orders.filter(o=>!['Selesai','Batal'].includes(o.status));
-  const revenue=orders.filter(o=>o.status==='Selesai').reduce((s,o)=>s+(o.final||0),0);
-
-  document.getElementById('homeStats').innerHTML=`
-    <div style="background:#fff;border:0.5px solid var(--border);border-radius:4px;padding:1rem 1.25rem;"><div style="font-size:10px;color:var(--ink-muted);font-family:'DM Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">Order aktif</div><div style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;">${aktif.length}</div></div>
-    <div style="background:#fff;border:0.5px solid var(--border);border-radius:4px;padding:1rem 1.25rem;"><div style="font-size:10px;color:var(--ink-muted);font-family:'DM Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">Total revenue</div><div style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;">Rp${revenue.toLocaleString('id-ID')}</div></div>
-    <div style="background:#fff;border:0.5px solid var(--border);border-radius:4px;padding:1rem 1.25rem;"><div style="font-size:10px;color:var(--ink-muted);font-family:'DM Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">Customer</div><div style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;">${custs.length}</div></div>
-    <div style="background:#fff;border:0.5px solid var(--border);border-radius:4px;padding:1rem 1.25rem;"><div style="font-size:10px;color:var(--ink-muted);font-family:'DM Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">Item inventory</div><div style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;">${invItems.length}</div></div>
-  `;
-
-  document.getElementById('badge-order').textContent = aktif.length;
-
-  // Alerts
-  const alerts=[];
-  const siap=orders.filter(o=>o.status==='Siap kirim');
-  if(siap.length) alerts.push({color:'#3C3489',bg:'#EEEDFE',text:`${siap.length} order siap kirim`,sub:siap.map(o=>o.cust).join(', ')});
-  const proses=orders.filter(o=>o.status==='Dalam proses');
-  if(proses.length) alerts.push({color:'#633806',bg:'#FAEEDA',text:`${proses.length} order dalam proses`,sub:proses.map(o=>o.invNo||o.cust).join(', ')});
-  const rusak=invItems.filter(i=>i.kondisi==='Rusak');
-  if(rusak.length) alerts.push({color:'#791F1F',bg:'#FCEBEB',text:`${rusak.length} item inventory perlu dicek`,sub:rusak.slice(0,3).map(i=>i.produk).join(', ')});
-  const url=localStorage.getItem(SHEETS_URL_KEY);
-  if(!url) alerts.push({color:'#0C447C',bg:'#E6F1FB',text:'Google Sheets belum tersambung',sub:'Klik Sheets & sync di menu untuk setup'});
-
-  document.getElementById('homeAlerts').innerHTML=alerts.map(a=>`
-    <div style="background:${a.bg};border-radius:3px;padding:10px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;">
-      <div style="width:6px;height:6px;border-radius:50%;background:${a.color};flex-shrink:0;"></div>
-      <div><div style="font-size:13px;font-weight:500;color:${a.color};">${a.text}</div><div style="font-size:11px;color:${a.color};opacity:0.7;font-family:'DM Mono',monospace;">${a.sub}</div></div>
-    </div>`).join('');
-}
 
 // SHEETS SYNC
 const APPS_SCRIPT_CODE = `function doPost(e) {
@@ -739,7 +702,7 @@ function setDate(){
 
 // INIT
 setDate();
-renderHome();
+
 const savedUrl = localStorage.getItem(SHEETS_URL_KEY);
 if(savedUrl) updateSyncStatus(false);
 
