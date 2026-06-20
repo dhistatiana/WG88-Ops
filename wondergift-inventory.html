@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Wondergift88 — Inventory</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{--cream:#F7F4EE;--ink:#1A1714;--ink-soft:#4A4540;--ink-muted:#9A948E;--gold:#B8975A;--wine:#72243E;--border:rgba(26,23,20,0.1);--border-soft:rgba(26,23,20,0.06);--ok-bg:#EAF3E0;--ok-text:#27500A;--low-bg:#FCEBEB;--low-text:#791F1F;--warn-bg:#FAEEDA;--warn-text:#633806;}
@@ -47,6 +48,13 @@ table.tbl td{padding:9px 10px;border-bottom:0.5px solid var(--border-soft);verti
 table.tbl tr:last-child td{border-bottom:none;}
 table.tbl tr:hover td{background:#fafaf8;}
 .empty{text-align:center;padding:3rem;color:var(--ink-muted);font-size:13px;font-family:'DM Mono',monospace;}
+.cat-breakdown-row{display:grid;grid-template-columns:140px 1fr 90px 100px;align-items:center;gap:12px;padding:7px 0;font-size:12px;}
+.cat-breakdown-row+.cat-breakdown-row{border-top:0.5px solid var(--border-soft);}
+.cat-bd-name{font-family:'DM Mono',monospace;font-size:11px;color:var(--ink-soft);}
+.cat-bd-track{background:var(--border-soft);border-radius:3px;height:8px;overflow:hidden;}
+.cat-bd-fill{height:100%;background:var(--gold);border-radius:3px;}
+.cat-bd-count{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-muted);text-align:right;}
+.cat-bd-val{font-family:'DM Mono',monospace;font-size:12px;text-align:right;font-weight:500;}
 .seeded-notice{background:var(--warn-bg);border:0.5px solid rgba(99,56,6,0.2);border-radius:3px;padding:10px 14px;font-size:12px;color:var(--warn-text);margin-bottom:1rem;display:none;}
 footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:center;font-size:11px;color:var(--ink-muted);font-family:'DM Mono',monospace;margin-top:2rem;}
 @media(max-width:640px){header{padding:1rem 1.25rem;}.container{padding:1.25rem;}.row2,.row3{grid-template-columns:1fr;}}
@@ -62,12 +70,16 @@ footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:cent
 </header>
 <div class="container">
   <div class="metric-grid" id="metricGrid"></div>
+  <div class="card" id="catBreakdownCard">
+    <p class="card-title" style="margin-bottom:0.85rem;">Total nilai per kategori</p>
+    <div id="catBreakdown"></div>
+  </div>
   <div id="seededNotice" class="seeded-notice">761 item dari data Shopee berhasil diimpor ke database. Silakan edit atau hapus item yang tidak relevan.</div>
   <div class="card">
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:1rem;">
       <p class="card-title" style="margin:0;">Inventory & belanja</p>
       <div style="display:flex;gap:8px;">
-        <button class="btn-sec btn-sm" onclick="exportCSV()">Export CSV</button>
+        <button class="btn-sec btn-sm" onclick="exportExcel()">Export Excel</button>
         <button class="btn btn-sm" onclick="toggleForm()">+ Tambah item</button>
       </div>
     </div>
@@ -107,9 +119,10 @@ footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:cent
     <div style="overflow-x:auto;">
       <table class="tbl">
         <thead><tr>
-          <th style="width:32%;">Produk</th><th style="width:18%;">Kategori</th><th style="width:15%;">Toko</th>
-          <th style="width:8%;text-align:right;">Qty</th><th style="width:13%;text-align:right;">Harga</th>
-          <th style="width:9%;">Kondisi</th><th style="width:5%;"></th>
+          <th style="width:27%;">Produk</th><th style="width:15%;">Kategori</th><th style="width:13%;">Toko</th>
+          <th style="width:6%;text-align:right;">Qty</th><th style="width:11%;text-align:right;">Harga</th>
+          <th style="width:12%;text-align:right;">Total</th>
+          <th style="width:9%;">Kondisi</th><th style="width:7%;"></th>
         </tr></thead>
         <tbody id="invBody"></tbody>
       </table>
@@ -911,7 +924,7 @@ async function loadItems(){
       await seedShopeeData();
     }
 
-    renderMetrics();buildCatFilter();renderInventory();
+    renderMetrics();renderCatBreakdown();buildCatFilter();renderInventory();
     document.getElementById('invCount').textContent=`${items.length} item`;
   }catch(e){setSync(false);console.error(e);}
 }
@@ -946,6 +959,34 @@ function renderMetrics(){
     <div class="metric"><div class="metric-lbl">Perlu cek</div><div class="metric-val">${rusak}</div></div>`;
 }
 
+function renderCatBreakdown(){
+  const el=document.getElementById('catBreakdown');
+  const card=document.getElementById('catBreakdownCard');
+  if(!items.length){card.style.display='none';return;}
+  card.style.display='block';
+  const totals={};
+  CATS.forEach(c=>totals[c]={val:0,count:0});
+  items.forEach(i=>{
+    const c=i.kategori&&totals[i.kategori]?i.kategori:null;
+    if(!c)return;
+    totals[c].val+=(i.harga||0)*(i.qty||1);
+    totals[c].count+=1;
+  });
+  const grand=Object.values(totals).reduce((s,t)=>s+t.val,0)||1;
+  const sorted=CATS.filter(c=>totals[c].count>0).sort((a,b)=>totals[b].val-totals[a].val);
+  if(!sorted.length){el.innerHTML='<div class="empty" style="padding:1rem;">Belum ada data.</div>';return;}
+  el.innerHTML=sorted.map(c=>{
+    const t=totals[c];
+    const pct=Math.round((t.val/grand)*100);
+    return `<div class="cat-breakdown-row">
+      <span class="cat-bd-name">${c}</span>
+      <div class="cat-bd-track"><div class="cat-bd-fill" style="width:${pct}%;"></div></div>
+      <span class="cat-bd-count">${t.count} item</span>
+      <span class="cat-bd-val">${fmtRp(t.val)}</span>
+    </div>`;
+  }).join('');
+}
+
 function buildCatFilter(){
   const el=document.getElementById('catFilter');if(!el)return;
   const cats=['all',...CATS];
@@ -972,6 +1013,7 @@ function renderInventory(){
     <td style="font-size:11px;color:var(--ink-muted);">${i.toko||'—'}</td>
     <td style="text-align:right;font-family:'DM Mono',monospace;">${i.qty||1}</td>
     <td style="text-align:right;font-family:'DM Mono',monospace;font-size:11px;">${fmtRp(i.harga)}</td>
+    <td style="text-align:right;font-family:'DM Mono',monospace;font-size:11px;font-weight:500;">${fmtRp((i.harga||0)*(i.qty||1))}</td>
     <td><span style="display:inline-block;font-size:10px;padding:2px 7px;border-radius:2px;font-family:'DM Mono',monospace;font-weight:500;${KBADGE[i.kondisi]||''}">${i.kondisi||'Baik'}</span></td>
     <td><div style="display:flex;gap:3px;">
       <button class="btn-sec btn-sm" onclick="editItem('${i.id}')">✎</button>
@@ -1021,12 +1063,35 @@ async function deleteItem(id){
   catch(e){alert('Gagal hapus: '+e.message);}
 }
 
-function exportCSV(){
-  const rows=[['Produk','Kategori','Toko','Qty','Harga','Kondisi','Catatan']];
-  items.forEach(i=>rows.push([i.produk,i.kategori,i.toko||'',i.qty||1,i.harga||0,i.kondisi||'Baik',i.catatan||''   ]));
-  const a=document.createElement('a');
-  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(rows.map(r=>r.map(v=>`"${v}"`).join(',')).join('\n'));
-  a.download='wg88-inventory.csv';a.click();
+function exportExcel(){
+  const rows=[['Produk','Kategori','Toko','Qty','Harga (Rp)','Total (Rp)','Kondisi','Catatan']];
+  items.forEach(i=>rows.push([i.produk,i.kategori,i.toko||'',i.qty||1,i.harga||0,(i.harga||0)*(i.qty||1),i.kondisi||'Baik',i.catatan||'']));
+  const grandTotal=items.reduce((s,i)=>s+(i.harga||0)*(i.qty||1),0);
+  rows.push(['','','','','TOTAL',grandTotal,'','']);
+
+  const ws=XLSX.utils.aoa_to_sheet(rows);
+  ws['!cols']=[{wch:42},{wch:24},{wch:20},{wch:7},{wch:14},{wch:14},{wch:11},{wch:24}];
+  const range=XLSX.utils.decode_range(ws['!ref']);
+  for(let c=range.s.c;c<=range.e.c;c++){
+    const addr=XLSX.utils.encode_cell({r:0,c});
+    if(!ws[addr])continue;
+    ws[addr].s={font:{bold:true,color:{rgb:'FFFFFF'}},fill:{fgColor:{rgb:'1F4E78'}},alignment:{horizontal:'center',vertical:'center'}};
+  }
+  for(let r=1;r<=items.length;r++){
+    ['E','F'].forEach(col=>{
+      const addr=col+(r+1);
+      if(ws[addr])ws[addr].z='#,##0';
+    });
+  }
+  const lastRow=items.length+2;
+  const totalLabelAddr='E'+lastRow, totalValAddr='F'+lastRow;
+  if(ws[totalLabelAddr])ws[totalLabelAddr].s={font:{bold:true}};
+  if(ws[totalValAddr]){ws[totalValAddr].s={font:{bold:true}};ws[totalValAddr].z='#,##0';}
+
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Inventory');
+  const today=new Date().toISOString().slice(0,10);
+  XLSX.writeFile(wb,`wg88-inventory-${today}.xlsx`);
 }
 
 function initRealtime(){
