@@ -235,9 +235,11 @@ footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:cent
 </style>
 </head>
 <body>
+<script>if(window.self!==window.top){document.documentElement.classList.add('is-embedded');}</script>
+<style>.is-embedded header,.is-embedded footer{display:none!important;}</style>
 
 <header>
-  <div class="logo">Wondergift<sup>88</sup>&nbsp;<span style="font-size:11px;color:var(--ink-muted);font-family:'DM Mono',monospace;font-weight:400;">production hub</span></div>
+  <div class="logo">Wondergift<sup>88</sup></div>
   <div style="display:flex;align-items:center;gap:10px;">
     <div class="sync-pill"><span class="sync-dot" id="syncDot"></span><span id="syncText">memuat...</span></div>
     <span style="font-size:11px;font-family:'DM Mono',monospace;color:var(--ink-muted);" id="planIndicator"></span>
@@ -635,7 +637,7 @@ footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:cent
   </div>
 </div>
 
-<footer>wondergift88.com &nbsp;·&nbsp; production hub — plan & kalkulator</footer>
+<footer>wondergift88.com &nbsp;·&nbsp; catalog & order</footer>
 
 <script>
 const SUPA_URL = 'https://cehiusuaipanuynmizdf.supabase.co';
@@ -742,6 +744,7 @@ function renderSegment(segId) {
       +(m.desc?'<div class="mc-desc">'+m.desc+'</div>':'')
       +'<div class="mc-pkg'+pkgVis+'">📦 '+(m.pkg||'')+'</div>'
       +'<div class="mc-price'+priceVis+'">'+(m.harga?fmtRp(m.harga):'')+'</div>'
+      +'<button class="btn-wine btn-sm" style="width:100%;margin-top:8px;" onclick="event.stopPropagation();quickCreateOrder(\''+m.id+'\')">Create Order</button>'
       +'<div class="mc-actions">'
       +'<button class="btn-sec btn-sm" onclick="event.stopPropagation();editModel(\''+m.id+'\')">Edit</button>'
       +'<button class="btn-sec btn-sm" onclick="event.stopPropagation();dupModel(\''+m.id+'\')">Copy</button>'
@@ -782,11 +785,7 @@ async function openDetailModal() {
   if(!m) return;
   document.getElementById('dmTitle').textContent = m.nama;
   document.getElementById('dmSub').textContent = 'Segment '+m.seg+' — '+SEG[m.seg-1].name+(m.pkg?' · 📦 '+m.pkg:'')+(m.harga?' · '+fmtRp(m.harga):'');
-  try {
-    var res = await fetch(SUPA_URL+'/rest/v1/inventory?order=added_at.desc', {headers:H});
-    planInventory = await res.json();
-    setSync(true);
-  } catch(e) { planInventory = []; }
+  await ensureInventoryLoaded(true);
   buildBahan();
   document.getElementById('detailModal').classList.add('open');
 }
@@ -903,8 +902,9 @@ document.addEventListener('click', function(e){
 
 // MODEL MODAL
 var mmRows = [];
-function openAddModel(segId) {
+async function openAddModel(segId) {
   if(!allPresets||!allPresets.length)loadPresets();
+  await ensureInventoryLoaded();
   mmRows=[];
   document.getElementById('mmTitle').textContent='Tambah model';
   document.getElementById('mm-id').value='';
@@ -999,8 +999,9 @@ function saveModel() {
   if(currentModelId===editId) buildBahan();
 }
 
-function editModel(id) {
+async function editModel(id) {
   if(!allPresets||!allPresets.length)loadPresets();
+  await ensureInventoryLoaded();
   var m = getModels().find(function(x){return x.id===id;});
   if(!m) return;
   mmRows=[];
@@ -1119,6 +1120,15 @@ function updPQtyD(el){var id=el.getAttribute('data-id');var l=kLines.find(functi
 function delPLineD(btn){var id=btn.getAttribute('data-id');kLines=kLines.filter(function(l){return l.id!==id;});renderPLines();recalc();}
 
 function getPresets(){var s=ls(PRESETS_KEY,null);if(!s){ss(PRESETS_KEY,DEFAULT_PRESETS);return DEFAULT_PRESETS;}return s;}
+
+async function ensureInventoryLoaded(force){
+  if(!force && planInventory && planInventory.length) return;
+  try {
+    var res = await fetch(SUPA_URL+'/rest/v1/inventory?order=added_at.desc', {headers:H});
+    planInventory = await res.json();
+    setSync(true);
+  } catch(e) { planInventory = planInventory||[]; }
+}
 
 
 
@@ -1285,6 +1295,13 @@ function resetKalku() {
   var vr=document.getElementById('k-voucher-res');if(vr)vr.style.display='none';
   var kv=document.getElementById('k-voucher');if(kv)kv.value='';
   var km=document.getElementById('kFromModel');if(km)km.textContent='';
+}
+
+function quickCreateOrder(id){
+  selectModel(id);
+  var su=document.getElementById('stickyUnits'); if(su) su.value=1;
+  goToKalku();
+  fixOrder();
 }
 
 function goToKalku() {

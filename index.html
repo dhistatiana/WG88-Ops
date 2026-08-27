@@ -201,11 +201,12 @@ footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:cent
     <div class="nav">
       <div class="nav-section">
         <button class="nav-item active" data-page="home" onclick="goTo('home')"><span class="num">01</span> Dashboard</button>
-        <button class="nav-item" data-page="produksi" onclick="goTo('produksi')"><span class="num">02</span> Produksi & Order</button>
+        <button class="nav-item" data-page="produksi" onclick="goTo('produksi')"><span class="num">02</span> Catalog & Order</button>
         <button class="nav-item" data-page="pricing" onclick="goTo('pricing')"><span class="num">03</span> Pricing & Kalkulator</button>
-        <button class="nav-item" data-page="mitra" onclick="goTo('mitra')"><span class="num">04</span> Customer & Supplier</button>
-        <button class="nav-item" data-page="inventory" onclick="goTo('inventory')"><span class="num">05</span> Inventory</button>
-        <button class="nav-item" data-page="rekap" onclick="goTo('rekap')"><span class="num">06</span> Laporan & Keuangan</button>
+        <button class="nav-item" data-page="customer" onclick="goTo('customer')"><span class="num">04</span> Customer</button>
+        <button class="nav-item" data-page="supplier" onclick="goTo('supplier')"><span class="num">05</span> Supplier</button>
+        <button class="nav-item" data-page="inventory" onclick="goTo('inventory')"><span class="num">06</span> Inventory</button>
+        <button class="nav-item" data-page="rekap" onclick="goTo('rekap')"><span class="num">07</span> Laporan & Keuangan</button>
       </div>
     </div>
     <button class="sidebar-settings" data-page="sync" onclick="goTo('sync')">⚙ Sheets & sync</button>
@@ -291,7 +292,7 @@ footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:cent
     </div>
   </div>
 
-      <!-- PRODUKSI & ORDER -->
+      <!-- CATALOG & ORDER -->
       <div id="page-produksi" class="page">
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:1rem;">
           <div class="page-eyebrow" style="margin-bottom:0;">Pilih model, buat order, dan generate invoice langsung dari sini.</div>
@@ -311,17 +312,31 @@ footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:cent
         <div class="link-row" onclick="window.open('wg88-preset-manager.html','_blank')"><div class="link-row-icon">▧</div><div class="link-row-body"><div class="link-row-name">Preset Manager</div><div class="link-row-desc">Kelola daftar preset produk & komponennya</div></div><div class="link-row-arrow">→</div></div>
       </div>
 
-      <!-- CUSTOMER & SUPPLIER -->
-      <div id="page-mitra" class="page">
-        <div class="page-eyebrow">Database pelanggan dan kontak supplier.</div>
-        <div class="link-row" onclick="window.open('wg88-customer.html','_blank')"><div class="link-row-icon">◎</div><div class="link-row-body"><div class="link-row-name">Customer</div><div class="link-row-desc">Database pelanggan, riwayat order, preferensi</div></div><div class="link-row-arrow">→</div></div>
-        <div class="link-row" onclick="window.open('wg88-supplier.html','_blank')"><div class="link-row-icon">◉</div><div class="link-row-body"><div class="link-row-name">Supplier</div><div class="link-row-desc">Contact list supplier, item, lokasi, pickup</div></div><div class="link-row-arrow">→</div></div>
+      <!-- CUSTOMER -->
+      <div id="page-customer" class="page">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:1rem;">
+          <div class="page-eyebrow" style="margin-bottom:0;">Database pelanggan, riwayat order, preferensi.</div>
+          <button class="btn-sec btn-sm" onclick="document.getElementById('customerFrame').src=document.getElementById('customerFrame').src">↻ Refresh</button>
+        </div>
+        <iframe id="customerFrame" src="wg88-customer.html" style="width:100%;height:calc(100vh - 210px);border:0.5px solid var(--border);border-radius:4px;background:#fff;"></iframe>
+      </div>
+
+      <!-- SUPPLIER -->
+      <div id="page-supplier" class="page">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:1rem;">
+          <div class="page-eyebrow" style="margin-bottom:0;">Contact list supplier, item, lokasi, pickup.</div>
+          <button class="btn-sec btn-sm" onclick="document.getElementById('supplierFrame').src=document.getElementById('supplierFrame').src">↻ Refresh</button>
+        </div>
+        <iframe id="supplierFrame" src="wg88-supplier.html" style="width:100%;height:calc(100vh - 210px);border:0.5px solid var(--border);border-radius:4px;background:#fff;"></iframe>
       </div>
 
       <!-- INVENTORY -->
       <div id="page-inventory" class="page">
-        <div class="page-eyebrow">Stok bahan, aset, dan riwayat belanja.</div>
-        <div class="link-row" onclick="window.open('wondergift-inventory.html','_blank')"><div class="link-row-icon">◑</div><div class="link-row-body"><div class="link-row-name">Inventory & Belanja</div><div class="link-row-desc">Input belanja baru, daftar lengkap item, kondisi aset</div></div><div class="link-row-arrow">→</div></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:1rem;">
+          <div class="page-eyebrow" style="margin-bottom:0;">Stok bahan, aset, dan riwayat belanja.</div>
+          <button class="btn-sec btn-sm" onclick="document.getElementById('inventoryFrame').src=document.getElementById('inventoryFrame').src">↻ Refresh</button>
+        </div>
+        <iframe id="inventoryFrame" src="wondergift-inventory.html" style="width:100%;height:calc(100vh - 210px);border:0.5px solid var(--border);border-radius:4px;background:#fff;"></iframe>
       </div>
 
       <!-- SHEETS SYNC -->
@@ -402,7 +417,7 @@ footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:cent
       </div>
 
     </div><!-- /content -->
-    <footer>wondergift88.com &nbsp;·&nbsp; operations hub v1.0 &nbsp;·&nbsp; 10 modul aktif</footer>
+    <footer>wondergift88.com &nbsp;·&nbsp; operations hub v1.0 &nbsp;·&nbsp; 9 modul aktif</footer>
   </div><!-- /main -->
 </div><!-- /layout -->
 
@@ -410,11 +425,12 @@ footer{border-top:0.5px solid var(--border);padding:1.25rem 2rem;text-align:cent
 const SHEETS_URL_KEY = 'wg88_sheets_url';
 const PAGES = {
   'home':{eyebrow:'Overview',title:'Dashboard'},
-  'produksi':{eyebrow:'02 — Modul',title:'Produksi & Order'},
+  'produksi':{eyebrow:'02 — Modul',title:'Catalog & Order'},
   'pricing':{eyebrow:'03 — Modul',title:'Pricing & Kalkulator'},
-  'mitra':{eyebrow:'04 — Modul',title:'Customer & Supplier'},
-  'inventory':{eyebrow:'05 — Modul',title:'Inventory'},
-  'rekap':{eyebrow:'06 — Modul',title:'Laporan & Keuangan'},
+  'customer':{eyebrow:'04 — Modul',title:'Customer'},
+  'supplier':{eyebrow:'05 — Modul',title:'Supplier'},
+  'inventory':{eyebrow:'06 — Modul',title:'Inventory'},
+  'rekap':{eyebrow:'07 — Modul',title:'Laporan & Keuangan'},
   'sync':{eyebrow:'Pengaturan',title:'Sheets & Sync'}
 };
 const MONTHS = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agt','Sep','Okt','Nov','Des'];
